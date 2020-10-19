@@ -1,0 +1,12 @@
+<div class="sunbird-video-player-container" #pdfPlayer>
+      <sb-player-side-menu-icon class="notVisible" (sidebarMenuEvent)="viewerService.raiseHeartBeatEvent($event)"
+            *ngIf="viewState ==='player'" [ngClass]="{'isVisible': viewState === 'player'}"></sb-player-side-menu-icon>
+      <video-player [options]="options" (playerEvents)="playerEvents($event)" *ngIf="viewState === 'player'">
+      </video-player>
+      <sb-player-sidebar *ngIf="viewState ==='player'"
+       [title]="viewerService.contentName"
+      (sidebarEvent)="sideBarEvents($event)" [config]="sideMenuConfig"></sb-player-sidebar>
+      <sb-player-end-page [contentName]="viewerService.contentName" [pagesRead]="1" [userName]="viewerService.userName"
+            [timeSpentLabel]="viewerService.timeSpent" (replayContent)="replayContent($event)"
+            *ngIf="viewState === 'end'"></sb-player-end-page>
+</div>

@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/sunbird-video-player",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  },
+  "whitelistedNonPeerDependencies": [
+    "tslib",
+    "video.js",
+    "@project-sunbird/sunbird-player-sdk"
+  ]
+}
