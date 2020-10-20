@@ -14,7 +14,7 @@ pdf-menu {
   z-index: 99;
 }
 .notVisible,.BtmNotVisible {
-  transition: all .3s ease-in-out;position: absolute;
+  transition: all 1s ease-in-out;position: absolute;
   width: 100%;
 }
 .notVisible {

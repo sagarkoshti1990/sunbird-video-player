@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 
@@ -10,16 +10,33 @@ import { ViewerService } from './services/viewer.service';
 export class SunbirdVideoPlayerComponent implements OnInit {
 
   @Input() playerConfig: PlayerConfig;
+  @Output() playerEvent: EventEmitter<object>;
   viewState = 'player';
+  showControls = true;
   sideMenuConfig = {
     showShare: true,
     showDownload: true,
     showReplay: true,
-    showExit: false
+    showExit: true
   };
   options;
 
-  constructor(public viewerService: ViewerService, public cdr: ChangeDetectorRef) { }
+  constructor( public viewerService: ViewerService, public cdr: ChangeDetectorRef) {
+    this.playerEvent = this.viewerService.playerEvent;
+    this.viewerService.playerEvent.subscribe(event => {
+      if(event.type === 'ended') {
+        this.viewState = 'end';
+        this.showControls = true;
+      }  
+      if(event.type === 'pause') {
+        this.showControls = true;
+      } 
+      if(event.type === 'playing') {
+        this.showControls = false;
+      }  
+      this.cdr.detectChanges();
+    })
+   }
 
   ngOnInit() {
     this.viewerService.initialize(this.playerConfig);
@@ -32,19 +49,24 @@ export class SunbirdVideoPlayerComponent implements OnInit {
       ]
     }
   }
-
-  playerEvents(event) {
-    if (event.type === 'ended') {
-      this.viewState = 'end';
+    
+  sideBarEvents(event) {
+    this.playerEvent.emit(event);
+    if(event.type === "DOWNLOAD") {
+      this.downloadVideo();
     }
   }
 
-  sideBarEvents(event) {
-
-  }
-
   replayContent(event) {
+    this.playerEvent.emit(event);
     this.viewState = 'player';
   }
 
+
+  downloadVideo() {
+    var a = document.createElement("a");
+    a.href = this.viewerService.src;
+    a.download = this.viewerService.contentName;
+    a.click();
+  }
 }

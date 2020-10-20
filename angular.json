@@ -27,19 +27,16 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "node_modules/sunbird-video-player/lib/assets/",
+                "input": "node_modules/@project-sunbird/sunbird-video-player/lib/assets/",
                 "output": "/assets/"
               }
             ],
             "styles": [
               "src/styles.scss",
               "node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
-              "node_modules/video.js/dist/video-js.min.css",
-              "node_modules/videojs-thumbnails/dist/browser/videojs-thumbnails.min.css"
+              "node_modules/video.js/dist/video-js.min.css"
             ],
             "scripts": [
-              "node_modules/video.js/dist/video.min.js",
-              "node_modules/videojs-thumbnails/dist/browser/videojs-thumbnails.min.js"
             ],
             "es5BrowserSupport": true,
             "preserveSymlinks": true

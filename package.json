@@ -9,6 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "link-sdk": "npm link @project-sunbird/sunbird-player-sdk && cd projects/sunbird-video-player && npm link @project-sunbird/sunbird-player-sdk && cd ../..",
+    "link-player": "cd dist/sunbird-video-player && npm link && cd ../.. && npm link @project-sunbird/sunbird-video-player",
     "build-lib": "ng build sunbird-video-player",
     "postbuild-lib": "node assets-copy.js"
   },

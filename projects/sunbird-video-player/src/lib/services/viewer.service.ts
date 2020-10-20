@@ -18,14 +18,17 @@ export class ViewerService {
   public mimeType: string;
   public userName: string;
   private metaData: any;
+  public PlayerLoadStartedAt: number;
+  public totalTimeSpent: number;
 
-  constructor(private sunbirdPdfPlayerService: SunbirdVideoPlayerService,
-    private utilService: UtilService) { }
+  constructor(private sunbirdPdfPlayerService: SunbirdVideoPlayerService) { 
+      this.PlayerLoadStartedAt = new Date().getTime();
+    }
 
   initialize({ context, config, metadata }: PlayerConfig) {
     this.contentName = metadata.name;
-    this.src =  metadata.artifactUrl;
-    this.mimeType = metadata.mimeType;
+    this.src =  metadata.streamingUrl || metadata.artifactUrl;
+    this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL': metadata.mimeType;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;

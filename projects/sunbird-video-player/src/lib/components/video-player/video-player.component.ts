@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, Input, Output, ViewChild, ViewEncapsulation, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, Output, ViewChild, ViewEncapsulation, EventEmitter, Renderer2 } from '@angular/core';
 import videojs from 'video.js';
+import { ViewerService } from '../../services/viewer.service';
 
 @Component({
   selector: 'video-player',
@@ -8,9 +9,14 @@ import videojs from 'video.js';
   encapsulation: ViewEncapsulation.None
 })
 export class VideoPlayerComponent implements AfterViewInit {
-  isVisible = true;
+  showBackwardButton = false;
+  showForwardButton = false;
+  showPlayButton = true;
+  showPauseButton = false;
+  showControls = true;
+  private unlistenMouseEnter: () => void;
+  private unlistenMouseLeave: () => void;
   @ViewChild('target') target: ElementRef;
-  @Output() playerEvents = new EventEmitter<any>();
   @Input() options: {
     sources: {
       src: string,
@@ -18,6 +24,8 @@ export class VideoPlayerComponent implements AfterViewInit {
     }[]
   };
   player: videojs.Player;
+
+  constructor( public viewerService: ViewerService, private renderer2: Renderer2) {}
 
   ngAfterViewInit() {
     this.player = videojs(this.target.nativeElement, {
@@ -28,33 +36,65 @@ export class VideoPlayerComponent implements AfterViewInit {
       controlBar: {
         children: ['durationDisplay', 'volumePanel', 
            'progressControl', 'remainingTimeDisplay',
-           'playbackRateMenuButton', 'fullscreenToggle']
+           'playbackRateMenuButton']
       }
     }, function onLoad()  {
-      console.log(`Player ready start event`)
+     
     });
     this.registerEvents();
+
+
+    this.unlistenMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
+      this.showControls = true;
+    });
+
+    this.unlistenMouseLeave = this.renderer2.listen(this.target.nativeElement, 'mouseleave', () => {
+      this.showControls = false;
+    });
     
   }
 
   registerEvents() {
 
-    this.player.on('ended', (event) => {
-      this.playerEvents.emit(event);
-    })
+    const events = ['play', 'ended', 'pause', 'durationchange',
+    'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
+    'ratechange']
 
-    this.player.on('play', (event) => {
-      this.playerEvents.emit(event);
+    events.forEach(event => {
+      this.player.on(event, (data) => {
+        this.handleVideoControls(data);
+        this.viewerService.playerEvent.emit(data);
+      })
     })
     
-    this.player.on('pause', (event) => {
-      this.playerEvents.emit(event);
-    })
   }
 
+  play() {
+    this.player.play();
+    this.showPauseButton = true;
+  }
+
+  pause() {
+    this.player.pause();
+    this.showPlayButton = true;
+  }
+
+  handleVideoControls({type}) {
+    // showBackwardButton = false;
+    // showForwardButton = false;
+    // showPlayButton = true;
+    // showPauseButton = false;
+    if(type === "playing") {
+      this.showPlayButton = false;
+      this.showPauseButton = true;
+      console.log(this.player.currentTime(), this.player.duration())
+    }
+  }
   ngOnDestroy() {
     if (this.player) {
       this.player.dispose();
     }
+    this.unlistenMouseLeave();
+    this.unlistenMouseEnter();
   }
 }

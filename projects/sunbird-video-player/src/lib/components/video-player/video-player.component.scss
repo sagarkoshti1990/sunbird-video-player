@@ -4,6 +4,10 @@
   display: block;
 }
 
+.video-js .vjs-big-play-button {
+  display: none;
+}
+
 // styles for play,pause,forward,backward UI
 .player-for-back-ward-controls {
   background: rgba(var(--rc-rgba-black), .7);

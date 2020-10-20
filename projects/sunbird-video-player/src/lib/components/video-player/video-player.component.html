@@ -1,8 +1,8 @@
 <video #target class="video-js" controls></video>
 
-<div class="player-for-back-ward-controls">
+<div class="player-for-back-ward-controls" *ngIf="showControls">
     <div class="player-container">
-      <div class="back-ward">
+      <div class="back-ward" *ngIf="showBackwardButton">
         <svg width="39px" height="49px" viewBox="0 0 39 49" version="1.1" xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="video/default-copy-2" transform="translate(-70.000000, -77.000000)" fill="#FFFFFF">
@@ -12,8 +12,8 @@
           </g>
         </svg>
       </div>
-      <div class="pause-play" (click)="isVisible = !isVisible">
-        <span class="pause" *ngIf="isVisible" >
+      <div class="pause-play">
+        <span class="pause" *ngIf="showPauseButton" (click)="pause()">
           <svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="video/default-copy-2" transform="translate(-156.000000, -77.000000)" fill="#FFFFFF">
@@ -23,7 +23,7 @@
             </g>
           </svg>
         </span>
-        <span class="play" *ngIf="!isVisible" >
+        <span class="play" *ngIf="showPlayButton" (click)="play()">
           <svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="video/default-copy" transform="translate(-296.000000, -156.000000)" fill="#FFFFFF">
@@ -34,7 +34,7 @@
           </svg>
         </span>
       </div>
-      <div class="forward">
+      <div class="forward" *ngIf="showForwardButton">
         <svg width="39px" height="49px" viewBox="0 0 39 49" version="1.1" xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="video/default-copy-2" transform="translate(-251.000000, -77.000000)" fill="#FFFFFF">
