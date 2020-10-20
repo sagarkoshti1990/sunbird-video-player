@@ -5,12 +5,12 @@ import { ViewerService } from './services/viewer.service';
 @Component({
   selector: 'sunbird-video-player',
   templateUrl: './sunbird-video-player.component.html',
-  styles: ['./sunbird-video-player.component.scss']
+  styleUrls: ['./sunbird-video-player.component.scss']
 })
 export class SunbirdVideoPlayerComponent implements OnInit {
 
   @Input() playerConfig: PlayerConfig;
-  viewState = 'player'
+  viewState = 'player';
   sideMenuConfig = {
     showShare: true,
     showDownload: true,
@@ -19,7 +19,7 @@ export class SunbirdVideoPlayerComponent implements OnInit {
   };
   options;
 
-  constructor( public viewerService: ViewerService, public cdr: ChangeDetectorRef) { }
+  constructor(public viewerService: ViewerService, public cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.viewerService.initialize(this.playerConfig);
@@ -34,7 +34,7 @@ export class SunbirdVideoPlayerComponent implements OnInit {
   }
 
   playerEvents(event) {
-    if(event.type === 'ended') {
+    if (event.type === 'ended') {
       this.viewState = 'end';
     }
   }
