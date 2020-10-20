@@ -8,6 +8,7 @@ import videojs from 'video.js';
   encapsulation: ViewEncapsulation.None
 })
 export class VideoPlayerComponent implements AfterViewInit {
+  isVisible = true;
   @ViewChild('target') target: ElementRef;
   @Output() playerEvents = new EventEmitter<any>();
   @Input() options: {
