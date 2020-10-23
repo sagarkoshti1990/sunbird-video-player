@@ -8,6 +8,9 @@
   display: none;
 }
 
+.video-js .vjs-control-bar {
+  z-index: 3;
+}
 // styles for play,pause,forward,backward UI
 .player-for-back-ward-controls {
   background: rgba(var(--rc-rgba-black), .7);
@@ -21,7 +24,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 5;
+  z-index: 2;
 
   .player-container {
     display: flex;
@@ -39,20 +42,6 @@
       /* align-items: center; */
       justify-content: center;
       background: transparent;
-
-      .PlayerMediaQueryClass & {
-        @include respond-above(xl) {
-          padding: 1rem;
-          height: 3.5rem;
-          width: 3.5rem;
-        }
-
-        @include respond-above(xxxl) {
-          padding: 1.5rem;
-          height: 4rem;
-          width: 4rem;
-        }
-      }
 
       &:hover {
         background: rgba(var(--rc-rgba-black), .5);
@@ -72,7 +61,7 @@
     .back-ward {}
 
     .pause-play {
-      margin: 0px 8px;
+      margin: 0px 1.5rem;
     }
 
     .forward {}
