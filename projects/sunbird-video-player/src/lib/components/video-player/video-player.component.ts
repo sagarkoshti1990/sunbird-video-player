@@ -56,12 +56,14 @@ export class VideoPlayerComponent implements AfterViewInit {
 
   registerEvents() {
 
-    const events = ['play', 'ended', 'pause', 'durationchange',
+    const events = ['loadstart', 'play', 'ended', 'pause', 'durationchange',
     'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
     'ratechange']
 
     events.forEach(event => {
       this.player.on(event, (data) => {
+        this.viewerService.visitedlength = this.player.currentTime();
+        this.viewerService.totalLength = this.player.duration();
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
       })
@@ -72,11 +74,13 @@ export class VideoPlayerComponent implements AfterViewInit {
   play() {
     this.player.play();
     this.showPauseButton = true;
+    this.viewerService.raiseHeartBeatEvent('PLAY');
   }
 
   pause() {
     this.player.pause();
     this.showPlayButton = true;
+    this.viewerService.raiseHeartBeatEvent('PAUSE');
   }
 
   handleVideoControls({type}) {
