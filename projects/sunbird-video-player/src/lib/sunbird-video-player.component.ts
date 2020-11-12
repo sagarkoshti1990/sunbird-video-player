@@ -44,18 +44,13 @@ export class SunbirdVideoPlayerComponent implements OnInit {
       if(event.type === 'error') {
         this.viewerService.raiseErrorEvent(event);
       }
-      if(event.type === 'volumechange') {
-        this.viewerService.raiseHeartBeatEvent('VOLUME_CHANGE');
-      }
-      if(event.type === 'seeking') {
-        this.viewerService.raiseHeartBeatEvent('DRAG');
-      }
-      if(event.type === 'seeking') {
-        this.viewerService.raiseHeartBeatEvent('DRAG');
-      }
-      if(event.type === 'ratechange') {
-        this.viewerService.raiseHeartBeatEvent('RATE_CHANGE');
-      }
+      const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE'}, { type: 'seeking', telemetryEvent: 'DRAG'},
+      { type: 'ratechange', telemetryEvent: 'RATE_CHANGE'}];
+      events.forEach(data => {
+        if (event.type === data.type) {
+          this.viewerService.raiseHeartBeatEvent(data.telemetryEvent);
+        }
+      });
       this.cdr.detectChanges();
     })
    }
@@ -78,18 +73,12 @@ export class SunbirdVideoPlayerComponent implements OnInit {
     if(event.type === "DOWNLOAD") {
       this.downloadVideo();
     }
-    if(event === "SHARE") {
-      this.viewerService.raiseHeartBeatEvent('SHARE');
-    }
-    if(event === "DOWNLOAD_MENU") {
-      this.viewerService.raiseHeartBeatEvent('DOWNLOAD_MENU');
-    }
-    if(event === "EXIT") {
-      this.viewerService.raiseHeartBeatEvent('EXIT');
-    }
-    if(event === "CLOSE_MENU") {
-      this.viewerService.raiseHeartBeatEvent('CLOSE_MENU');
-    }
+    const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU'];
+    events.forEach(data => {
+      if (event === data) {
+        this.viewerService.raiseHeartBeatEvent(data);
+      }
+    });
   }
 
   replayContent(event) {

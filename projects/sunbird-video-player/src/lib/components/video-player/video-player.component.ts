@@ -62,8 +62,6 @@ export class VideoPlayerComponent implements AfterViewInit {
 
     events.forEach(event => {
       this.player.on(event, (data) => {
-        this.viewerService.visitedlength = this.player.currentTime();
-        this.viewerService.totalLength = this.player.duration();
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
       })
@@ -92,6 +90,10 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.showPlayButton = false;
       this.showPauseButton = true;
       console.log(this.player.currentTime(), this.player.duration())
+    }
+    if (type === 'ended') {
+      this.viewerService.visitedlength = this.player.currentTime();
+      this.viewerService.totalLength = this.player.duration();
     }
   }
   ngOnDestroy() {
