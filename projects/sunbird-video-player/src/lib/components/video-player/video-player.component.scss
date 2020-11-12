@@ -1,13 +1,10 @@
 @import "~@project-sunbird/sb-styles/assets/mixins/mixins";
-
 .video-js .vjs-duration {
   display: block;
 }
-
 .video-js .vjs-big-play-button {
   display: none;
 }
-
 .video-js .vjs-control-bar {
   z-index: 3;
 }
@@ -25,11 +22,9 @@
   right: 0;
   bottom: 0;
   z-index: 2;
-
   .player-container {
     display: flex;
     align-items: center;
-
     .back-ward,
     .pause-play,
     .forward {
@@ -39,31 +34,29 @@
       transition: all .3s ease-in-out;
       box-sizing: content-box;
       display: flex;
-      /* align-items: center; */
+      align-items: center;
       justify-content: center;
       background: transparent;
-
       &:hover {
         background: rgba(var(--rc-rgba-black), .5);
         border-radius: 100%;
         cursor: pointer;
-
         svg g {
           fill: var(--primary-theme);
         }
       }
-
       svg {
         width: 100%;
       }
     }
-
     .back-ward {}
-
     .pause-play {
       margin: 0px 1.5rem;
+      .pause,.play{
+        display: flex;
+        align-items: center;
+      }
     }
-
     .forward {}
   }
 }

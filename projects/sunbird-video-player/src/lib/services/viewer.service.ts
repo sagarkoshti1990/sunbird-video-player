@@ -96,7 +96,7 @@ export class ViewerService {
     const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG', 'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'ZOOM_IN',
       'ZOOM_OUT', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU',
-      'SHARE', 'ROTATION_CHANGE', 'REPLAY'
+      'SHARE', 'ROTATION_CHANGE', 'REPLAY', 'FORWARD', 'BACKWARD'
     ];
     if (interactItems.includes(type)) {
       this.videoPlayerService.interact(type.toLowerCase(), 'videostage');

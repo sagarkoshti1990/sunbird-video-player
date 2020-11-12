@@ -72,23 +72,37 @@ export class VideoPlayerComponent implements AfterViewInit {
   play() {
     this.player.play();
     this.showPauseButton = true;
+    this.showPlayButton = false;
+    this.showBackwardButton = true;
+    this.showForwardButton = true;
     this.viewerService.raiseHeartBeatEvent('PLAY');
   }
 
   pause() {
     this.player.pause();
+    this.showPauseButton = false;
     this.showPlayButton = true;
+    this.showBackwardButton = false;
+    this.showForwardButton = false;
     this.viewerService.raiseHeartBeatEvent('PAUSE');
   }
 
+  backward(time) {
+    this.player.currentTime(this.player.currentTime() - time);
+    this.viewerService.raiseHeartBeatEvent('BACKWARD');
+  }
+
+  forward(time) {
+    this.player.currentTime(this.player.currentTime() + time);
+    this.viewerService.raiseHeartBeatEvent('FORWARD');
+  }
+
   handleVideoControls({type}) {
-    // showBackwardButton = false;
-    // showForwardButton = false;
-    // showPlayButton = true;
-    // showPauseButton = false;
     if(type === "playing") {
       this.showPlayButton = false;
       this.showPauseButton = true;
+      this.showBackwardButton = true;
+      this.showForwardButton = true;
       console.log(this.player.currentTime(), this.player.duration())
     }
     if (type === 'ended') {
