@@ -6,7 +6,7 @@
       <sb-player-sidebar *ngIf="viewState ==='player'"
        [title]="viewerService.contentName"
       (sidebarEvent)="sideBarEvents($event)" [config]="sideMenuConfig"></sb-player-sidebar>
-      <sb-player-end-page [contentName]="viewerService.contentName" [pagesRead]="1" [userName]="viewerService.userName"
+      <sb-player-end-page [contentName]="viewerService.contentName" [userName]="viewerService.userName"
             [timeSpentLabel]="viewerService.timeSpent" (replayContent)="replayContent($event)"
             *ngIf="viewState === 'end'"></sb-player-end-page>
 </div>

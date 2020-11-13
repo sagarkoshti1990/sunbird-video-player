@@ -37,6 +37,7 @@
               "node_modules/video.js/dist/video-js.min.css"
             ],
             "scripts": [
+              "node_modules/@project-sunbird/telemetry-sdk/index.js"
             ],
             "es5BrowserSupport": true,
             "preserveSymlinks": true
