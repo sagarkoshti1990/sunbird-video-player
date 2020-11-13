@@ -28,7 +28,7 @@ export class VideoPlayerComponent implements AfterViewInit {
   previousTime = 0;
   currentTime = 0;
   seekStart = null;
-
+  time = 10;
 
   constructor( public viewerService: ViewerService, private renderer2: Renderer2) {}
 
@@ -74,12 +74,22 @@ export class VideoPlayerComponent implements AfterViewInit {
     
   }
 
+  toggleForwardRewindButton() {
+    this.showForwardButton = true;
+    this.showBackwardButton = true;
+    if ((this.player.currentTime() + this.time) > this.player.duration()) {
+      this.showForwardButton = false;
+    }
+    if ((this.player.currentTime() - this.time) < 0) {
+      this.showBackwardButton = false;
+    }
+  }
+
   play() {
     this.player.play();
     this.showPauseButton = true;
     this.showPlayButton = false;
-    this.showBackwardButton = true;
-    this.showForwardButton = true;
+    this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('PLAY');
   }
 
@@ -87,18 +97,18 @@ export class VideoPlayerComponent implements AfterViewInit {
     this.player.pause();
     this.showPauseButton = false;
     this.showPlayButton = true;
-    this.showBackwardButton = false;
-    this.showForwardButton = false;
     this.viewerService.raiseHeartBeatEvent('PAUSE');
   }
 
-  backward(time) {
-    this.player.currentTime(this.player.currentTime() - time);
+  backward() {
+    this.player.currentTime(this.player.currentTime() - this.time);
+    this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('BACKWARD');
   }
 
-  forward(time) {
-    this.player.currentTime(this.player.currentTime() + time);
+  forward() {
+    this.player.currentTime(this.player.currentTime() + this.time);
+    this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('FORWARD');
   }
 
@@ -106,31 +116,32 @@ export class VideoPlayerComponent implements AfterViewInit {
     if(type === "playing") {
       this.showPlayButton = false;
       this.showPauseButton = true;
-      this.showBackwardButton = true;
-      this.showForwardButton = true;
     }
     if (type === 'ended') {
       this.viewerService.visitedlength = this.player.currentTime();
       this.viewerService.totalLength = this.player.duration();
+    }
+    if (type === 'pause') {
+      this.showBackwardButton = false;
+      this.showForwardButton = false;
     }
 
     // Calulating total seeked length
     if (type === 'timeupdate') {
       this.previousTime = this.currentTime;
       this.currentTime = this.player.currentTime();
+      this.toggleForwardRewindButton();
     }
     if (type === 'seeking') {
       if (this.seekStart === null) { this.seekStart = this.previousTime; }
     }
     if (type === 'seeked') {
-      console.log('seeked from', this.seekStart, 'to', this.currentTime, '; delta:', this.currentTime - this.seekStart);
       if (this.currentTime > this.seekStart) {
         this.totalSeekedLength = this.totalSeekedLength + (this.currentTime - this.seekStart);
       } else if (this.seekStart > this.currentTime) {
         this.totalSeekedLength = this.totalSeekedLength + (this.seekStart - this.currentTime);
       }
       this.viewerService.totalSeekedLength = this.totalSeekedLength;
-      console.log('Total seeked length = ', this.totalSeekedLength);
       this.seekStart = null;
     }
   }

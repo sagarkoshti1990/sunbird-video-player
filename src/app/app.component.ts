@@ -41,4 +41,8 @@ export class AppComponent {
   playerEvent(event) {
     console.log(event);
   }
+
+  telemetryEvent(event) {
+    console.log('in app: ', JSON.stringify(event));
+  }
 }

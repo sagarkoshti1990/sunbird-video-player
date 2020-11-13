@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, HostListener } from '@angular/core';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
@@ -12,6 +12,7 @@ export class SunbirdVideoPlayerComponent implements OnInit {
 
   @Input() playerConfig: PlayerConfig;
   @Output() playerEvent: EventEmitter<object>;
+  @Output() telemetryEvent: EventEmitter<any> =  new EventEmitter<any>();
   viewState = 'player';
   showControls = true;
   sideMenuConfig = {
@@ -55,6 +56,11 @@ export class SunbirdVideoPlayerComponent implements OnInit {
     })
    }
 
+  @HostListener('document:telemetryEvent', ['$event'])
+  onTelemetryEvent(event) {
+    this.telemetryEvent.emit(event.detail);
+  }
+
   ngOnInit() {
     this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
@@ -90,9 +96,12 @@ export class SunbirdVideoPlayerComponent implements OnInit {
 
   downloadVideo() {
     var a = document.createElement("a");
-    a.href = this.viewerService.src;
+    a.href = this.viewerService.artifactUrl;
     a.download = this.viewerService.contentName;
+    a.target = '_blank';
+    document.body.appendChild(a);
     a.click();
+    a.remove();
     this.viewerService.raiseHeartBeatEvent('DOWNLOAD');
   }
 }

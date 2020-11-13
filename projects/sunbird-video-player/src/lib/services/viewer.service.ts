@@ -23,6 +23,7 @@ export class ViewerService {
   public totalLength;
   public visitedlength;
   public totalSeekedLength;
+  public artifactUrl;
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService, private utilService: UtilService) { 
       this.PlayerLoadStartedAt = new Date().getTime();
@@ -31,6 +32,7 @@ export class ViewerService {
   initialize({ context, config, metadata }: PlayerConfig) { 
     this.contentName = metadata.name;
     this.src =  metadata.streamingUrl || metadata.artifactUrl;
+    this.artifactUrl = metadata.artifactUrl;
     this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL': metadata.mimeType;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
