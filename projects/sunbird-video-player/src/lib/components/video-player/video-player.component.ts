@@ -17,6 +17,7 @@ export class VideoPlayerComponent implements AfterViewInit {
   private unlistenMouseEnter: () => void;
   private unlistenMouseLeave: () => void;
   @ViewChild('target') target: ElementRef;
+  @ViewChild('controlDiv') controlDiv: ElementRef;
   @Input() options: {
     sources: {
       src: string,
@@ -48,12 +49,19 @@ export class VideoPlayerComponent implements AfterViewInit {
     });
     this.registerEvents();
 
-
     this.unlistenMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
       this.showControls = true;
     });
 
     this.unlistenMouseLeave = this.renderer2.listen(this.target.nativeElement, 'mouseleave', () => {
+      this.showControls = false;
+    });
+
+    this.unlistenMouseEnter = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseenter', () => {
+      this.showControls = true;
+    });
+
+    this.unlistenMouseLeave = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseleave', () => {
       this.showControls = false;
     });
     
