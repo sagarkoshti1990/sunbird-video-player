@@ -22,7 +22,7 @@ export class ViewerService {
   public totalTimeSpent: number;
   public totalLength;
   public visitedlength;
-
+  public totalSeekedLength;
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService, private utilService: UtilService) { 
       this.PlayerLoadStartedAt = new Date().getTime();
@@ -77,7 +77,7 @@ export class ViewerService {
       metaData: this.metaData
     };
     this.playerEvent.emit(endEvent);
-    this.videoPlayerService.end(duration, this.totalLength, this.visitedlength, this.endPageSeen);
+    this.videoPlayerService.end(duration, this.totalLength, this.visitedlength, this.endPageSeen, this.totalSeekedLength);
   }
 
 

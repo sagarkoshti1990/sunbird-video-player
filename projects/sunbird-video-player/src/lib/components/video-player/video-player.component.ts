@@ -24,6 +24,11 @@ export class VideoPlayerComponent implements AfterViewInit {
     }[]
   };
   player: videojs.Player;
+  totalSeekedLength = 0;
+  previousTime = 0;
+  currentTime = 0;
+  seekStart = null;
+
 
   constructor( public viewerService: ViewerService, private renderer2: Renderer2) {}
 
@@ -58,7 +63,7 @@ export class VideoPlayerComponent implements AfterViewInit {
 
     const events = ['loadstart', 'play', 'ended', 'pause', 'durationchange',
     'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
-    'ratechange']
+    'ratechange', 'timeupdate']
 
     events.forEach(event => {
       this.player.on(event, (data) => {
@@ -103,11 +108,30 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.showPauseButton = true;
       this.showBackwardButton = true;
       this.showForwardButton = true;
-      console.log(this.player.currentTime(), this.player.duration())
     }
     if (type === 'ended') {
       this.viewerService.visitedlength = this.player.currentTime();
       this.viewerService.totalLength = this.player.duration();
+    }
+
+    // Calulating total seeked length
+    if (type === 'timeupdate') {
+      this.previousTime = this.currentTime;
+      this.currentTime = this.player.currentTime();
+    }
+    if (type === 'seeking') {
+      if (this.seekStart === null) { this.seekStart = this.previousTime; }
+    }
+    if (type === 'seeked') {
+      console.log('seeked from', this.seekStart, 'to', this.currentTime, '; delta:', this.currentTime - this.seekStart);
+      if (this.currentTime > this.seekStart) {
+        this.totalSeekedLength = this.totalSeekedLength + (this.currentTime - this.seekStart);
+      } else if (this.seekStart > this.currentTime) {
+        this.totalSeekedLength = this.totalSeekedLength + (this.seekStart - this.currentTime);
+      }
+      this.viewerService.totalSeekedLength = this.totalSeekedLength;
+      console.log('Total seeked length = ', this.totalSeekedLength);
+      this.seekStart = null;
     }
   }
   ngOnDestroy() {

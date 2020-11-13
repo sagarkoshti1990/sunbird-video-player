@@ -68,7 +68,7 @@ export class SunbirdVideoPlayerService {
 
   }
 
-  public end(duration, totallength, visitedlength, endpageseen) {
+  public end(duration, totallength, visitedlength, endpageseen, totalseekedlength) {
     const durationSec = Number((duration / 1e3).toFixed(2));
     CsTelemetryModule.instance.telemetryService.raiseEndTelemetry({
       edata: {
@@ -89,7 +89,7 @@ export class SunbirdVideoPlayerService {
             visitedcontentend: (totallength === visitedlength)
           },
           {
-            totalseekedlength: visitedlength
+            totalseekedlength
           },
           {
             endpageseen
