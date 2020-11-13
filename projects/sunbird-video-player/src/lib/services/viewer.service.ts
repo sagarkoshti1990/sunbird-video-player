@@ -19,11 +19,11 @@ export class ViewerService {
   public userName: string;
   private metaData: any;
   public PlayerLoadStartedAt: number;
-  public totalTimeSpent: number;
   public totalLength;
-  public visitedlength;
+  public currentlength;
   public totalSeekedLength;
   public artifactUrl;
+  public visitedLength;
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService, private utilService: UtilService) { 
       this.PlayerLoadStartedAt = new Date().getTime();
@@ -72,14 +72,16 @@ export class ViewerService {
       ver: this.version,
       edata: {
         type: 'END',
-        currentTime: this.visitedlength,
+        currentTime: this.currentlength,
         totalTime: this.totalLength,
         duration
       },
       metaData: this.metaData
     };
     this.playerEvent.emit(endEvent);
-    this.videoPlayerService.end(duration, this.totalLength, this.visitedlength, this.endPageSeen, this.totalSeekedLength);
+    this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
+    this.videoPlayerService.end(duration, this.totalLength, this.currentlength, this.endPageSeen, this.totalSeekedLength,
+      this.visitedLength / 1000);
   }
 
 

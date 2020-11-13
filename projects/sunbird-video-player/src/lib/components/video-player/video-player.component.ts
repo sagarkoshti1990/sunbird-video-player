@@ -30,6 +30,8 @@ export class VideoPlayerComponent implements AfterViewInit {
   currentTime = 0;
   seekStart = null;
   time = 10;
+  startTime;
+  totalSpentTime = 0;
 
   constructor( public viewerService: ViewerService, private renderer2: Renderer2) {}
 
@@ -126,12 +128,22 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.showPauseButton = true;
     }
     if (type === 'ended') {
-      this.viewerService.visitedlength = this.player.currentTime();
+      this.totalSpentTime += new Date().getTime() - this.startTime;
+      this.viewerService.visitedLength = this.totalSpentTime;
+      this.viewerService.currentlength = this.player.currentTime();
       this.viewerService.totalLength = this.player.duration();
     }
     if (type === 'pause') {
       this.showBackwardButton = false;
       this.showForwardButton = false;
+      this.totalSpentTime += new Date().getTime() - this.startTime;
+    }
+    if (type === 'play') {
+      this.startTime = new Date().getTime();
+    }
+
+    if(type === 'loadstart') {
+      this.startTime = new Date().getTime();
     }
 
     // Calulating total seeked length
