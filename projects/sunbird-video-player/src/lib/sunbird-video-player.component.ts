@@ -76,12 +76,12 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngAfterViewInit() {
-    const pdfPlayerElement = this.videoPlayerRef.nativeElement;
-    this.unlistenMouseEnter = this.renderer2.listen(pdfPlayerElement, 'mouseenter', () => {
+    const videoPlayerElement = this.videoPlayerRef.nativeElement;
+    this.unlistenMouseEnter = this.renderer2.listen(videoPlayerElement, 'mouseenter', () => {
       this.showControls = true;
     });
 
-    this.unlistenMouseLeave = this.renderer2.listen(pdfPlayerElement, 'mouseleave', () => {
+    this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
       this.showControls = false;
     });
   }
