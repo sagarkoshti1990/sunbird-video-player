@@ -23,17 +23,28 @@ pdf-menu {
     top:0rem;
   }
 }
+
 .BtmNotVisible {
   bottom:-10rem;
   &.isVisible {
     bottom:0rem;
   }
 }
-::ng-deep {
 
-  // .sunbird-pdf-player {
-  //   overflow: hidden;
-  // }
+::ng-deep {
+  .sunbird-video-player-container{
+    .sb-player-side-menu-icon {
+      label {
+        background: rgba(51,51,51,0.5);
+        span, span:before, span:after {
+          background-color: rgba(255,255,255,0.7) !important;
+        }
+      }
+    }
+  }
+  .sunbird-pdf-player {
+    overflow: hidden;
+  }
   .pdfViewer .page {
     background: none !important;
     border-image: none !important;
