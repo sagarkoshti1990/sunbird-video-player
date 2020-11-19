@@ -66,7 +66,11 @@ export class VideoPlayerComponent implements AfterViewInit {
     this.unlistenMouseLeave = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseleave', () => {
       this.showControls = false;
     });
-    
+
+    this.viewerService.sidebarMenuEvent.subscribe(event => {
+      if ( event === 'OPEN_MENU') { this.pause(); }
+      if ( event === 'CLOSE_MENU') { this.play(); }
+    });
   }
 
   registerEvents() {

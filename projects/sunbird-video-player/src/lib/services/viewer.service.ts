@@ -24,6 +24,7 @@ export class ViewerService {
   public totalSeekedLength;
   public artifactUrl;
   public visitedLength;
+  public sidebarMenuEvent = new EventEmitter<any>();
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService, private utilService: UtilService) { 
       this.PlayerLoadStartedAt = new Date().getTime();
