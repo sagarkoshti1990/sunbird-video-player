@@ -49,11 +49,10 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
           this.viewerService.raiseHeartBeatEvent(data.telemetryEvent);
         }
       });
-      this.cdr.detectChanges();
     })
    }
 
-  @HostListener('document:telemetryEvent', ['$event'])
+  @HostListener('document:TelemetryEvent', ['$event'])
   onTelemetryEvent(event) {
     this.telemetryEvent.emit(event.detail);
   }
