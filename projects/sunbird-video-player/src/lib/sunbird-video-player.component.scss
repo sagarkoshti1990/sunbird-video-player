@@ -34,6 +34,12 @@ pdf-menu {
 ::ng-deep {
   .sunbird-video-player-container{
     .sb-player-side-menu-icon {
+      input[type=checkbox]:checked ~ #overlay-button span {
+        background: none !important;
+      }
+      input[type=checkbox]:checked ~ #overlay-button span:after,input[type=checkbox]:checked ~ #overlay-button span:before, input[type=checkbox]:checked ~ #overlay-button:hover span:before, input[type=checkbox]:checked ~ #overlay-button:hover span:after {
+        background-color: rgba(255,255,255,0.7) !important;
+      }
       label {
         background: rgba(51,51,51,0.5);
         span, span:before, span:after {
@@ -41,6 +47,8 @@ pdf-menu {
         }
       }
     }
+  }
+  input[type=checkbox]:checked ~ #overlay-button span, input[type=checkbox]:checked ~ #overlay-button:hover span {
   }
   .sunbird-pdf-player {
     overflow: hidden;
