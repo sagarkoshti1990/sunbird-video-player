@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, Output, ViewChild, ViewEncapsulation, EventEmitter, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import videojs from 'video.js';
 import { ViewerService } from '../../services/viewer.service';
 
@@ -18,12 +18,6 @@ export class VideoPlayerComponent implements AfterViewInit {
   private unlistenMouseLeave: () => void;
   @ViewChild('target') target: ElementRef;
   @ViewChild('controlDiv') controlDiv: ElementRef;
-  @Input() options: {
-    sources: {
-      src: string,
-      type: string,
-    }[]
-  };
   player: videojs.Player;
   totalSeekedLength = 0;
   previousTime = 0;
@@ -33,23 +27,26 @@ export class VideoPlayerComponent implements AfterViewInit {
   startTime;
   totalSpentTime = 0;
 
-  constructor( public viewerService: ViewerService, private renderer2: Renderer2) {}
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
 
   ngAfterViewInit() {
-    this.player = videojs(this.target.nativeElement, {
-      fluid: true,
-      sources: this.options.sources,
-      autoplay: true,
-      playbackRates: [0.5, 1, 1.5, 2],
-      controlBar: {
-        children: ['durationDisplay', 'volumePanel', 
-           'progressControl', 'remainingTimeDisplay',
-           'playbackRateMenuButton']
-      }
-    }, function onLoad()  {
-     
-    });
-    this.registerEvents();
+    this.viewerService.getPlayerOptions().then(options => {
+      this.player = videojs(this.target.nativeElement, {
+        fluid: true,
+        sources: options,
+        autoplay: true,
+        playbackRates: [0.5, 1, 1.5, 2],
+        controlBar: {
+          children: ['durationDisplay', 'volumePanel',
+            'progressControl', 'remainingTimeDisplay',
+            'playbackRateMenuButton']
+        }
+      }, function onLoad() {
+
+      });
+      this.registerEvents();
+    })
+
 
     this.unlistenMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
       this.showControls = true;
@@ -68,24 +65,32 @@ export class VideoPlayerComponent implements AfterViewInit {
     });
 
     this.viewerService.sidebarMenuEvent.subscribe(event => {
-      if ( event === 'OPEN_MENU') { this.pause(); }
-      if ( event === 'CLOSE_MENU') { this.play(); }
+      if (event === 'OPEN_MENU') { this.pause(); }
+      if (event === 'CLOSE_MENU') { this.play(); }
     });
   }
 
   registerEvents() {
 
-    const events = ['loadstart', 'play', 'ended', 'pause', 'durationchange',
-    'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
-    'ratechange', 'timeupdate']
+    const events = ['loadstart', 'play', 'pause', 'durationchange',
+      'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
+      'ratechange']
 
+    this.player.on('timeupdate', (data) => {
+      this.handleVideoControls(data);
+      this.viewerService.playerEvent.emit(data);
+      if (this.player.currentTime() == this.player.duration()) {
+        this.handleVideoControls({type: 'ended'});
+        this.viewerService.playerEvent.emit({type: 'ended'});
+      }
+    })
     events.forEach(event => {
       this.player.on(event, (data) => {
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
       })
     })
-    
+
   }
 
   toggleForwardRewindButton() {
@@ -126,8 +131,8 @@ export class VideoPlayerComponent implements AfterViewInit {
     this.viewerService.raiseHeartBeatEvent('FORWARD');
   }
 
-  handleVideoControls({type}) {
-    if(type === "playing") {
+  handleVideoControls({ type }) {
+    if (type === "playing") {
       this.showPlayButton = false;
       this.showPauseButton = true;
     }
@@ -146,7 +151,7 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.startTime = new Date().getTime();
     }
 
-    if(type === 'loadstart') {
+    if (type === 'loadstart') {
       this.startTime = new Date().getTime();
     }
 

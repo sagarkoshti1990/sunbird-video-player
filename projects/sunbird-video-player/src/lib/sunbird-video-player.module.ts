@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SunbirdPlayerSdkModule  } from '@project-sunbird/sunbird-player-sdk';
 import { SunbirdVideoPlayerComponent } from './sunbird-video-player.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
+import { HttpClientModule } from '@angular/common/http'
 
 
 @NgModule({
@@ -11,6 +12,7 @@ import { VideoPlayerComponent } from './components/video-player/video-player.com
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
     SunbirdPlayerSdkModule
   ],
   exports: [SunbirdVideoPlayerComponent]

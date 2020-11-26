@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
+import { of } from 'rxjs';
 import { PlayerConfig } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
@@ -16,6 +18,7 @@ export class ViewerService {
   public showDownloadPopup: boolean;
   public src: string;
   public mimeType: string;
+  public artifactMimeType: string;
   public userName: string;
   private metaData: any;
   public PlayerLoadStartedAt: number;
@@ -25,16 +28,28 @@ export class ViewerService {
   public artifactUrl;
   public visitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
+  private sources: object[];
 
-  constructor(private videoPlayerService: SunbirdVideoPlayerService, private utilService: UtilService) { 
-      this.PlayerLoadStartedAt = new Date().getTime();
-    }
+  constructor(private videoPlayerService: SunbirdVideoPlayerService,
+    private utilService: UtilService,
+    private http: HttpClient) {
+    this.PlayerLoadStartedAt = new Date().getTime();
+  }
 
-  initialize({ context, config, metadata }: PlayerConfig) { 
+  initialize({ context, config, metadata }: PlayerConfig) {
     this.contentName = metadata.name;
-    this.src =  metadata.streamingUrl || metadata.artifactUrl;
+    this.src = metadata.streamingUrl || metadata.artifactUrl;
     this.artifactUrl = metadata.artifactUrl;
-    this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL': metadata.mimeType;
+    this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL' : metadata.mimeType;
+    this.artifactMimeType = metadata.mimeType;
+    this.sources = [{
+      src: this.src,
+      type: this.mimeType
+    }, {
+      src: this.artifactUrl,
+      type: metadata.mimeType
+    }
+    ]
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
@@ -43,6 +58,19 @@ export class ViewerService {
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
+  }
+
+  async getPlayerOptions() {
+
+    const data = await this.http.get(this.src).toPromise().catch(error => {
+      this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.src}`))
+    })
+    if (data) {
+      return [{ src: this.src, type: this.mimeType }];
+    }
+    else {
+      return [{ src: this.artifactUrl, type: this.artifactMimeType }];
+    }
   }
 
 
@@ -64,6 +92,7 @@ export class ViewerService {
     };
     this.playerEvent.emit(startEvent);
     this.videoPlayerService.start(duration);
+    this.PlayerLoadStartedAt = new Date().getTime();
   }
 
   raiseEndEvent() {

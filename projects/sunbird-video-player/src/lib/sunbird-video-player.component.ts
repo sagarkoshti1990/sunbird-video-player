@@ -23,7 +23,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     showReplay: true,
     showExit: true
   };
-  options;
   private unlistenMouseEnter: () => void;
   private unlistenMouseLeave: () => void;
 
@@ -60,14 +59,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   ngOnInit() {
     this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
-    this.options = {
-      sources: [
-        {
-          src: this.viewerService.src,
-          type: this.viewerService.mimeType
-        }
-      ]
-    }
   }
 
   sidebarMenuEvent(event) {
