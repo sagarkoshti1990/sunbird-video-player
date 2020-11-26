@@ -1,16 +1,20 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
+  HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy } from '@angular/core';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
+import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 
 @Component({
   selector: 'sunbird-video-player',
   templateUrl: './sunbird-video-player.component.html',
   styleUrls: ['./sunbird-video-player.component.scss']
 })
-export class SunbirdVideoPlayerComponent implements OnInit {
+export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() playerConfig: PlayerConfig;
   @Output() playerEvent: EventEmitter<object>;
+  @Output() telemetryEvent: EventEmitter<any> =  new EventEmitter<any>();
+  @ViewChild('videoPlayer') videoPlayerRef: ElementRef;
   viewState = 'player';
   showControls = true;
   sideMenuConfig = {
@@ -20,25 +24,41 @@ export class SunbirdVideoPlayerComponent implements OnInit {
     showExit: true
   };
   options;
+  private unlistenMouseEnter: () => void;
+  private unlistenMouseLeave: () => void;
 
-  constructor( public viewerService: ViewerService, public cdr: ChangeDetectorRef) {
+  constructor(public videoPlayerService: SunbirdVideoPlayerService,
+    public viewerService: ViewerService, public cdr: ChangeDetectorRef, private renderer2: Renderer2) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
-      if(event.type === 'ended') {
-        this.viewState = 'end';
-        this.showControls = true;
-      }  
-      if(event.type === 'pause') {
-        this.showControls = true;
+      if(event.type === 'loadstart') {
+        this.viewerService.raiseStartEvent(event);
       } 
-      if(event.type === 'playing') {
-        this.showControls = false;
+      if(event.type === 'ended') {
+        this.viewerService.endPageSeen = true;
+        this.viewerService.raiseEndEvent();
+        this.viewState = 'end';
       }  
-      this.cdr.detectChanges();
+      if(event.type === 'error') {
+        this.viewerService.raiseErrorEvent(event);
+      }
+      const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE'}, { type: 'seeking', telemetryEvent: 'DRAG'},
+      { type: 'ratechange', telemetryEvent: 'RATE_CHANGE'}];
+      events.forEach(data => {
+        if (event.type === data.type) {
+          this.viewerService.raiseHeartBeatEvent(data.telemetryEvent);
+        }
+      });
     })
    }
 
+  @HostListener('document:TelemetryEvent', ['$event'])
+  onTelemetryEvent(event) {
+    this.telemetryEvent.emit(event.detail);
+  }
+
   ngOnInit() {
+    this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
     this.options = {
       sources: [
@@ -49,24 +69,60 @@ export class SunbirdVideoPlayerComponent implements OnInit {
       ]
     }
   }
+
+  sidebarMenuEvent(event) {
+    this.viewerService.sidebarMenuEvent.emit(event);
+  }
+
+  ngAfterViewInit() {
+    const videoPlayerElement = this.videoPlayerRef.nativeElement;
+    this.unlistenMouseEnter = this.renderer2.listen(videoPlayerElement, 'mouseenter', () => {
+      this.showControls = true;
+    });
+
+    this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
+      this.showControls = false;
+    });
+  }
     
   sideBarEvents(event) {
     this.playerEvent.emit(event);
-    if(event.type === "DOWNLOAD") {
+    if(event === "DOWNLOAD") {
       this.downloadVideo();
     }
+    const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU'];
+    events.forEach(data => {
+      if (event === data) {
+        this.viewerService.raiseHeartBeatEvent(data);
+      }
+      if (event === 'EXIT') {
+        this.viewerService.sidebarMenuEvent.emit('CLOSE_MENU');
+      }
+    });
   }
 
   replayContent(event) {
     this.playerEvent.emit(event);
     this.viewState = 'player';
+    this.viewerService.raiseHeartBeatEvent('REPLAY');
   }
 
 
   downloadVideo() {
     var a = document.createElement("a");
-    a.href = this.viewerService.src;
+    a.href = this.viewerService.artifactUrl;
     a.download = this.viewerService.contentName;
+    a.target = '_blank';
+    document.body.appendChild(a);
     a.click();
+    a.remove();
+    this.viewerService.raiseHeartBeatEvent('DOWNLOAD');
+  }
+
+  @HostListener('window:beforeunload')
+  ngOnDestroy() {
+    this.viewerService.raiseEndEvent();
+    this.unlistenMouseEnter();
+    this.unlistenMouseLeave();
   }
 }
