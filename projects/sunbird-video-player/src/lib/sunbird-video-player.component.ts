@@ -57,6 +57,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
     this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
   }
