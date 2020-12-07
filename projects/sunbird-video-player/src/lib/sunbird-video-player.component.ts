@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy } from '@angular/core';
+import { ContentCompabilityService } from '@project-sunbird/sunbird-player-sdk';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
@@ -26,18 +27,23 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   private unlistenMouseEnter: () => void;
   private unlistenMouseLeave: () => void;
 
-  constructor(public videoPlayerService: SunbirdVideoPlayerService,
-    public viewerService: ViewerService, public cdr: ChangeDetectorRef, private renderer2: Renderer2) {
+  constructor(
+    public videoPlayerService: SunbirdVideoPlayerService,
+    public viewerService: ViewerService,
+    public cdr: ChangeDetectorRef,
+    private renderer2: Renderer2,
+    public contentCompabilityService: ContentCompabilityService
+    ){
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
       if(event.type === 'loadstart') {
         this.viewerService.raiseStartEvent(event);
-      } 
+      }
       if(event.type === 'ended') {
         this.viewerService.endPageSeen = true;
         this.viewerService.raiseEndEvent();
         this.viewState = 'end';
-      }  
+      }
       if(event.type === 'error') {
         this.viewerService.raiseErrorEvent(event);
       }
@@ -48,7 +54,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
           this.viewerService.raiseHeartBeatEvent(data.telemetryEvent);
         }
       });
-    })
+    });
    }
 
   @HostListener('document:TelemetryEvent', ['$event'])
@@ -57,6 +63,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
+    if (contentCompabilityLevel) {
+      const checkContentCompatible = this.contentCompabilityService.checkContentCompatibility(contentCompabilityLevel);
+      if (!checkContentCompatible['isCompitable']) {
+        this.viewerService.raiseErrorEvent( checkContentCompatible['error'] , 'compatibility-error');
+      }
+    }
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
     this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
