@@ -138,18 +138,20 @@ export class ViewerService {
 
   }
 
-  raiseErrorEvent(error: Error) {
+  raiseErrorEvent(error: Error, type?: string) {
     const errorEvent = {
       eid: 'ERROR',
       ver: this.version,
       edata: {
-        type: 'ERROR',
+        type: type || 'ERROR',
         stacktrace: error ? error.toString() : ''
       },
       metaData: this.metaData
     };
     this.playerEvent.emit(errorEvent);
-    this.videoPlayerService.error(error);
+    if (!type) {
+      this.videoPlayerService.error(error);
+    }
   }
 
 }
