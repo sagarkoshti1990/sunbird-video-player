@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
-  HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
+  HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
+} from '@angular/core';
 import { ContentCompabilityService } from '@project-sunbird/sunbird-player-sdk';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
@@ -14,7 +16,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   @Input() playerConfig: PlayerConfig;
   @Output() playerEvent: EventEmitter<object>;
-  @Output() telemetryEvent: EventEmitter<any> =  new EventEmitter<any>();
+  @Output() telemetryEvent: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('videoPlayer') videoPlayerRef: ElementRef;
   viewState = 'player';
   showControls = true;
@@ -33,29 +35,29 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     public cdr: ChangeDetectorRef,
     private renderer2: Renderer2,
     public contentCompabilityService: ContentCompabilityService
-    ){
+  ) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
-      if(event.type === 'loadstart') {
+      if (event.type === 'loadstart') {
         this.viewerService.raiseStartEvent(event);
       }
-      if(event.type === 'ended') {
+      if (event.type === 'ended') {
         this.viewerService.endPageSeen = true;
         this.viewerService.raiseEndEvent();
         this.viewState = 'end';
       }
-      if(event.type === 'error') {
+      if (event.type === 'error') {
         this.viewerService.raiseErrorEvent(event);
       }
-      const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE'}, { type: 'seeking', telemetryEvent: 'DRAG'},
-      { type: 'ratechange', telemetryEvent: 'RATE_CHANGE'}];
+      const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' },
+      { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
       events.forEach(data => {
         if (event.type === data.type) {
           this.viewerService.raiseHeartBeatEvent(data.telemetryEvent);
         }
       });
     });
-   }
+  }
 
   @HostListener('document:TelemetryEvent', ['$event'])
   onTelemetryEvent(event) {
@@ -67,7 +69,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     if (contentCompabilityLevel) {
       const checkContentCompatible = this.contentCompabilityService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
-        this.viewerService.raiseErrorEvent( checkContentCompatible['error'] , 'compatibility-error');
+        this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
       }
     }
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
@@ -88,11 +90,17 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
       this.showControls = false;
     });
+
+    this.renderer2.listen(videoPlayerElement, 'touchend', () => {
+      setTimeout(() => {
+        this.showControls = false;
+      }, 3000)
+    });
   }
-    
+
   sideBarEvents(event) {
     this.playerEvent.emit(event);
-    if(event === "DOWNLOAD") {
+    if (event === "DOWNLOAD") {
       this.downloadVideo();
     }
     const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU'];

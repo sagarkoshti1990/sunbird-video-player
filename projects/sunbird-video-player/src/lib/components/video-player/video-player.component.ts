@@ -14,6 +14,7 @@ export class VideoPlayerComponent implements AfterViewInit {
   showPlayButton = true;
   showPauseButton = false;
   showControls = true;
+  currentPlayerState = 'none';
   private unlistenMouseEnter: () => void;
   private unlistenMouseLeave: () => void;
   @ViewChild('target') target: ElementRef;
@@ -64,6 +65,15 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.showControls = false;
     });
 
+    this.renderer2.listen(this.controlDiv.nativeElement, 'touchend', () => {
+      setTimeout(() => {
+        if (this.currentPlayerState !== 'pause') {
+          this.showControls = false;
+        }
+      }, 3000)
+    });
+
+
     this.viewerService.sidebarMenuEvent.subscribe(event => {
       if (event === 'OPEN_MENU') { this.pause(); }
       if (event === 'CLOSE_MENU') { this.play(); }
@@ -80,8 +90,8 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
       if (this.player.currentTime() == this.player.duration()) {
-        this.handleVideoControls({type: 'ended'});
-        this.viewerService.playerEvent.emit({type: 'ended'});
+        this.handleVideoControls({ type: 'ended' });
+        this.viewerService.playerEvent.emit({ type: 'ended' });
       }
     })
     events.forEach(event => {
@@ -106,6 +116,7 @@ export class VideoPlayerComponent implements AfterViewInit {
 
   play() {
     this.player.play();
+    this.currentPlayerState = 'play'
     this.showPauseButton = true;
     this.showPlayButton = false;
     this.toggleForwardRewindButton();
@@ -114,6 +125,7 @@ export class VideoPlayerComponent implements AfterViewInit {
 
   pause() {
     this.player.pause();
+    this.currentPlayerState = 'pause'
     this.showPauseButton = false;
     this.showPlayButton = true;
     this.viewerService.raiseHeartBeatEvent('PAUSE');
