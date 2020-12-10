@@ -15,8 +15,13 @@ export class VideoPlayerComponent implements AfterViewInit {
   showPauseButton = false;
   showControls = true;
   currentPlayerState = 'none';
-  private unlistenMouseEnter: () => void;
-  private unlistenMouseLeave: () => void;
+  private unlistenTargetMouseEnter: () => void;
+  private unlistenTargetMouseLeave: () => void;
+  private unlistenControlDivMouseEnter: () => void;
+  private unlistenControlDivMouseLeave: () => void;
+  private unlistenControlDivTouchEnd: () => void;
+  private unlistenControlDivTouchStart: () => void;
+  private unlistenTargetTouchStart: () => void;
   @ViewChild('target') target: ElementRef;
   @ViewChild('controlDiv') controlDiv: ElementRef;
   player: videojs.Player;
@@ -49,23 +54,23 @@ export class VideoPlayerComponent implements AfterViewInit {
     })
 
 
-    this.unlistenMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
+    this.unlistenTargetMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
       this.showControls = true;
     });
 
-    this.unlistenMouseLeave = this.renderer2.listen(this.target.nativeElement, 'mouseleave', () => {
+    this.unlistenTargetMouseLeave = this.renderer2.listen(this.target.nativeElement, 'mouseleave', () => {
       this.showControls = false;
     });
 
-    this.unlistenMouseEnter = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseenter', () => {
+    this.unlistenControlDivMouseEnter = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseenter', () => {
       this.showControls = true;
     });
 
-    this.unlistenMouseLeave = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseleave', () => {
+    this.unlistenControlDivMouseLeave = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseleave', () => {
       this.showControls = false;
     });
 
-    this.renderer2.listen(this.controlDiv.nativeElement, 'touchend', () => {
+    this.unlistenControlDivTouchEnd = this.renderer2.listen(this.controlDiv.nativeElement, 'touchend', () => {
       setTimeout(() => {
         if (this.currentPlayerState !== 'pause') {
           this.showControls = false;
@@ -73,6 +78,13 @@ export class VideoPlayerComponent implements AfterViewInit {
       }, 3000)
     });
 
+    this.unlistenControlDivTouchStart = this.renderer2.listen(this.controlDiv.nativeElement, 'touchstart', () => {
+      this.showControls = true;
+    });
+
+    this.unlistenTargetTouchStart = this.renderer2.listen(this.target.nativeElement, 'touchstart', () => {
+      this.showControls = true;
+    });
 
     this.viewerService.sidebarMenuEvent.subscribe(event => {
       if (event === 'OPEN_MENU') { this.pause(); }
@@ -190,7 +202,12 @@ export class VideoPlayerComponent implements AfterViewInit {
     if (this.player) {
       this.player.dispose();
     }
-    this.unlistenMouseLeave();
-    this.unlistenMouseEnter();
+    this.unlistenTargetMouseEnter();
+    this.unlistenTargetMouseLeave();
+    this.unlistenControlDivMouseEnter();
+    this.unlistenControlDivMouseLeave();
+    this.unlistenControlDivTouchEnd();
+    this.unlistenControlDivTouchStart();
+    this.unlistenTargetTouchStart();
   }
 }
