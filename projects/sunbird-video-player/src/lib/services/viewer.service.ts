@@ -147,4 +147,18 @@ export class ViewerService {
     }
   }
 
+  raiseExceptionLog(errorCode: String , errorType: String , stacktrace , traceId ) {
+    const exceptionLogEvent = {
+      eid: "LOG",
+      edata: {
+          err: errorCode,
+          errtype: errorType,
+          requestid: traceId || '',
+          stacktrace: stacktrace || '',
+      }
+    }
+    this.playerEvent.emit(exceptionLogEvent)
+    this.videoPlayerService.error(stacktrace);
+  }
+
 }
