@@ -1,5 +1,5 @@
 {
-  "name": "@project-sunbird/sunbird-video-player",
+  "name": "@project-sunbird/sunbird-video-player-v8",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^8.0.0",
