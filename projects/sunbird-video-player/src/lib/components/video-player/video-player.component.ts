@@ -22,8 +22,8 @@ export class VideoPlayerComponent implements AfterViewInit {
   private unlistenControlDivTouchEnd: () => void;
   private unlistenControlDivTouchStart: () => void;
   private unlistenTargetTouchStart: () => void;
-  @ViewChild('target') target: ElementRef;
-  @ViewChild('controlDiv') controlDiv: ElementRef;
+  @ViewChild('target', { static: true }) target: ElementRef;
+  @ViewChild('controlDiv', { static: true }) controlDiv: ElementRef;
   player: videojs.Player;
   totalSeekedLength = 0;
   previousTime = 0;

@@ -2,7 +2,7 @@ import {
   ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
-import { ContentCompabilityService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk';
+import { ContentCompabilityService, errorCode, errorMessage } from '@project-sunbird/sunbird-player-sdk-v8';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
@@ -17,7 +17,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   @Input() playerConfig: PlayerConfig;
   @Output() playerEvent: EventEmitter<object>;
   @Output() telemetryEvent: EventEmitter<any> = new EventEmitter<any>();
-  @ViewChild('videoPlayer') videoPlayerRef: ElementRef;
+  @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
   viewState = 'player';
   public traceId: string;
   showControls = true;
@@ -49,7 +49,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
       if (event.type === 'error') {
         this.viewerService.raiseErrorEvent(event);
-        this.viewerService.raiseExceptionLog(errorCode.contentLoadFails , errorMessage.contentLoadFails, event , this.traceId);
+        this.viewerService.raiseExceptionLog(errorCode.contentLoadFails, errorMessage.contentLoadFails, event, this.traceId);
       }
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' },
       { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
@@ -73,7 +73,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       const checkContentCompatible = this.contentCompabilityService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
         this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
-        this.viewerService.raiseExceptionLog( errorCode.contentCompatibility , errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId)
+        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility, errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId)
       }
     }
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
