@@ -31,15 +31,15 @@ export class AppComponent {
       }
     },
     config: {
-
+      traceId: "afhjgh"
     },
     // tslint:disable-next-line:max-line-length
-    metadata: { "copyright": "सहज | SAHAJ", "subject": ["D.El.Ed. Uttar Pradesh"], "channel": "01246376237871104093", "language": ["English"], "mimeType": "video/mp4", "gradeLevel": ["Class 3", "Class 4", "Class 5", "Class 6", "Class 1", "Class 7", "Class 2", "Class 8"], "appIcon": "https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/do_31312275950357708811047/artifact/video_9105_1533209595_1533209595820.thumb.png", "artifactUrl": "https://ekstep-public-qa.s3-ap-south-1.amazonaws.com/assets/do_2124856874881761281247/samplevideo_1280x720_1mb.mp4", "contentType": "TVLesson", "identifier": "do_31312275950357708811047", "audience": ["Learner"], "visibility": "Default", "mediaType": "content", "osId": "org.ekstep.quiz.app", "languageCode": ["en"], "license": "CC BY 4.0", "name": "INCL_VIDEO_UNIT-16mp4", "status": "Live", "code": "ae14885c-e2c0-4151-8015-bec2d966b133", "streamingUrl": "https://ntpprodmedia-inct.streaming.media.azure.net/20f5294d-965b-4448-bb77-2a1b66c76f8a/incl_video_unit-16mp4.ism/manifest(format=m3u8-aapl-v3)", "medium": ["Hindi"], "createdOn": "2020-10-05T12:02:33.465+0000", "copyrightYear": 2020, "lastUpdatedOn": "2020-10-07T09:31:18.436+0000", "creator": "UP SCERT", "pkgVersion": 1, "versionKey": "1602063078436", "framework": "up_k-12", "createdBy": "f633f462-1b78-4a9f-bdfb-3b7c57808f89", "board": "State (Uttar Pradesh)", "resourceType": "Learn", "orgDetails": { "email": null, "orgName": "सहज | SAHAJ" }, "licenseDetails": { "name": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/legalcode", "description": "For details see below:" } },
+    metadata: {"copyright":"EKSTEP","keywords":["upload video file","upload video","Learning / Study material"],"subject":["Other"],"channel":"0123221758376673287017","language":["English"],"mimeType":"video/mp4","objectType":"Content","gradeLevel":["Other"],"appIcon":"https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/do_3123348589584056322405/artifact/icon-upload-video-file_video_1505720087818.png","primaryCategory":"Explanation Content","artifactUrl":"https://ntpproductionall.blob.core.windows.net/ntp-content-production/assets/do_3123348586389995521449/upload_a_video_file.mp4","contentType":"Resource","identifier":"do_3123348586389995521449","audience":["Teacher"],"visibility":"Default","author":"EKSTEP","mediaType":"content","osId":"org.ekstep.quiz.app","languageCode":["en"],"license":"CC BY 4.0","concepts":[{"identifier":"LO46","name":"Comprehension Of Stories","description":"Comprehension Of Stories","objectType":"Concept","relation":"associatedTo","status":"Live"}],"name":"Upload a Video file - Video","attributions":["DIKSHA"],"status":"Live","code":"09d39baa-2610-4b85-bee7-73c2b00a5abb","description":"In this video, you will learn how to upload a video file.","createdOn":"2017-09-18T07:34:08.706+0000","copyrightYear":2019,"lastUpdatedOn":"2019-09-04T05:18:16.520+0000","pkgVersion":1,"versionKey":"1567574296520","framework":"NCF","createdBy":"96d1f6be-a79e-430f-b136-23c22b818911","board":"NCTE","resourceType":"Learn","orgDetails":{},"licenseDetails":{"name":"CC BY 4.0","url":"https://creativecommons.org/licenses/by/4.0/legalcode","description":"For details see below:"}},
     data: {}
   };
 
   playerEvent(event) {
-    console.log(event);
+    // console.log(event);
   }
 
   telemetryEvent(event) {

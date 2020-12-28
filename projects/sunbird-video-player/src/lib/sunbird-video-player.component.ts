@@ -37,7 +37,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     private renderer2: Renderer2,
     public contentCompabilityService: ContentCompabilityService
   ) {
-    this.traceId = this.playerConfig.config.traceId;
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
       if (event.type === 'loadstart') {
@@ -68,6 +67,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    this.traceId = this.playerConfig.config['traceId'];
     const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
     if (contentCompabilityLevel) {
       const checkContentCompatible = this.contentCompabilityService.checkContentCompatibility(contentCompabilityLevel);

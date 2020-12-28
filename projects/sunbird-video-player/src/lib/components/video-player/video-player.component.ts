@@ -166,14 +166,17 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.viewerService.visitedLength = this.totalSpentTime;
       this.viewerService.currentlength = this.player.currentTime();
       this.viewerService.totalLength = this.player.duration();
+      this.updatePlayerEventsMetadata({ type });
     }
     if (type === 'pause') {
       this.showBackwardButton = false;
       this.showForwardButton = false;
       this.totalSpentTime += new Date().getTime() - this.startTime;
+      this.updatePlayerEventsMetadata({ type });
     }
     if (type === 'play') {
       this.startTime = new Date().getTime();
+      this.updatePlayerEventsMetadata({ type });
     }
 
     if (type === 'loadstart') {
@@ -190,6 +193,7 @@ export class VideoPlayerComponent implements AfterViewInit {
       if (this.seekStart === null) { this.seekStart = this.previousTime; }
     }
     if (type === 'seeked') {
+      this.updatePlayerEventsMetadata({ type });
       if (this.currentTime > this.seekStart) {
         this.totalSeekedLength = this.totalSeekedLength + (this.currentTime - this.seekStart);
       } else if (this.seekStart > this.currentTime) {
@@ -198,6 +202,15 @@ export class VideoPlayerComponent implements AfterViewInit {
       this.viewerService.totalSeekedLength = this.totalSeekedLength;
       this.seekStart = null;
     }
+  }
+
+  updatePlayerEventsMetadata({ type }) {
+    this.viewerService.metaData.totalDuration = this.player.duration();
+    this.viewerService.metaData.playBackSpeeds.push(this.player.playbackRate());
+    this.viewerService.metaData.volume.push(this.player.volume());
+    const action = {};
+    action[type + ""] = this.player.currentTime();
+    this.viewerService.metaData.actions.push(action);
   }
   ngOnDestroy() {
     if (this.player) {

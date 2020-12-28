@@ -19,7 +19,7 @@ export class ViewerService {
   public mimeType: string;
   public artifactMimeType: string;
   public userName: string;
-  private metaData: any;
+  public metaData: any;
   public PlayerLoadStartedAt: number;
   public totalLength;
   public currentlength;
@@ -45,6 +45,11 @@ export class ViewerService {
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
     }
     this.metaData = {
+      actions: [
+      ],
+      volume: [],
+      playBackSpeeds: [],
+      totalDuration: 0
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
@@ -120,10 +125,9 @@ export class ViewerService {
     };
     this.playerEvent.emit(hearBeatEvent);
     this.videoPlayerService.heartBeat(hearBeatEvent);
-    const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG', 'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'ZOOM_IN',
-      'ZOOM_OUT', 'NAVIGATE_TO_PAGE',
+    const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG', 'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU',
-      'SHARE', 'ROTATION_CHANGE', 'REPLAY', 'FORWARD', 'BACKWARD'
+      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD'
     ];
     if (interactItems.includes(type)) {
       this.videoPlayerService.interact(type.toLowerCase(), 'videostage');
@@ -147,14 +151,14 @@ export class ViewerService {
     }
   }
 
-  raiseExceptionLog(errorCode: String , errorType: String , stacktrace , traceId ) {
+  raiseExceptionLog(errorCode: String, errorType: String, stacktrace, traceId) {
     const exceptionLogEvent = {
       eid: "LOG",
       edata: {
-          err: errorCode,
-          errtype: errorType,
-          requestid: traceId || '',
-          stacktrace: stacktrace || '',
+        err: errorCode,
+        errtype: errorType,
+        requestid: traceId || '',
+        stacktrace: stacktrace || '',
       }
     }
     this.playerEvent.emit(exceptionLogEvent)
