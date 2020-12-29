@@ -6,6 +6,7 @@ import { ContentCompabilityService , errorCode , errorMessage } from '@project-s
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
+import { ConnectionService } from 'ng-connection-service';
 
 @Component({
   selector: 'sunbird-video-player',
@@ -31,6 +32,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   private unlistenMouseLeave: () => void;
 
   constructor(
+    private connectionService: ConnectionService,
     public videoPlayerService: SunbirdVideoPlayerService,
     public viewerService: ViewerService,
     public cdr: ChangeDetectorRef,
@@ -67,6 +69,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    this.connectionService.monitor().subscribe(isConnected => {
+      if (!isConnected) {
+        const error = new Error();
+        error.message = 'Internet not available';
+        this.viewerService.raiseErrorEvent(error);
+      }
+    });
+
     this.traceId = this.playerConfig.config['traceId'];
     const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
     if (contentCompabilityLevel) {
