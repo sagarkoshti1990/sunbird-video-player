@@ -2,12 +2,10 @@ import {
   ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
-import { ContentCompabilityService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk';
+import { ErrorService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk';
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
-import { ConnectionService } from 'ng-connection-service';
-
 @Component({
   selector: 'sunbird-video-player',
   templateUrl: './sunbird-video-player.component.html',
@@ -32,12 +30,11 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   private unlistenMouseLeave: () => void;
 
   constructor(
-    private connectionService: ConnectionService,
     public videoPlayerService: SunbirdVideoPlayerService,
     public viewerService: ViewerService,
     public cdr: ChangeDetectorRef,
     private renderer2: Renderer2,
-    public contentCompabilityService: ContentCompabilityService
+    public errorService: ErrorService
   ) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
@@ -68,19 +65,16 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.telemetryEvent.emit(event.detail);
   }
 
-  ngOnInit() {
-    this.connectionService.monitor().subscribe(isConnected => {
-      if (!isConnected) {
-        const error = new Error();
-        error.message = 'Internet not available';
-        this.viewerService.raiseErrorEvent(error);
-      }
+  ngOnInit() {  
+    this.traceId = this.playerConfig.config['traceId'];
+    // Log event when internet is not available
+    this.errorService.getInternetConnectivityError.subscribe(event => {
+      this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId)
     });
 
-    this.traceId = this.playerConfig.config['traceId'];
     const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
     if (contentCompabilityLevel) {
-      const checkContentCompatible = this.contentCompabilityService.checkContentCompatibility(contentCompabilityLevel);
+      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
         this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
         this.viewerService.raiseExceptionLog( errorCode.contentCompatibility , errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId)
