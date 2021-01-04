@@ -1,12 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SunbirdVideoPlayerComponent } from './sunbird-video-player.component';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
-import { NO_ERRORS_SCHEMA, Renderer2 } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ViewerService } from './services/viewer.service';
 import { HttpClientModule } from '@angular/common/http';
 import { mockData } from './sunbird-video-player.component.spec.data';
-import { ErrorService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk';
-import { of } from 'rxjs';
+import { ErrorService } from '@project-sunbird/sunbird-player-sdk';
 
 
 fdescribe('SunbirdVideoPlayerComponent', () => {
