@@ -8,7 +8,7 @@ import { mockData } from './sunbird-video-player.component.spec.data';
 import { ErrorService } from '@project-sunbird/sunbird-player-sdk';
 
 
-fdescribe('SunbirdVideoPlayerComponent', () => {
+describe('SunbirdVideoPlayerComponent', () => {
   let component: SunbirdVideoPlayerComponent;
   let fixture: ComponentFixture<SunbirdVideoPlayerComponent>;
 
