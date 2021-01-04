@@ -31,8 +31,7 @@
     "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7",
     "@project-sunbird/telemetry-sdk": "0.0.26",
-    "zone.js": "~0.8.26",
-    "ng-connection-service": "^1.0.4"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",
