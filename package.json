@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve --port 4500",
     "build": "ng build",
-    "test": "ng test",
+    "test": "ng test sunbird-video-player",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "link-sdk": "npm link @project-sunbird/sunbird-player-sdk && cd projects/sunbird-video-player && npm link @project-sunbird/sunbird-player-sdk && cd ../..",
