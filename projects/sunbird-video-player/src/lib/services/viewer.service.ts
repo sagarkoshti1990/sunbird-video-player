@@ -60,12 +60,11 @@ export class ViewerService {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
       const data = await this.http.head(this.streamingUrl).toPromise().catch(error => {
-        this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.streamingUrl}`))
-      })
+        this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
+      });
       if (data) {
         return [{ src: this.streamingUrl, type: this.mimeType }];
-      }
-      else {
+      } else {
         return [{ src: this.artifactUrl, type: this.artifactMimeType }];
       }
     }
@@ -125,7 +124,8 @@ export class ViewerService {
     };
     this.playerEvent.emit(hearBeatEvent);
     this.videoPlayerService.heartBeat(hearBeatEvent);
-    const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG', 'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
+    const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
+      'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU',
       'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD'
     ];
@@ -151,17 +151,17 @@ export class ViewerService {
     }
   }
 
-  raiseExceptionLog(errorCode: String, errorType: String, stacktrace, traceId) {
+  raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
     const exceptionLogEvent = {
-      eid: "LOG",
+      eid: 'LOG',
       edata: {
         err: errorCode,
         errtype: errorType,
         requestid: traceId || '',
         stacktrace: stacktrace || '',
       }
-    }
-    this.playerEvent.emit(exceptionLogEvent)
+    };
+    this.playerEvent.emit(exceptionLogEvent);
     this.videoPlayerService.error(stacktrace);
   }
 

@@ -8,7 +8,6 @@ import { CsTelemetryModule } from '@project-sunbird/client-services/telemetry';
 })
 export class SunbirdVideoPlayerService {
 
-  
   private contentSessionId: string;
   private playSessionId: string;
   private telemetryObject: any;

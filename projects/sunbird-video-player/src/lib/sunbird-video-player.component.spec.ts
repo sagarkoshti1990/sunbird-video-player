@@ -41,6 +41,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewState).toEqual('player');
     expect(sunbirdVideoPlayerService.initialize).toHaveBeenCalled();
     expect(viewerService.initialize).toHaveBeenCalled();
-    expect(viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNET_01', 'content load to failed , No Internet Available', 'test', 'afhjgh');
+    expect(viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNET_01',
+      'content load to failed , No Internet Available', 'test', 'afhjgh');
   });
 });

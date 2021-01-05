@@ -77,7 +77,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
         this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
-        this.viewerService.raiseExceptionLog( errorCode.contentCompatibility , errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId)
+        this.viewerService.raiseExceptionLog( errorCode.contentCompatibility , errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId);
       }
     }
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
@@ -102,13 +102,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.renderer2.listen(videoPlayerElement, 'touchend', () => {
       setTimeout(() => {
         this.showControls = false;
-      }, 3000)
+      }, 3000);
     });
   }
 
   sideBarEvents(event) {
     this.playerEvent.emit(event);
-    if (event === "DOWNLOAD") {
+    if (event === 'DOWNLOAD') {
       this.downloadVideo();
     }
     const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU'];
@@ -130,7 +130,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
 
   downloadVideo() {
-    var a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = this.viewerService.artifactUrl;
     a.download = this.viewerService.contentName;
     a.target = '_blank';
