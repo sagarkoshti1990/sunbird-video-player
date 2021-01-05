@@ -29,8 +29,8 @@ export class ViewerService {
   public sidebarMenuEvent = new EventEmitter<any>();
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
-    private utilService: UtilService,
-    private http: HttpClient) {
+              private utilService: UtilService,
+              private http: HttpClient) {
     this.PlayerLoadStartedAt = new Date().getTime();
   }
 
