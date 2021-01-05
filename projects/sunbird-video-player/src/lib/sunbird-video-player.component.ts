@@ -65,11 +65,12 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.telemetryEvent.emit(event.detail);
   }
 
-  ngOnInit() {  
+  ngOnInit() {
+    /* tslint:disable:no-string-literal */
     this.traceId = this.playerConfig.config['traceId'];
     // Log event when internet is not available
     this.errorService.getInternetConnectivityError.subscribe(event => {
-      this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId)
+      this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId);
     });
 
     const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
@@ -77,7 +78,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
         this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
-        this.viewerService.raiseExceptionLog( errorCode.contentCompatibility , errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId);
+        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility,
+          errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId);
       }
     }
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
@@ -127,7 +129,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewState = 'player';
     this.viewerService.raiseHeartBeatEvent('REPLAY');
   }
-
 
   downloadVideo() {
     const a = document.createElement('a');
