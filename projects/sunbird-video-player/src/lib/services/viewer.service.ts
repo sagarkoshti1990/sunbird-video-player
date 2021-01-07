@@ -153,7 +153,7 @@ export class ViewerService {
 
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
     const exceptionLogEvent = {
-      eid: 'LOG',
+      eid: 'ERROR',
       edata: {
         err: errorCode,
         errtype: errorType,
@@ -162,7 +162,7 @@ export class ViewerService {
       }
     };
     this.playerEvent.emit(exceptionLogEvent);
-    this.videoPlayerService.error(stacktrace);
+    this.videoPlayerService.error(stacktrace, { err: errorCode, errtype: errorType });
   }
 
 }
