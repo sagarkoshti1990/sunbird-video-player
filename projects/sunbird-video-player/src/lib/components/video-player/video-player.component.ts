@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
 import videojs from 'video.js';
 import { ViewerService } from '../../services/viewer.service';
 
@@ -8,7 +8,7 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./video-player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements AfterViewInit {
+export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   showBackwardButton = false;
   showForwardButton = false;
   showPlayButton = true;
@@ -51,7 +51,7 @@ export class VideoPlayerComponent implements AfterViewInit {
 
       });
       this.registerEvents();
-    })
+    });
 
 
     this.unlistenTargetMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
@@ -75,7 +75,7 @@ export class VideoPlayerComponent implements AfterViewInit {
         if (this.currentPlayerState !== 'pause') {
           this.showControls = false;
         }
-      }, 3000)
+      }, 3000);
     });
 
     this.unlistenControlDivTouchStart = this.renderer2.listen(this.controlDiv.nativeElement, 'touchstart', () => {
@@ -96,22 +96,22 @@ export class VideoPlayerComponent implements AfterViewInit {
 
     const events = ['loadstart', 'play', 'pause', 'durationchange',
       'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
-      'ratechange']
+      'ratechange'];
 
     this.player.on('timeupdate', (data) => {
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
-      if (this.player.currentTime() == this.player.duration()) {
+      if (this.player.currentTime() === this.player.duration()) {
         this.handleVideoControls({ type: 'ended' });
         this.viewerService.playerEvent.emit({ type: 'ended' });
       }
-    })
+    });
     events.forEach(event => {
       this.player.on(event, (data) => {
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
-      })
-    })
+      });
+    });
 
   }
 
@@ -128,7 +128,7 @@ export class VideoPlayerComponent implements AfterViewInit {
 
   play() {
     this.player.play();
-    this.currentPlayerState = 'play'
+    this.currentPlayerState = 'play';
     this.showPauseButton = true;
     this.showPlayButton = false;
     this.toggleForwardRewindButton();
@@ -137,7 +137,7 @@ export class VideoPlayerComponent implements AfterViewInit {
 
   pause() {
     this.player.pause();
-    this.currentPlayerState = 'pause'
+    this.currentPlayerState = 'pause';
     this.showPauseButton = false;
     this.showPlayButton = true;
     this.viewerService.raiseHeartBeatEvent('PAUSE');
@@ -156,7 +156,7 @@ export class VideoPlayerComponent implements AfterViewInit {
   }
 
   handleVideoControls({ type }) {
-    if (type === "playing") {
+    if (type === 'playing') {
       this.showPlayButton = false;
       this.showPauseButton = true;
       this.showControls = false;
@@ -209,7 +209,7 @@ export class VideoPlayerComponent implements AfterViewInit {
     this.viewerService.metaData.playBackSpeeds.push(this.player.playbackRate());
     this.viewerService.metaData.volume.push(this.player.volume());
     const action = {};
-    action[type + ""] = this.player.currentTime();
+    action[type + ''] = this.player.currentTime();
     this.viewerService.metaData.actions.push(action);
   }
   ngOnDestroy() {

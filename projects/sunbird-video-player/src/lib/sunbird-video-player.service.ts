@@ -8,7 +8,6 @@ import { CsTelemetryModule } from '@project-sunbird/client-services/telemetry';
 })
 export class SunbirdVideoPlayerService {
 
-  
   private contentSessionId: string;
   private playSessionId: string;
   private telemetryObject: any;
@@ -120,11 +119,11 @@ export class SunbirdVideoPlayerService {
     });
   }
 
-  public error(error: Error) {
+  public error(error: Error, edata?: { err: string, errtype: string }) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
       edata: {
-        err: 'LOAD',
-        errtype: 'content',
+        err: edata.err || 'LOAD',
+        errtype: edata.errtype || 'content',
         stacktrace: (error && error.toString()) || ''
       }
     });
