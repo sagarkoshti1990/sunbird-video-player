@@ -1,21 +1,21 @@
 {
-  "name": "sunbird-video-player",
-  "version": "0.0.1",
+  "name": "@project-sunbird/sunbird-video-player-v8",
+  "version": "3.6.0",
   "peerDependencies": {
-    "@angular/common": "^7.2.0",
-    "@angular/core": "^7.2.0",
+    "@angular/common": "^8.0.0",
+    "@angular/core": "^8.0.0",
     "@types/video.js": "7.5.5",
     "video.js": "7.5.5",
-    "@project-sunbird/client-services": "^3.3.27",
+    "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7"
   },
   "dependencies": {
-    "@project-sunbird/sunbird-player-sdk": "file:../../../project-sunbird/sunbird-player-sdk/dist/sunbird-player-sdk/project-sunbird-sunbird-player-sdk-0.0.4.tgz"
+    "@project-sunbird/sunbird-player-sdk-v8": "3.6.0"
   },
   "devdependencies": {
     "@types/video.js": "7.5.5",
     "video.js": "7.5.5",
-    "@project-sunbird/client-services": "^3.3.27",
+    "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7"
   }
 }

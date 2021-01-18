@@ -8,7 +8,6 @@ import { CsTelemetryModule } from '@project-sunbird/client-services/telemetry';
 })
 export class SunbirdVideoPlayerService {
 
-  
   private contentSessionId: string;
   private playSessionId: string;
   private telemetryObject: any;
@@ -68,7 +67,7 @@ export class SunbirdVideoPlayerService {
 
   }
 
-  public end(duration, currentPage, totalpages, visitedlength, endpageseen) {
+  public end(duration, totallength, currentlength, endpageseen, totalseekedlength, visitedlength) {
     const durationSec = Number((duration / 1e3).toFixed(2));
     CsTelemetryModule.instance.telemetryService.raiseEndTelemetry({
       edata: {
@@ -77,19 +76,19 @@ export class SunbirdVideoPlayerService {
         pageid: 'sunbird-player-Endpage',
         summary: [
           {
-            progress: Number(((currentPage / totalpages) * 100).toFixed(0))
+            progress: Number(((currentlength / totallength) * 100).toFixed(0))
           },
           {
-            totallength: totalpages
+            totallength
           },
           {
             visitedlength
           },
           {
-            visitedcontentend: (currentPage === totalpages)
+            visitedcontentend: (totallength === currentlength)
           },
           {
-            totalseekedlength: totalpages - visitedlength
+            totalseekedlength
           },
           {
             endpageseen
@@ -120,11 +119,11 @@ export class SunbirdVideoPlayerService {
     });
   }
 
-  public error(error: Error) {
+  public error(error: Error, edata?: { err: string, errtype: string }) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
       edata: {
-        err: 'LOAD',
-        errtype: 'content',
+        err: edata.err || 'LOAD',
+        errtype: edata.errtype || 'content',
         stacktrace: (error && error.toString()) || ''
       }
     });

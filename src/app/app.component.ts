@@ -7,7 +7,7 @@ import { PlayerConfig } from 'projects/sunbird-video-player/src/lib/playerInterf
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  playerConfig: PlayerConfig =  {
+  playerConfig: PlayerConfig = {
     context: {
       mode: 'play',
       authToken: '',
@@ -15,8 +15,8 @@ export class AppComponent {
       did: '3c0a3724311fe944dec5df559cc4e006',
       uid: 'anonymous',
       channel: '505c7c48ac6dc1edc9b08f21db5a571d',
-      pdata: {id: 'prod.diksha.portal', ver: '3.2.12', pid: 'sunbird-portal.contentplayer'},
-      contextRollup: {l1: '505c7c48ac6dc1edc9b08f21db5a571d'},
+      pdata: { id: 'prod.diksha.portal', ver: '3.2.12', pid: 'sunbird-portal.contentplayer' },
+      contextRollup: { l1: '505c7c48ac6dc1edc9b08f21db5a571d' },
       tags: [
         ''
       ],
@@ -31,10 +31,18 @@ export class AppComponent {
       }
     },
     config: {
-
+      traceId: 'afhjgh'
     },
     // tslint:disable-next-line:max-line-length
-    metadata: {"copyright":"diksha_ntptest_org","subject":["English"],"channel":"01272777697873100812","language":["English"],"mimeType":"video/mp4","objectType":"Content","gradeLevel":["Class 1"],"appIcon":"https://preprodall.blob.core.windows.net/ntp-content-preprod/content/do_213017746267758592156/artifact/resolution_exmple_1576820812420.thumb.png","primaryCategory":"Explanation Content","artifactUrl":"https://preprodall.blob.core.windows.net/ntp-content-preprod/content/assets/do_213017746267758592156/videoplayback-online-video-cutter.com.mp4","contentType":"Resource","identifier":"do_213017746267758592156","audience":["Student"],"visibility":"Default","mediaType":"content","osId":"org.ekstep.quiz.app","languageCode":["en"],"license":"CC BY 4.0","name":"10SecVideo","status":"Live","code":"501e6d16-e763-4e71-9a70-7e748a9a4d57","streamingUrl":"https://ntppreprodmedia-inct.streaming.media.azure.net/a16d85f1-5b3c-4553-9c69-e7bcc6258d60/videoplayback-online-video-cutte.ism/manifest(format=m3u8-aapl-v3)","medium":["English"],"createdOn":"2020-05-10T03:12:34.953+0000","copyrightYear":2020,"lastUpdatedOn":"2020-05-10T03:16:53.595+0000","creator":"content creator","pkgVersion":1,"versionKey":"1589080613595","framework":"ekstep_ncert_k-12","createdBy":"0ced9624-e65b-4fd0-a0d3-2f6e86dd3ef7","board":"CBSE","resourceType":"Learn","orgDetails":{"email":null,"orgName":"diksha_ntptest_org"},"licenseDetails":{"name":"CC BY 4.0","url":"https://creativecommons.org/licenses/by/4.0/legalcode","description":"For details see below:"}},
+    metadata: { compatibilityLevel: 2, copyright: 'EKSTEP', keywords: ['upload video file', 'upload video', 'Learning / Study material'], subject: ['Other'], channel: '0123221758376673287017', language: ['English'], mimeType: 'video/mp4', objectType: 'Content', gradeLevel: ['Other'], appIcon: 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/do_3123348589584056322405/artifact/icon-upload-video-file_video_1505720087818.png', primaryCategory: 'Explanation Content', artifactUrl: 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/assets/do_3123348586389995521449/upload_a_video_file.mp4', contentType: 'Resource', identifier: 'do_3123348586389995521449', audience: ['Teacher'], visibility: 'Default', author: 'EKSTEP', mediaType: 'content', osId: 'org.ekstep.quiz.app', languageCode: ['en'], license: 'CC BY 4.0', concepts: [{ identifier: 'LO46', name: 'Comprehension Of Stories', description: 'Comprehension Of Stories', objectType: 'Concept', relation: 'associatedTo', status: 'Live' }], name: 'Upload a Video file - Video', attributions: ['DIKSHA'], status: 'Live', code: '09d39baa-2610-4b85-bee7-73c2b00a5abb', description: 'In this video, you will learn how to upload a video file.', createdOn: '2017-09-18T07:34:08.706+0000', copyrightYear: 2019, lastUpdatedOn: '2019-09-04T05:18:16.520+0000', pkgVersion: 1, versionKey: '1567574296520', framework: 'NCF', createdBy: '96d1f6be-a79e-430f-b136-23c22b818911', board: 'NCTE', resourceType: 'Learn', orgDetails: {}, licenseDetails: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/legalcode', description: 'For details see below:' } },
     data: {}
   };
+
+  playerEvent(event) {
+    console.log(event);
+  }
+
+  telemetryEvent(event) {
+    console.log('in app: ', JSON.stringify(event));
+  }
 }

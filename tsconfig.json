@@ -24,6 +24,12 @@
       ],
       "sunbird-video-player/*": [
         "dist/sunbird-video-player/*"
+      ],
+      "video.js":[
+        "node_modules/video.js"
+      ],
+      "video.js/*":[
+        "node_modules/video.js/*"
       ]
     }
   }

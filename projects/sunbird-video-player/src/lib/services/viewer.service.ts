@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { PlayerConfig } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
@@ -14,27 +15,59 @@ export class ViewerService {
   public playerEvent = new EventEmitter<any>();
   public contentName: string;
   public showDownloadPopup: boolean;
-  public src: string;
+  public streamingUrl: string;
   public mimeType: string;
+  public artifactMimeType: string;
   public userName: string;
-  private metaData: any;
+  public metaData: any;
+  public PlayerLoadStartedAt: number;
+  public totalLength;
+  public currentlength;
+  public totalSeekedLength;
+  public artifactUrl;
+  public visitedLength;
+  public sidebarMenuEvent = new EventEmitter<any>();
 
-  constructor(private sunbirdPdfPlayerService: SunbirdVideoPlayerService,
-    private utilService: UtilService) { }
+  constructor(private videoPlayerService: SunbirdVideoPlayerService,
+              private utilService: UtilService,
+              private http: HttpClient) {
+    this.PlayerLoadStartedAt = new Date().getTime();
+  }
 
   initialize({ context, config, metadata }: PlayerConfig) {
     this.contentName = metadata.name;
-    this.src =  metadata.artifactUrl;
-    this.mimeType = metadata.mimeType;
+    this.streamingUrl = metadata.streamingUrl;
+    this.artifactUrl = metadata.artifactUrl;
+    this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL' : metadata.mimeType;
+    this.artifactMimeType = metadata.mimeType;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
     }
     this.metaData = {
+      actions: [
+      ],
+      volume: [],
+      playBackSpeeds: [],
+      totalDuration: 0
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
+  }
 
+  async getPlayerOptions() {
+    if (!this.streamingUrl) {
+      return [{ src: this.artifactUrl, type: this.artifactMimeType }];
+    } else {
+      const data = await this.http.head(this.streamingUrl).toPromise().catch(error => {
+        this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
+      });
+      if (data) {
+        return [{ src: this.streamingUrl, type: this.mimeType }];
+      } else {
+        return [{ src: this.artifactUrl, type: this.artifactMimeType }];
+      }
+    }
   }
 
 
@@ -43,84 +76,93 @@ export class ViewerService {
   }
 
   raiseStartEvent(event) {
-    // this.currentPagePointer = this.currentPagePointer > event.pagesCount ? 1 : this.currentPagePointer,
-    //   this.metaData.totalPages = event.pagesCount;
-    // this.totalNumberOfPages = event.pagesCount;
-    // const duration = new Date().getTime() - this.pdfPlayerStartTime;
-    // const startEvent = {
-    //   eid: 'START',
-    //   ver: this.version,
-    //   edata: {
-    //     type: 'START',
-    //     currentPage: this.currentPagePointer,
-    //     duration
-    //   },
-    //   metaData: this.metaData
-    // };
-    // this.playerEvent.emit(startEvent);
-    // this.pdfLastPageTime = this.pdfPlayerStartTime = new Date().getTime();
-    // this.sunbirdPdfPlayerService.start(duration);
+    const duration = new Date().getTime() - this.PlayerLoadStartedAt;
+    const startEvent = {
+      eid: 'START',
+      ver: this.version,
+      edata: {
+        type: 'START',
+        mode: 'play',
+        duration
+      },
+      metaData: this.metaData
+    };
+    this.playerEvent.emit(startEvent);
+    this.videoPlayerService.start(duration);
+    this.PlayerLoadStartedAt = new Date().getTime();
   }
 
   raiseEndEvent() {
-    // const duration = new Date().getTime() - this.pdfPlayerStartTime;
-    // const endEvent = {
-    //   eid: 'END',
-    //   ver: this.version,
-    //   edata: {
-    //     type: 'END',
-    //     currentPage: this.currentPagePointer,
-    //     totalPages: this.totalNumberOfPages,
-    //     duration
-    //   },
-    //   metaData: this.metaData
-    // };
-    // this.playerEvent.emit(endEvent);
-    // const visitedlength = (this.metaData.pagesHistory.filter((v, i, a) => a.indexOf(v) === i)).length;
-    // this.timeSpent = this.utilService.getTimeSpentText(this.pdfPlayerStartTime);
-    // this.sunbirdPdfPlayerService.end(duration,
-    //   this.currentPagePointer, this.totalNumberOfPages, visitedlength, this.endPageSeen);
+    const duration = new Date().getTime() - this.PlayerLoadStartedAt;
+    const endEvent = {
+      eid: 'END',
+      ver: this.version,
+      edata: {
+        type: 'END',
+        currentTime: this.currentlength,
+        totalTime: this.totalLength,
+        duration
+      },
+      metaData: this.metaData
+    };
+    this.playerEvent.emit(endEvent);
+    this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
+    this.videoPlayerService.end(duration, this.totalLength, this.currentlength, this.endPageSeen, this.totalSeekedLength,
+      this.visitedLength / 1000);
   }
 
 
   raiseHeartBeatEvent(type: string) {
-    // const hearBeatEvent = {
-    //   eid: 'HEARTBEAT',
-    //   ver: this.version,
-    //   edata: {
-    //     type,
-    //     currentPage: this.currentPagePointer
-    //   },
-    //   metaData: this.metaData
-    // };
-    // this.playerEvent.emit(hearBeatEvent);
-    // this.sunbirdPdfPlayerService.heartBeat(hearBeatEvent);
-    // if (type === 'PAGE_CHANGE') {
-    //   this.sunbirdPdfPlayerService.impression(this.currentPagePointer); 
-    // }
-    // const interactItems = ['CLOSE_DOWNLOAD', 'DOWNLOAD', 'ZOOM_IN',
-    //   'ZOOM_OUT', 'NAVIGATE_TO_PAGE',
-    //   'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU',
-    //   'SHARE', 'ROTATION_CHANGE', 'REPLAY'
-    // ];
-    // if (interactItems.includes(type)) {
-    //   this.sunbirdPdfPlayerService.interact(type.toLowerCase(), this.currentPagePointer);
-    // }
+    const hearBeatEvent = {
+      eid: 'HEARTBEAT',
+      ver: this.version,
+      edata: {
+        type,
+        currentPage: 'videostage'
+      },
+      metaData: this.metaData
+    };
+    this.playerEvent.emit(hearBeatEvent);
+    this.videoPlayerService.heartBeat(hearBeatEvent);
+    const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
+      'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
+      'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU',
+      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD'
+    ];
+    if (interactItems.includes(type)) {
+      this.videoPlayerService.interact(type.toLowerCase(), 'videostage');
+    }
 
   }
 
-  raiseErrorEvent(error: Error) {
+  raiseErrorEvent(error: Error, type?: string) {
     const errorEvent = {
       eid: 'ERROR',
       ver: this.version,
       edata: {
-        type: 'ERROR',
+        type: type || 'ERROR',
         stacktrace: error ? error.toString() : ''
       },
       metaData: this.metaData
     };
     this.playerEvent.emit(errorEvent);
-    this.sunbirdPdfPlayerService.error(error);
+    if (!type) {
+      this.videoPlayerService.error(error);
+    }
+  }
+
+  raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
+    const exceptionLogEvent = {
+      eid: 'ERROR',
+      edata: {
+        err: errorCode,
+        errtype: errorType,
+        requestid: traceId || '',
+        stacktrace: stacktrace || '',
+      }
+    };
+    this.playerEvent.emit(exceptionLogEvent);
+    this.videoPlayerService.error(stacktrace, { err: errorCode, errtype: errorType });
   }
 
 }

@@ -14,7 +14,7 @@ pdf-menu {
   z-index: 99;
 }
 .notVisible,.BtmNotVisible {
-  transition: all .3s ease-in-out;position: absolute;
+  transition: all 1s ease-in-out;position: absolute;
   width: 100%;
 }
 .notVisible {
@@ -23,17 +23,36 @@ pdf-menu {
     top:0rem;
   }
 }
+
 .BtmNotVisible {
   bottom:-10rem;
   &.isVisible {
     bottom:0rem;
   }
 }
-::ng-deep {
 
-  // .sunbird-pdf-player {
-  //   overflow: hidden;
-  // }
+::ng-deep {
+  .sunbird-video-player-container{
+    .sb-player-side-menu-icon {
+      input[type=checkbox]:checked ~ #overlay-button span {
+        background: none !important;
+      }
+      input[type=checkbox]:checked ~ #overlay-button span:after,input[type=checkbox]:checked ~ #overlay-button span:before, input[type=checkbox]:checked ~ #overlay-button:hover span:before, input[type=checkbox]:checked ~ #overlay-button:hover span:after {
+        background-color: rgba(255,255,255,0.7) !important;
+      }
+      label {
+        background: rgba(51,51,51,0.5);
+        span, span:before, span:after {
+          background-color: rgba(255,255,255,0.7) !important;
+        }
+      }
+    }
+  }
+  input[type=checkbox]:checked ~ #overlay-button span, input[type=checkbox]:checked ~ #overlay-button:hover span {
+  }
+  .sunbird-pdf-player {
+    overflow: hidden;
+  }
   .pdfViewer .page {
     background: none !important;
     border-image: none !important;
@@ -95,23 +114,6 @@ pdf-menu {
   z-index: 5;
   line-height: normal;
 
-  @include respond-above(sm) {
-    font-size: .95rem;
-  }
-
-  .PlayerMediaQueryClass & {
-    @include respond-above(md) {
-      font-size: 1.2rem;
-    }
-
-    @include respond-above(xl) {
-      font-size: 1.4rem;
-    }
-
-    @include respond-above(xxxl) {
-      font-size: 1.6rem;
-    }
-  }
 
   span {
     background: var(--gray-800);
@@ -121,22 +123,6 @@ pdf-menu {
     margin: 0px 0.5rem;
     border-radius: 50%;
 
-    @include respond-above(sm) {
-      width: .45rem;
-      height: .45rem;
-    }
-
-    .PlayerMediaQueryClass & {
-      @include respond-above(md) {
-        width: .5rem;
-        height: .5rem;
-      }
-
-      @include respond-above(xxxl) {
-        width: .7rem;
-        height: .7rem;
-      }
-    }
   }
 }
 
