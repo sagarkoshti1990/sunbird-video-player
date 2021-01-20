@@ -29,8 +29,8 @@ export class ViewerService {
   public sidebarMenuEvent = new EventEmitter<any>();
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
-              private utilService: UtilService,
-              private http: HttpClient) {
+    private utilService: UtilService,
+    private http: HttpClient) {
     this.PlayerLoadStartedAt = new Date().getTime();
   }
 
@@ -59,7 +59,7 @@ export class ViewerService {
     if (!this.streamingUrl) {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
-      const data = await this.http.head(this.streamingUrl).toPromise().catch(error => {
+      const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
         this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
       });
       if (data) {
