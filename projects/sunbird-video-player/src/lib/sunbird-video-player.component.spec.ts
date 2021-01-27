@@ -51,7 +51,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(viewerService.initialize).toHaveBeenCalled();
   });
 
-  it('show controls sould be false after set timer', () => {
+  it('show controls sould be false after mentioned time', () => {
     component.isPaused = false;
     setInterval(() => {
       if (!component.isPaused) {
