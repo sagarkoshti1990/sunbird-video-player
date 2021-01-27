@@ -30,6 +30,9 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   private unlistenMouseEnter: () => void;
   private unlistenMouseLeave: () => void;
 
+  inactivityTimeout;
+  isPaused = false;
+
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
     public viewerService: ViewerService,
@@ -39,6 +42,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   ) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
+      if(event.type === 'pause') {
+        this.isPaused = true;
+        this.resetDelay();
+      }
+      if(event.type === 'play') {
+        this.isPaused = false;
+        this.resetDelay();
+      }
       if (event.type === 'loadstart') {
         this.viewerService.raiseStartEvent(event);
       }
@@ -92,14 +103,33 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.sidebarMenuEvent.emit(event);
   }
 
+  resetDelay() {
+    if (this.isPaused) {
+      this.showControls = true;
+    } else {
+      if (!this.showControls) {
+        this.showControls = true;
+      } else {
+        clearTimeout(this.inactivityTimeout);
+        this.inactivityTimeout = setTimeout(() => {
+          this.showControls = false;
+        }, 3000);
+      }
+    }
+  };
+
   ngAfterViewInit() {
     const videoPlayerElement = this.videoPlayerRef.nativeElement;
-    this.unlistenMouseEnter = this.renderer2.listen(videoPlayerElement, 'mouseenter', () => {
-      this.showControls = true;
-    });
+    // this.unlistenMouseEnter = this.renderer2.listen(videoPlayerElement, 'mouseenter', () => {
+    //   this.showControls = true;
+    // });
 
-    this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
-      this.showControls = false;
+    // this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
+    //   this.showControls = false;
+    // });
+
+    this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mousemove', () => {
+      this.resetDelay();
     });
 
     this.renderer2.listen(videoPlayerElement, 'touchend', () => {

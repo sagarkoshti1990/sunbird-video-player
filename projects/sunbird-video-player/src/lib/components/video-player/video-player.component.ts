@@ -32,8 +32,12 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   time = 10;
   startTime;
   totalSpentTime = 0;
+  inactivityTimeout;
+  isMobile = false;
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2) {
+    this.checkDevice();
+  }
 
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(options => {
@@ -43,31 +47,14 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         autoplay: true,
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
-          children: ['durationDisplay', 'volumePanel',
+          children: ['playToggle', 'volumePanel', 'durationDisplay', 
             'progressControl', 'remainingTimeDisplay',
-            'playbackRateMenuButton']
+            'playbackRateMenuButton', 'fullscreenToggle']
         }
       }, function onLoad() {
 
       });
       this.registerEvents();
-    });
-
-
-    this.unlistenTargetMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
-      this.showControls = true;
-    });
-
-    this.unlistenTargetMouseLeave = this.renderer2.listen(this.target.nativeElement, 'mouseleave', () => {
-      this.showControls = false;
-    });
-
-    this.unlistenControlDivMouseEnter = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseenter', () => {
-      this.showControls = true;
-    });
-
-    this.unlistenControlDivMouseLeave = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseleave', () => {
-      this.showControls = false;
     });
 
     this.unlistenControlDivTouchEnd = this.renderer2.listen(this.controlDiv.nativeElement, 'touchend', () => {
@@ -98,6 +85,18 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
       'ratechange'];
 
+      this.player.on('pause', (data) => {
+        this.pause();
+      });
+
+      this.player.on('play', (data) => {
+        this.currentPlayerState = 'play';
+        this.showPauseButton = true;
+        this.showPlayButton = false;
+      });
+
+     
+
     this.player.on('timeupdate', (data) => {
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
@@ -116,14 +115,17 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleForwardRewindButton() {
-    this.showForwardButton = true;
-    this.showBackwardButton = true;
-    if ((this.player.currentTime() + this.time) > this.player.duration()) {
-      this.showForwardButton = false;
-    }
-    if ((this.player.currentTime() - this.time) < 0) {
-      this.showBackwardButton = false;
-    }
+    if (this.isMobile) {
+      this.showForwardButton = true;
+      this.showBackwardButton = true;
+      if ((this.player.currentTime() + this.time) > this.player.duration()) {
+        this.showForwardButton = false;
+      }
+      if ((this.player.currentTime() - this.time) < 0) {
+        this.showBackwardButton = false;
+      }
+
+    }    
   }
 
   play() {
@@ -140,6 +142,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     this.currentPlayerState = 'pause';
     this.showPauseButton = false;
     this.showPlayButton = true;
+    this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('PAUSE');
   }
 
@@ -169,8 +172,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.updatePlayerEventsMetadata({ type });
     }
     if (type === 'pause') {
-      this.showBackwardButton = false;
-      this.showForwardButton = false;
+      // this.showBackwardButton = false;
+      // this.showForwardButton = false;
       this.totalSpentTime += new Date().getTime() - this.startTime;
       this.updatePlayerEventsMetadata({ type });
     }
@@ -223,5 +226,11 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     this.unlistenControlDivTouchEnd();
     this.unlistenControlDivTouchStart();
     this.unlistenTargetTouchStart();
+  }
+
+  checkDevice() {
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+      this.isMobile = true;
+    }
   }
 }
