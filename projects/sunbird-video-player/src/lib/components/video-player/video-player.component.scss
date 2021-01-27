@@ -7,10 +7,50 @@
 }
 .video-js .vjs-control-bar {
   z-index: 3;
+  font-size:12px;
+  background: rgba(0,0,0,0.75);
+  @include respond-above(xxl){
+    font-size:16px;
+  }
+}
+.video-js .vjs-slider {
+  background:#7b7b7b;
+}
+.video-js .vjs-load-progress {
+  background: #797979;
+}
+.video-js .vjs-load-progress div {
+  background: #a09f9f;
+}
+.video-js .vjs-progress-holder {
+  border-radius: 0.2em;
+}
+.video-js .vjs-progress-holder .vjs-load-progress, .video-js .vjs-progress-holder .vjs-load-progress div, .video-js .vjs-progress-holder .vjs-play-progress {
+  border-radius: 0.2em;
+}
+.vjs-menu-button-popup .vjs-menu .vjs-menu-content {
+  background-color: rgba(0,0,0,.72);
+}
+.js-focus-visible .vjs-menu li.vjs-selected:hover, .vjs-menu li.vjs-selected, .vjs-menu li.vjs-selected:focus, .vjs-menu li.vjs-selected:hover {
+  background-color: rgba(216,216,216,.2);
+  color:var(--white);
+}
+.video-js .vjs-play-progress:before {
+  top: -.3em;
+}
+.vjs-playback-rate .vjs-playback-rate-value {
+  font-size: 1em;
+  line-height: 3;
+}
+.vjs-menu li {
+  font-size: 1em;
+}
+.video-js .vjs-tech {
+  pointer-events: none;
 }
 // styles for play,pause,forward,backward UI
 .player-for-back-ward-controls {
-  background: rgba(var(--rc-rgba-black), .7);
+  // background: rgba(var(--rc-rgba-black), .7);
   display: flex;
   align-items: center;
   justify-content: center;
