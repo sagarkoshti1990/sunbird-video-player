@@ -151,7 +151,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if (type === 'playing') {
       this.showPlayButton = false;
       this.showPauseButton = true;
-      // this.showControls = false;
     }
     if (type === 'ended') {
       this.totalSpentTime += new Date().getTime() - this.startTime;

@@ -1,12 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { VideoPlayerComponent } from './video-player.component';
-import videojs from 'video.js';
 
 describe('VideoPlayerComponent', () => {
   let component: VideoPlayerComponent;
   let fixture: ComponentFixture<VideoPlayerComponent>;
-  let player: videojs.Player;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
