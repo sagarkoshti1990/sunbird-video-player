@@ -27,8 +27,9 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     showReplay: true,
     showExit: true
   };
-  private unlistenMouseEnter: () => void;
-  private unlistenMouseLeave: () => void;
+  private unlistenTouchStart: () => void;
+  private unlistenMouseMove: () => void;
+  isPaused = false;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -39,6 +40,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   ) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
+      if(event.type === 'pause') {
+        this.isPaused = true;
+        this.showControls = true;
+      }
+      if(event.type === 'play') {
+        this.isPaused = false;
+      }
       if (event.type === 'loadstart') {
         this.viewerService.raiseStartEvent(event);
       }
@@ -67,6 +75,12 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    setInterval(() => {
+      if (!this.isPaused) {
+        this.showControls = false;
+      }
+    }, 5000);
+
     /* tslint:disable:no-string-literal */
     this.traceId = this.playerConfig.config['traceId'];
     // Log event when internet is not available
@@ -94,18 +108,12 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   ngAfterViewInit() {
     const videoPlayerElement = this.videoPlayerRef.nativeElement;
-    this.unlistenMouseEnter = this.renderer2.listen(videoPlayerElement, 'mouseenter', () => {
+    this.unlistenMouseMove = this.renderer2.listen(videoPlayerElement, 'mousemove', () => {
       this.showControls = true;
     });
 
-    this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
-      this.showControls = false;
-    });
-
-    this.renderer2.listen(videoPlayerElement, 'touchend', () => {
-      setTimeout(() => {
-        this.showControls = false;
-      }, 3000);
+    this.unlistenTouchStart = this.renderer2.listen(videoPlayerElement, 'touchstart', () => {
+      this.showControls = true;
     });
   }
 
@@ -145,7 +153,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   @HostListener('window:beforeunload')
   ngOnDestroy() {
     this.viewerService.raiseEndEvent();
-    this.unlistenMouseEnter();
-    this.unlistenMouseLeave();
+    this.unlistenTouchStart();
+    this.unlistenMouseMove();
   }
 }

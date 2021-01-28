@@ -11,6 +11,7 @@ import { ErrorService } from '@project-sunbird/sunbird-player-sdk';
 describe('SunbirdVideoPlayerComponent', () => {
   let component: SunbirdVideoPlayerComponent;
   let fixture: ComponentFixture<SunbirdVideoPlayerComponent>;
+  let timerCallback;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,7 +27,14 @@ describe('SunbirdVideoPlayerComponent', () => {
     fixture = TestBed.createComponent(SunbirdVideoPlayerComponent);
     component = fixture.componentInstance;
     component.playerConfig = mockData.playerConfig;
+    timerCallback = jasmine.createSpy("timerCallback");
+    jasmine.clock().uninstall();
+    jasmine.clock().install();
     fixture.detectChanges();
+  });
+
+  afterEach(function () {
+    jasmine.clock().uninstall();
   });
 
   it('should initialize player config and log event when offline', () => {
@@ -41,7 +49,17 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewState).toEqual('player');
     expect(sunbirdVideoPlayerService.initialize).toHaveBeenCalled();
     expect(viewerService.initialize).toHaveBeenCalled();
-    expect(viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNECT_01',
-      'content load to failed , No Internet Available', 'test', 'afhjgh');
+  });
+
+  it('show controls sould be false after mentioned time', () => {
+    component.isPaused = false;
+    setInterval(() => {
+      if (!component.isPaused) {
+        component.showControls = false;
+      }
+    }, 100);
+    expect(component.showControls).toBeTruthy();
+    jasmine.clock().tick(101);
+    expect(component.showControls).toBeFalsy();
   });
 });

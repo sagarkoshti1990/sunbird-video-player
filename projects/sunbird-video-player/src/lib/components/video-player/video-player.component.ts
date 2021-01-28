@@ -15,12 +15,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   showPauseButton = false;
   showControls = true;
   currentPlayerState = 'none';
-  private unlistenTargetMouseEnter: () => void;
-  private unlistenTargetMouseLeave: () => void;
-  private unlistenControlDivMouseEnter: () => void;
-  private unlistenControlDivMouseLeave: () => void;
-  private unlistenControlDivTouchEnd: () => void;
-  private unlistenControlDivTouchStart: () => void;
+  private unlistenTargetMouseMove: () => void;
   private unlistenTargetTouchStart: () => void;
   @ViewChild('target', { static: true }) target: ElementRef;
   @ViewChild('controlDiv', { static: true }) controlDiv: ElementRef;
@@ -32,6 +27,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   time = 10;
   startTime;
   totalSpentTime = 0;
+  inactivityTimeout;
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
 
@@ -43,9 +39,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         autoplay: true,
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
-          children: ['durationDisplay', 'volumePanel',
+          children: ['playToggle', 'volumePanel', 'durationDisplay', 
             'progressControl', 'remainingTimeDisplay',
-            'playbackRateMenuButton']
+            'playbackRateMenuButton', 'fullscreenToggle']
         }
       }, function onLoad() {
 
@@ -53,35 +49,15 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.registerEvents();
     });
 
+    setInterval(() => {
+      if (this.currentPlayerState !== 'pause') {
+        this.showControls = false;
+      }
+    }, 5000);
 
-    this.unlistenTargetMouseEnter = this.renderer2.listen(this.target.nativeElement, 'mouseenter', () => {
+    this.unlistenTargetMouseMove = this.renderer2.listen(this.target.nativeElement, 'mousemove', () => {
       this.showControls = true;
     });
-
-    this.unlistenTargetMouseLeave = this.renderer2.listen(this.target.nativeElement, 'mouseleave', () => {
-      this.showControls = false;
-    });
-
-    this.unlistenControlDivMouseEnter = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseenter', () => {
-      this.showControls = true;
-    });
-
-    this.unlistenControlDivMouseLeave = this.renderer2.listen(this.controlDiv.nativeElement, 'mouseleave', () => {
-      this.showControls = false;
-    });
-
-    this.unlistenControlDivTouchEnd = this.renderer2.listen(this.controlDiv.nativeElement, 'touchend', () => {
-      setTimeout(() => {
-        if (this.currentPlayerState !== 'pause') {
-          this.showControls = false;
-        }
-      }, 3000);
-    });
-
-    this.unlistenControlDivTouchStart = this.renderer2.listen(this.controlDiv.nativeElement, 'touchstart', () => {
-      this.showControls = true;
-    });
-
     this.unlistenTargetTouchStart = this.renderer2.listen(this.target.nativeElement, 'touchstart', () => {
       this.showControls = true;
     });
@@ -97,6 +73,16 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     const events = ['loadstart', 'play', 'pause', 'durationchange',
       'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
       'ratechange'];
+
+    this.player.on('pause', (data) => {
+      this.pause();
+    });
+
+    this.player.on('play', (data) => {
+      this.currentPlayerState = 'play';
+      this.showPauseButton = true;
+      this.showPlayButton = false;
+    });   
 
     this.player.on('timeupdate', (data) => {
       this.handleVideoControls(data);
@@ -140,6 +126,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     this.currentPlayerState = 'pause';
     this.showPauseButton = false;
     this.showPlayButton = true;
+    this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('PAUSE');
   }
 
@@ -159,7 +146,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if (type === 'playing') {
       this.showPlayButton = false;
       this.showPauseButton = true;
-      this.showControls = false;
     }
     if (type === 'ended') {
       this.totalSpentTime += new Date().getTime() - this.startTime;
@@ -169,8 +155,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.updatePlayerEventsMetadata({ type });
     }
     if (type === 'pause') {
-      this.showBackwardButton = false;
-      this.showForwardButton = false;
       this.totalSpentTime += new Date().getTime() - this.startTime;
       this.updatePlayerEventsMetadata({ type });
     }
@@ -216,12 +200,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if (this.player) {
       this.player.dispose();
     }
-    this.unlistenTargetMouseEnter();
-    this.unlistenTargetMouseLeave();
-    this.unlistenControlDivMouseEnter();
-    this.unlistenControlDivMouseLeave();
-    this.unlistenControlDivTouchEnd();
-    this.unlistenControlDivTouchStart();
+    this.unlistenTargetMouseMove();
     this.unlistenTargetTouchStart();
   }
 }

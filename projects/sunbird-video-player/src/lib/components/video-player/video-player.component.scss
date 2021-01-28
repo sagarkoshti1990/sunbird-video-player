@@ -45,8 +45,14 @@
 .vjs-menu li {
   font-size: 1em;
 }
-.video-js .vjs-tech {
-  pointer-events: none;
+@media screen and (min-width: 768px) {
+  .video-js .vjs-tech {
+    pointer-events: none;
+  }
+
+  .hide-in-desktop {
+    visibility: hidden !important;
+  }
 }
 // styles for play,pause,forward,backward UI
 .player-for-back-ward-controls {
