@@ -20,5 +20,7 @@ describe('VideoPlayerComponent', () => {
     fixture.detectChanges();
   });
 
-
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
