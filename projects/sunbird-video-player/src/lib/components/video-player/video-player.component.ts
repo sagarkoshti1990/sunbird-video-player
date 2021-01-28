@@ -27,7 +27,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   time = 10;
   startTime;
   totalSpentTime = 0;
-  inactivityTimeout;
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
 
