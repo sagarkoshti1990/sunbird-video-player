@@ -28,11 +28,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   startTime;
   totalSpentTime = 0;
   inactivityTimeout;
-  isMobile = false;
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2) {
-    this.checkDevice();
-  }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
 
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(options => {
@@ -105,16 +102,14 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleForwardRewindButton() {
-    if (this.isMobile) {
-      this.showForwardButton = true;
-      this.showBackwardButton = true;
-      if ((this.player.currentTime() + this.time) > this.player.duration()) {
-        this.showForwardButton = false;
-      }
-      if ((this.player.currentTime() - this.time) < 0) {
-        this.showBackwardButton = false;
-      }
-    }    
+    this.showForwardButton = true;
+    this.showBackwardButton = true;
+    if ((this.player.currentTime() + this.time) > this.player.duration()) {
+      this.showForwardButton = false;
+    }
+    if ((this.player.currentTime() - this.time) < 0) {
+      this.showBackwardButton = false;
+    }
   }
 
   play() {
@@ -207,11 +202,5 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     }
     this.unlistenTargetMouseMove();
     this.unlistenTargetTouchStart();
-  }
-
-  checkDevice() {
-    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-      this.isMobile = true;
-    }
   }
 }
