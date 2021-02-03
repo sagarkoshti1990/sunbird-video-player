@@ -49,9 +49,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.registerEvents();
     });
 
-    
-
-
     setInterval(() => {
       if (!this.isAutoplayPrevented && this.currentPlayerState !== 'pause') {
         this.showControls = false;
