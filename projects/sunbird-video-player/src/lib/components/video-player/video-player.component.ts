@@ -27,6 +27,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   time = 10;
   startTime;
   totalSpentTime = 0;
+  isAutoplayPrevented = false;
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
 
@@ -49,7 +50,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     });
 
     setInterval(() => {
-      if (this.currentPlayerState !== 'pause') {
+      if (!this.isAutoplayPrevented && this.currentPlayerState !== 'pause') {
         this.showControls = false;
       }
     }, 5000);
@@ -68,10 +69,20 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   registerEvents() {
+    const promise = this.player.play();
+    if (promise !== undefined) {
+      promise.catch(error => {
+        this.isAutoplayPrevented = true;
+      });
+    }
 
     const events = ['loadstart', 'play', 'pause', 'durationchange',
       'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
       'ratechange'];
+
+    this.player.on('fullscreenchange', (data) => {
+      this.viewerService.raiseHeartBeatEvent('FULLSCREEN');
+    })
 
     this.player.on('pause', (data) => {
       this.pause();
@@ -81,6 +92,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.currentPlayerState = 'play';
       this.showPauseButton = true;
       this.showPlayButton = false;
+      this.viewerService.raiseHeartBeatEvent('PLAY');
+      this.isAutoplayPrevented = false;
     });   
 
     this.player.on('timeupdate', (data) => {
@@ -117,7 +130,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     this.showPauseButton = true;
     this.showPlayButton = false;
     this.toggleForwardRewindButton();
-    this.viewerService.raiseHeartBeatEvent('PLAY');
   }
 
   pause() {
