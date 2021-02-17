@@ -2,7 +2,7 @@
 <div #controlDiv>
   <div [ngClass]="{'player-for-back-ward-controls': currentPlayerState === 'pause' || showControls }">
     <div class="player-container" *ngIf="currentPlayerState === 'pause' || showControls">
-      <div class="back-ward hide-in-desktop" [ngStyle]="{'visibility':showBackwardButton ? 'visible' : 'hidden'}" (click)="backward()">
+      <div class="back-ward hide-in-desktop" [ngStyle]="{'visibility':showBackwardButton ? 'visible !important' : 'hidden'}" (click)="backward()">
         <svg width="39px" height="49px" viewBox="0 0 39 49" version="1.1" xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="video/default-copy-2" transform="translate(-70.000000, -77.000000)" fill="#FFFFFF">
@@ -34,7 +34,7 @@
           </svg>
         </span>
       </div>
-      <div class="forward hide-in-desktop" [ngStyle]="{'visibility':showForwardButton ? 'visible' : 'hidden'}" (click)="forward()">
+      <div class="forward hide-in-desktop" [ngStyle]="{'visibility':showForwardButton ? 'visible !important' : 'hidden'}" (click)="forward()">
         <svg width="39px" height="49px" viewBox="0 0 39 49" version="1.1" xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="video/default-copy-2" transform="translate(-251.000000, -77.000000)" fill="#FFFFFF">
