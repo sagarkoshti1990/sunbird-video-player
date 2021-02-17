@@ -82,8 +82,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
     this.player.on('fullscreenchange', (data) => {
       // This code is to show the controldiv in fullscreen mode
-      if(this.player.isFullscreen()) {        
-        document.querySelector("video").parentNode.appendChild(this.controlDiv.nativeElement);
+      if(this.player.isFullscreen()) {
+        this.target.nativeElement.parentNode.appendChild(this.controlDiv.nativeElement);
       }
       this.viewerService.raiseHeartBeatEvent('FULLSCREEN');
     })
