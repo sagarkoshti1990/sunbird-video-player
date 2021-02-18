@@ -77,8 +77,16 @@
 @media screen and (min-width: 768px) {
   .video-js .vjs-tech {
     pointer-events: none;
-  }
+  }  
+}
 
+@media (hover: hover) {
+  .hide-in-desktop {
+    visibility: hidden !important;
+  }
+}
+
+@media (pointer: fine) {
   .hide-in-desktop {
     visibility: hidden !important;
   }
