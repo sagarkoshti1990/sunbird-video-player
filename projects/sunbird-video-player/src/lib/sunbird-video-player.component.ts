@@ -20,6 +20,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
   viewState = 'player';
   public traceId: string;
+  public nextContent: any;
   showControls = true;
   sideMenuConfig = {
     showShare: true,
@@ -82,6 +83,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     }, 5000);
 
     /* tslint:disable:no-string-literal */
+    this.nextContent = this.playerConfig.config.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
     // Log event when internet is not available
     this.errorService.getInternetConnectivityError.subscribe(event => {
@@ -131,6 +133,10 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewerService.sidebarMenuEvent.emit('CLOSE_MENU');
       }
     });
+  }
+
+  playContent(event){
+    this.viewerService.raiseHeartBeatEvent(event.type);
   }
 
   replayContent(event) {
