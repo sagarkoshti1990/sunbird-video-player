@@ -14,6 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     SunbirdPlayerSdkModule
   ],
-  exports: [SunbirdVideoPlayerComponent]
+  exports: [SunbirdVideoPlayerComponent , SunbirdPlayerSdkModule]
 })
 export class SunbirdVideoPlayerModule { }
