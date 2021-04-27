@@ -145,6 +145,11 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseHeartBeatEvent('REPLAY');
   }
 
+  exitContent(event) {
+    this.playerEvent.emit(event);
+    this.viewerService.raiseHeartBeatEvent('EXIT');
+  }
+
   downloadVideo() {
     const a = document.createElement('a');
     a.href = this.viewerService.artifactUrl;
