@@ -3,6 +3,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { PlayerConfig } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
+import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v8';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,8 @@ export class ViewerService {
   public artifactUrl;
   public visitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
+  public isAvailableLocally = false;
+
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
     private utilService: UtilService,
@@ -40,6 +43,7 @@ export class ViewerService {
     this.artifactUrl = metadata.artifactUrl;
     this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL' : metadata.mimeType;
     this.artifactMimeType = metadata.mimeType;
+    this.isAvailableLocally = metadata.isAvailableLocally;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
@@ -60,7 +64,7 @@ export class ViewerService {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
       const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
-        this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
+        this.raiseErrorEvent(errorCode.contentLoadFails , errorMessage.contentLoadFails , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
       });
       if (data) {
         return [{ src: this.streamingUrl, type: this.mimeType }];
@@ -135,20 +139,18 @@ export class ViewerService {
 
   }
 
-  raiseErrorEvent(error: Error, type?: string) {
+  raiseErrorEvent(errorCode: string, errorType: string , stacktrace) {
     const errorEvent = {
       eid: 'ERROR',
       ver: this.version,
       edata: {
-        type: type || 'ERROR',
-        stacktrace: error ? error.toString() : ''
+        errorCode: errorCode || 'ERROR',
+        stacktrace: stacktrace.toString(),
       },
       metaData: this.metaData
     };
     this.playerEvent.emit(errorEvent);
-    if (!type) {
-      this.videoPlayerService.error(error);
-    }
+    this.videoPlayerService.error(errorCode, errorType, stacktrace);
   }
 
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
@@ -158,11 +160,11 @@ export class ViewerService {
         err: errorCode,
         errtype: errorType,
         requestid: traceId || '',
-        stacktrace: stacktrace || '',
+        stacktrace: (stacktrace && stacktrace.toString()) || '',
       }
     };
     this.playerEvent.emit(exceptionLogEvent);
-    this.videoPlayerService.error(stacktrace, { err: errorCode, errtype: errorType });
+    this.videoPlayerService.error(errorCode , errorType , stacktrace);
   }
 
 }

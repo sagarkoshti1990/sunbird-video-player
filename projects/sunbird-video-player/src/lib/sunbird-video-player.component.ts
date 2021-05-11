@@ -57,7 +57,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewState = 'end';
       }
       if (event.type === 'error') {
-        this.viewerService.raiseErrorEvent(event);
         this.viewerService.raiseExceptionLog(errorCode.contentLoadFails, errorMessage.contentLoadFails, event, this.traceId);
       }
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
@@ -87,21 +86,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.traceId = this.playerConfig.config['traceId'];
     // Log event when internet is not available
     this.errorService.getInternetConnectivityError.subscribe(event => {
+      if(!this.viewerService.isAvailableLocally){
       this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId);
-    });
-
-    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
-    if (contentCompabilityLevel) {
-      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
-      if (!checkContentCompatible['isCompitable']) {
-        this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
-        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility,
-          errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId);
-      }
     }
+    });
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
-    this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
+    this.videoPlayerService.initialize(this.playerConfig);
   }
 
   sidebarMenuEvent(event) {
@@ -117,6 +108,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.unlistenTouchStart = this.renderer2.listen(videoPlayerElement, 'touchstart', () => {
       this.showControls = true;
     });
+
+    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
+    if (contentCompabilityLevel) {
+      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
+      if (!checkContentCompatible['isCompitable']) {
+        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility, errorMessage.contentCompatibility, checkContentCompatible['error']['message'], this.traceId);
+      }
+    }
   }
 
   sideBarEvents(event) {
