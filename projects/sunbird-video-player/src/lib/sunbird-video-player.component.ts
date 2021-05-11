@@ -86,12 +86,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     /* tslint:disable:no-string-literal */
     this.nextContent = this.playerConfig.config.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
-    // Log event when internet is not available
-    this.errorService.getInternetConnectivityError.subscribe(event => {
-      if(!this.viewerService.isAvailableLocally){
-      this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId);
-    }
-    });
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
     this.viewerService.initialize(this.playerConfig);
     this.videoPlayerService.initialize(this.playerConfig);

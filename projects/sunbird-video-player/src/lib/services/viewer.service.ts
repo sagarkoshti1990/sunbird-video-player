@@ -28,6 +28,7 @@ export class ViewerService {
   public artifactUrl;
   public visitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
+  public traceId: string;
   public isAvailableLocally = false;
 
 
@@ -44,6 +45,7 @@ export class ViewerService {
     this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL' : metadata.mimeType;
     this.artifactMimeType = metadata.mimeType;
     this.isAvailableLocally = metadata.isAvailableLocally;
+    this.traceId = config.traceId;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
@@ -64,7 +66,7 @@ export class ViewerService {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
       const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
-        this.raiseErrorEvent(errorCode.streamingUrlSupport , errorMessage.streamingUrlSupport , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
+        this.raiseExceptionLog(errorCode.streamingUrlSupport , errorMessage.streamingUrlSupport , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`), this.traceId);
       });
       if (data) {
         return [{ src: this.streamingUrl, type: this.mimeType }];
@@ -137,20 +139,6 @@ export class ViewerService {
       this.videoPlayerService.interact(type.toLowerCase(), 'videostage');
     }
 
-  }
-
-  raiseErrorEvent(errorCode: string, errorType: string , stacktrace) {
-    const errorEvent = {
-      eid: 'ERROR',
-      ver: this.version,
-      edata: {
-        errorCode: errorCode || 'ERROR',
-        stacktrace: stacktrace.toString(),
-      },
-      metaData: this.metaData
-    };
-    this.playerEvent.emit(errorEvent);
-    this.videoPlayerService.error(errorCode, errorType, stacktrace);
   }
 
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
