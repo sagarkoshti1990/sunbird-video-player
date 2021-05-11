@@ -64,7 +64,7 @@ export class ViewerService {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
       const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
-        this.raiseErrorEvent(errorCode.contentLoadFails , errorMessage.contentLoadFails , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
+        this.raiseErrorEvent(errorCode.streamingUrlSupport , errorMessage.streamingUrlSupport , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
       });
       if (data) {
         return [{ src: this.streamingUrl, type: this.mimeType }];

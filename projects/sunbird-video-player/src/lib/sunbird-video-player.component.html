@@ -9,4 +9,5 @@
       <sb-player-end-page [contentName]="viewerService.contentName" [nextContent]="nextContent" [userName]="viewerService.userName" [showExit]="sideMenuConfig.showExit"
             [timeSpentLabel]="viewerService.timeSpent" (playNextContent)="playContent($event)" (exitContent)="exitContent($event)"   (replayContent)="replayContent($event)"
             *ngIf="viewState === 'end'"></sb-player-end-page>
+      <sb-player-contenterror *ngIf="showContentError"></sb-player-contenterror>
 </div>

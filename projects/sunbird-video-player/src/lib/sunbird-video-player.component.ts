@@ -21,6 +21,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   viewState = 'player';
   public traceId: string;
   public nextContent: any;
+  showContentError: boolean;
   showControls = true;
   sideMenuConfig = {
     showShare: true,
@@ -57,6 +58,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewState = 'end';
       }
       if (event.type === 'error') {
+        this.showContentError = true;
         this.viewerService.raiseExceptionLog(errorCode.contentLoadFails, errorMessage.contentLoadFails, event, this.traceId);
       }
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
