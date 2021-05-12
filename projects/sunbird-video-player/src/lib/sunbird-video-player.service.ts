@@ -119,12 +119,12 @@ export class SunbirdVideoPlayerService {
     });
   }
 
-  public error(error: Error, edata?: { err: string, errtype: string }) {
+  public error(errorCode: string , errorType:string ,  stacktrace?:Error) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
       edata: {
-        err: edata.err || 'LOAD',
-        errtype: edata.errtype || 'content',
-        stacktrace: (error && error.toString()) || ''
+        err: errorCode,
+        errtype: errorType,
+        stacktrace: (stacktrace && stacktrace.toString()) || ''
       }
     });
   }
