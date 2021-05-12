@@ -1,24 +1,21 @@
-# SunbirdVideoPlayer
+# sunbird-video-player
+Video player for playing video and audio contents
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.
 
-## Code scaffolding
+## Prerequisites:
 
-Run `ng generate component component-name --project sunbird-video-player` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project sunbird-video-player`.
-> Note: Don't forget to add `--project sunbird-video-player` or else it will be added to the default project in your `angular.json` file. 
+Node js - v14
 
-## Build
+* Use nvm. [Installation instructions](https://github.com/nvm-sh/nvm#installing-and-updating)
+* Install and use Node 14: 
+```
+cd $PATH_TO_REPO
+nvm install 14
+nvm use 14
+```
 
-Run `ng build sunbird-video-player` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Steps: 
 
-## Publishing
-
-After building your library with `ng build sunbird-video-player`, go to the dist folder `cd dist/sunbird-video-player` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test sunbird-video-player` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+1. Clone this repo with latest release version branch - Example: release-3.9.0(whatever is the latest)
+2. Run `setup.sh` script
+3. Above script will start the player, open browser with url http://localhost:4200
