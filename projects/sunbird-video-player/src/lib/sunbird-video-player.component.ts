@@ -58,13 +58,22 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewState = 'end';
       }
       if (event.type === 'error') {
-        this.showContentError = true;
+        let code = errorCode.contentLoadFails,
+          message = errorMessage.contentLoadFails
+
         if (!navigator.onLine) {
-          this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event, this.traceId)
+            code = errorCode.internetConnectivity,
+            message = errorMessage.internetConnectivity
         }
         if (this.viewerService.isAvailableLocally) {
-          this.viewerService.raiseExceptionLog(errorCode.contentLoadFails, errorMessage.contentLoadFails, event, this.traceId);
+            code = errorCode.contentLoadFails,
+            message = errorMessage.contentLoadFails
         }
+        if (code === errorCode.contentLoadFails) {
+          this.showContentError = true;
+        }
+        this.viewerService.raiseExceptionLog(code, message, event, this.traceId);
+
       }
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
       { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
