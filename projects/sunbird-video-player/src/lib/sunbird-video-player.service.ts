@@ -121,6 +121,7 @@ export class SunbirdVideoPlayerService {
 
   public error(errorCode: string , errorType:string ,  stacktrace?:Error) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
+      options: this.getEventOptions(),
       edata: {
         err: errorCode,
         errtype: errorType,
