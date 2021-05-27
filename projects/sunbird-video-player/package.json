@@ -1,6 +1,6 @@
 {
   "name": "@project-sunbird/sunbird-video-player-v8",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "peerDependencies": {
     "@angular/common": "^8.0.0",
     "@angular/core": "^8.0.0",
@@ -17,5 +17,12 @@
     "video.js": "7.5.5",
     "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7"
-  }
+  },
+  "homepage": "https://github.com/project-sunbird/sunbird-video-player/tree/release-4.0.0/projects/sunbird-video-player#readme",
+  "keywords": [
+    "sunbird",
+    "sunbird video player",
+    "project-sunbird"
+  ],
+  "license": "MIT"
 }
