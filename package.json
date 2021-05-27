@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4500",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test sunbird-video-player",
     "lint": "ng lint",
@@ -11,6 +11,7 @@
     "link-sdk": "npm link @project-sunbird/sunbird-player-sdk && cd projects/sunbird-video-player && npm link @project-sunbird/sunbird-player-sdk && cd ../..",
     "link-player": "cd dist/sunbird-video-player && npm link && cd ../.. && npm link @project-sunbird/sunbird-video-player-v8",
     "build-lib": "ng build sunbird-video-player",
+    "build-lib-link": "npm run build-lib && npm run link-player",
     "postbuild-lib": "node assets-copy.js"
   },
   "private": true,

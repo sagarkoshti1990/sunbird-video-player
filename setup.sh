@@ -10,4 +10,3 @@ cd dist/sunbird-video-player
 npm link
 cd ../..
 npm link @project-sunbird/sunbird-video-player
-npm run start
