@@ -1,21 +1,95 @@
-# sunbird-video-player
-Video player for playing video and audio contents
+# Sunbird Video Player
+Player for playing Video/Audio contents for sunbird applications
+
+## Prerequisite
+
+  Node JS version > 12
+
+## Usage
 
 
-## Prerequisites:
+`npm i @project-sunbird/sunbird-video-player-v8`
 
-Node js - v14
 
-* Use nvm. [Installation instructions](https://github.com/nvm-sh/nvm#installing-and-updating)
-* Install and use Node 14: 
+Add the module to the your player root module 
+
+`import  { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v8';`
+
+```javascript
+@NgModule({
+  ...
+  imports: [
+    ...,
+    SunbirdVideoPlayerModule
+  ]
+})
 ```
-cd $PATH_TO_REPO
-nvm install 14
-nvm use 14
+
+add the assets, scripts and styles in angular.json file
+
+```javascript
+....
+ "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@project-sunbird/sunbird-video-player-v8/lib/assets/",
+                "output": "/assets/"
+              }
+],
+  "scripts": [
+  ...
+    "node_modules/@project-sunbird/telemetry-sdk/index.js"
+    ....
+  ],
+  
+"styles": [
+...
+"node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+"node_modules/video.js/dist/video-js.min.css",
+"src/styles.css"
+....
+],
+...
+
 ```
 
-## Steps: 
+add peer dependecies of the player as dependecies in your project
+ 
 
-1. Clone this repo with latest release version branch - Example: release-3.9.0(whatever is the latest)
-2. Run `setup.sh` script
-3. Above script will start the player, open browser with url http://localhost:4200
+add the component selector in your component like below
+
+```html
+
+    <sunbird-video-player 
+                [playerConfig]="playerConfig" 
+                (playerEvent)="playerEvent($event)" 
+                (telemetryEvent)="telemetryEvent($event)">
+    </sunbird-video-player>
+
+```
+
+Still facing issues please refer the demo project in this repo as example
+
+## Development
+
+  check out this repo with latest release version branch
+
+  cd to {repo_path} in terminal
+
+  run  `sh setup.sh`
+
+  above script installs the dependecies and link the epub player library project to demo app
+
+  if you do any changes in library project run to get latest changes in demo app
+
+  `npm run build-lib-link`
+
+  once above command completed run `npm run start` which will run the player in demo app at http://localhost:4200
+
+
+
+## References
+
+https://docs.videojs.com/
