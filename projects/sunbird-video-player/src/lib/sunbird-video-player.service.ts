@@ -122,8 +122,8 @@ export class SunbirdVideoPlayerService {
   public error(error: Error, edata?: { err: string, errtype: string }) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
       edata: {
-        err: edata.err || 'LOAD',
-        errtype: edata.errtype || 'content',
+        err: (edata && edata.err)|| 'LOAD',
+        errtype: (edata && edata.errtype) || 'content',
         stacktrace: (error && error.toString()) || ''
       }
     });

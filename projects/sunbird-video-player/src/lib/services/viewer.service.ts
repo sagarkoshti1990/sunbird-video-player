@@ -27,7 +27,7 @@ export class ViewerService {
   public artifactUrl;
   public visitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
-
+  public isAvailableLocally = false;
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
     private utilService: UtilService,
     private http: HttpClient) {
@@ -36,6 +36,7 @@ export class ViewerService {
 
   initialize({ context, config, metadata }: PlayerConfig) {
     this.contentName = metadata.name;
+    this.isAvailableLocally = metadata.isAvailableLocally;
     this.streamingUrl = metadata.streamingUrl;
     this.artifactUrl = metadata.artifactUrl;
     this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL' : metadata.mimeType;
@@ -53,6 +54,11 @@ export class ViewerService {
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
+    if(this.isAvailableLocally) {
+      const basePath = (metadata.streamingUrl) ? (metadata.streamingUrl) : (metadata.basePath || metadata.baseDir)
+      this.streamingUrl = `${basePath}/${metadata.artifactUrl}`;
+      this.mimeType = metadata.mimeType;
+    } 
   }
 
   async getPlayerOptions() {
