@@ -8,12 +8,12 @@ Player for playing Video/Audio contents for sunbird applications
 ## Usage
 
 
-`npm i @project-sunbird/sunbird-video-player-v8`
+`npm i @project-sunbird/sunbird-video-player-v9`
 
 
 Add the module to the your player root module 
 
-`import  { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v8';`
+`import  { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';`
 
 ```javascript
 @NgModule({
@@ -34,7 +34,7 @@ add the assets, scripts and styles in angular.json file
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "node_modules/@project-sunbird/sunbird-video-player-v8/lib/assets/",
+                "input": "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
                 "output": "/assets/"
               }
 ],
