@@ -60,11 +60,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       if (event.type === 'error') {
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails
-
-        if (!navigator.onLine) {
-            code = errorCode.internetConnectivity,
-            message = errorMessage.internetConnectivity
-        }
         if (this.viewerService.isAvailableLocally) {
             code = errorCode.contentLoadFails,
             message = errorMessage.contentLoadFails
@@ -103,6 +98,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
     this.viewerService.initialize(this.playerConfig);
     this.videoPlayerService.initialize(this.playerConfig);
+    window.addEventListener('offline', this.raiseInternetDisconnectionError , true);
+  }
+
+  raiseInternetDisconnectionError = () => {
+    let code = errorCode.internetConnectivity;
+    let message = errorMessage.internetConnectivity;
+    let stacktrace = `${code}: ${message}`;
+    this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
   }
 
   sidebarMenuEvent(event) {
@@ -175,5 +178,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseEndEvent();
     this.unlistenTouchStart();
     this.unlistenMouseMove();
+    window.removeEventListener('offline', this.raiseInternetDisconnectionError , true);
   }
 }
