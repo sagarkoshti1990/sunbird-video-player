@@ -99,11 +99,15 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.initialize(this.playerConfig);
     this.videoPlayerService.initialize(this.playerConfig);
     window.addEventListener("offline", (event) => {
-      let code = errorCode.internetConnectivity;
-      let message = errorMessage.internetConnectivity;
-      let stacktrace = `${code}: ${message}`;
-      this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
+      this.raiseInternetDisconnectionError();
     });
+  }
+
+  raiseInternetDisconnectionError() {
+    let code = errorCode.internetConnectivity;
+    let message = errorMessage.internetConnectivity;
+    let stacktrace = `${code}: ${message}`;
+    this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
   }
 
   sidebarMenuEvent(event) {
@@ -176,5 +180,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseEndEvent();
     this.unlistenTouchStart();
     this.unlistenMouseMove();
+    window.removeEventListener("offline", (event) => {
+      this.raiseInternetDisconnectionError();
+    });
   }
 }
