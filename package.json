@@ -3,15 +3,18 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4500",
-    "build": "ng build",
+    "start": "ng serve",
+    "build": "ng build sunbird-video-player --watch=true",
     "test": "ng test sunbird-video-player",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "link-sdk": "npm link @project-sunbird/sunbird-player-sdk && cd projects/sunbird-video-player && npm link @project-sunbird/sunbird-player-sdk && cd ../..",
     "link-player": "cd dist/sunbird-video-player && npm link && cd ../.. && npm link @project-sunbird/sunbird-video-player-v8",
     "build-lib": "ng build sunbird-video-player",
-    "postbuild-lib": "node assets-copy.js"
+    "build-lib-link": "npm run build-lib && npm run link-player",
+    "postbuild-lib": "node assets-copy.js",
+    "mybuild": "npm run build",
+    "serve": "node assets-copy.js && npm link ./dist/sunbird-video-player && ng serve"
   },
   "private": true,
   "dependencies": {
@@ -28,7 +31,7 @@
     "tslib": "^1.9.0",
     "video.js": "^7.5.5",
     "videojs-thumbnails": "^1.0.3",
-    "@project-sunbird/sunbird-video-player-v8": "3.6.0",
+    "@project-sunbird/sunbird-video-player-v8": "4.0.6",
     "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7",
     "@project-sunbird/telemetry-sdk": "0.0.26",

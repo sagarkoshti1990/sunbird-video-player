@@ -21,6 +21,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   viewState = 'player';
   public traceId: string;
   public nextContent: any;
+  showContentError: boolean;
   showControls = true;
   sideMenuConfig = {
     showShare: true,
@@ -57,8 +58,17 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewState = 'end';
       }
       if (event.type === 'error') {
-        this.viewerService.raiseErrorEvent(event);
-        this.viewerService.raiseExceptionLog(errorCode.contentLoadFails, errorMessage.contentLoadFails, event, this.traceId);
+        let code = errorCode.contentLoadFails,
+          message = errorMessage.contentLoadFails
+        if (this.viewerService.isAvailableLocally) {
+            code = errorCode.contentLoadFails,
+            message = errorMessage.contentLoadFails
+        }
+        if (code === errorCode.contentLoadFails) {
+          this.showContentError = true;
+        }
+        this.viewerService.raiseExceptionLog(code, message, event, this.traceId);
+
       }
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
       { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
@@ -85,23 +95,17 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     /* tslint:disable:no-string-literal */
     this.nextContent = this.playerConfig.config.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
-    // Log event when internet is not available
-    this.errorService.getInternetConnectivityError.subscribe(event => {
-      this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId);
-    });
-
-    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
-    if (contentCompabilityLevel) {
-      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
-      if (!checkContentCompatible['isCompitable']) {
-        this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
-        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility,
-          errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId);
-      }
-    }
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
-    this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
+    this.videoPlayerService.initialize(this.playerConfig);
+    window.addEventListener('offline', this.raiseInternetDisconnectionError , true);
+  }
+
+  raiseInternetDisconnectionError = () => {
+    let code = errorCode.internetConnectivity;
+    let message = errorMessage.internetConnectivity;
+    let stacktrace = `${code}: ${message}`;
+    this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
   }
 
   sidebarMenuEvent(event) {
@@ -117,6 +121,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.unlistenTouchStart = this.renderer2.listen(videoPlayerElement, 'touchstart', () => {
       this.showControls = true;
     });
+
+    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
+    if (contentCompabilityLevel) {
+      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
+      if (!checkContentCompatible['isCompitable']) {
+        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility, errorMessage.contentCompatibility, checkContentCompatible['error']['message'], this.traceId);
+      }
+    }
   }
 
   sideBarEvents(event) {
@@ -166,5 +178,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseEndEvent();
     this.unlistenTouchStart();
     this.unlistenMouseMove();
+    window.removeEventListener('offline', this.raiseInternetDisconnectionError , true);
   }
 }
