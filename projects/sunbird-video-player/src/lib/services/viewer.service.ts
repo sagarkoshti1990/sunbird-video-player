@@ -30,7 +30,7 @@ export class ViewerService {
   public sidebarMenuEvent = new EventEmitter<any>();
   public traceId: string;
   public isAvailableLocally = false;
-
+  public interceptionPoints: any;
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
     private utilService: UtilService,
     private http: HttpClient) {
@@ -46,6 +46,7 @@ export class ViewerService {
     this.artifactMimeType = metadata.mimeType;
     this.isAvailableLocally = metadata.isAvailableLocally;
     this.traceId = config.traceId;
+    this.interceptionPoints = metadata.interceptionPoints;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
@@ -79,6 +80,15 @@ export class ViewerService {
         return [{ src: this.artifactUrl, type: this.artifactMimeType }];
       }
     }
+  }
+
+  getMarkers()  {
+    if(this.interceptionPoints) {
+      return this.interceptionPoints.items.map(item => {
+          return { time: item.interceptionPoint, text: "" }
+      })
+    }
+    return null;
   }
 
 

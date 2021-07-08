@@ -34,10 +34,13 @@
             "styles": [
               "src/styles.scss",
               "node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
-              "node_modules/video.js/dist/video-js.min.css"
+              "node_modules/video.js/dist/video-js.min.css",
+              "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css"
             ],
             "scripts": [
-              "node_modules/@project-sunbird/telemetry-sdk/index.js"
+              "node_modules/@project-sunbird/telemetry-sdk/index.js",
+              "node_modules/video.js/dist/video.js",
+              "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js"
             ],
             "es5BrowserSupport": true,
             "preserveSymlinks": true

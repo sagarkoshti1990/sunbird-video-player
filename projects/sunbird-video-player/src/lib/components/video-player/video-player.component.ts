@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
-import videojs from 'video.js';
 import { ViewerService } from '../../services/viewer.service';
-
 @Component({
   selector: 'video-player',
   templateUrl: './video-player.component.html',
@@ -19,7 +17,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   private unlistenTargetTouchStart: () => void;
   @ViewChild('target', { static: true }) target: ElementRef;
   @ViewChild('controlDiv', { static: true }) controlDiv: ElementRef;
-  player: videojs.Player;
+  player: any;
   totalSeekedLength = 0;
   previousTime = 0;
   currentTime = 0;
@@ -46,6 +44,18 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       }, function onLoad() {
 
       });
+      let markers = this.viewerService.getMarkers()
+      if (markers) {
+        this.player.markers( {markers, 
+          markerStyle: {
+            'height': '7px',
+            'bottom': '39%',
+            'background-color': 'orange'
+          },
+          onMarkerReached: (marker) => {
+            console.log(marker)
+          }})
+      }
       this.registerEvents();
     });
 
