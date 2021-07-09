@@ -10,7 +10,7 @@
     "@project-sunbird/sb-styles": "0.0.7"
   },
   "dependencies": {
-    "@project-sunbird/sunbird-player-sdk-v9": "4.1.0"
+    "@project-sunbird/sunbird-player-sdk-v9": "4.1.2"
   },
   "devdependencies": {
     "video.js": "7.5.5",
