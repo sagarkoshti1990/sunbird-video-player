@@ -3,6 +3,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { PlayerConfig } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
+import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
 
 @Injectable({
   providedIn: 'root'
@@ -27,19 +28,25 @@ export class ViewerService {
   public artifactUrl;
   public visitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
-
+  public traceId: string;
+  public isAvailableLocally = false;
+  public interceptionPoints: any;
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
-              private utilService: UtilService,
-              private http: HttpClient) {
+    private utilService: UtilService,
+    private http: HttpClient) {
     this.PlayerLoadStartedAt = new Date().getTime();
   }
 
   initialize({ context, config, metadata }: PlayerConfig) {
     this.contentName = metadata.name;
+    this.isAvailableLocally = metadata.isAvailableLocally;
     this.streamingUrl = metadata.streamingUrl;
     this.artifactUrl = metadata.artifactUrl;
     this.mimeType = metadata.streamingUrl ? 'application/x-mpegURL' : metadata.mimeType;
     this.artifactMimeType = metadata.mimeType;
+    this.isAvailableLocally = metadata.isAvailableLocally;
+    this.traceId = config.traceId;
+    this.interceptionPoints = metadata.interceptionPoints;
     if (context.userData) {
       const { userData: { firstName, lastName } } = context;
       this.userName = firstName === lastName ? firstName : `${firstName} ${lastName}`;
@@ -53,14 +60,19 @@ export class ViewerService {
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
+    if(this.isAvailableLocally) {
+      const basePath = (metadata.streamingUrl) ? (metadata.streamingUrl) : (metadata.basePath || metadata.baseDir)
+      this.streamingUrl = `${basePath}/${metadata.artifactUrl}`;
+      this.mimeType = metadata.mimeType;
+    } 
   }
 
   async getPlayerOptions() {
     if (!this.streamingUrl) {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
-      const data = await this.http.head(this.streamingUrl).toPromise().catch(error => {
-        this.raiseErrorEvent(new Error(`Streaming Url Not Supported  ${this.streamingUrl}`));
+      const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
+        this.raiseExceptionLog(errorCode.streamingUrlSupport , errorMessage.streamingUrlSupport , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`), this.traceId);
       });
       if (data) {
         return [{ src: this.streamingUrl, type: this.mimeType }];
@@ -68,6 +80,15 @@ export class ViewerService {
         return [{ src: this.artifactUrl, type: this.artifactMimeType }];
       }
     }
+  }
+
+  getMarkers()  {
+    if(this.interceptionPoints) {
+      return this.interceptionPoints.items.map(item => {
+          return { time: item.interceptionPoint, text: "" }
+      })
+    }
+    return null;
   }
 
 
@@ -127,28 +148,12 @@ export class ViewerService {
     const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
       'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU',
-      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD'
+      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN' , 'NEXT_CONTENT_PLAY'
     ];
     if (interactItems.includes(type)) {
       this.videoPlayerService.interact(type.toLowerCase(), 'videostage');
     }
 
-  }
-
-  raiseErrorEvent(error: Error, type?: string) {
-    const errorEvent = {
-      eid: 'ERROR',
-      ver: this.version,
-      edata: {
-        type: type || 'ERROR',
-        stacktrace: error ? error.toString() : ''
-      },
-      metaData: this.metaData
-    };
-    this.playerEvent.emit(errorEvent);
-    if (!type) {
-      this.videoPlayerService.error(error);
-    }
   }
 
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
@@ -158,11 +163,11 @@ export class ViewerService {
         err: errorCode,
         errtype: errorType,
         requestid: traceId || '',
-        stacktrace: stacktrace || '',
+        stacktrace: (stacktrace && stacktrace.toString()) || '',
       }
     };
     this.playerEvent.emit(exceptionLogEvent);
-    this.videoPlayerService.error(stacktrace, { err: errorCode, errtype: errorType });
+    this.videoPlayerService.error(errorCode , errorType , stacktrace);
   }
 
 }

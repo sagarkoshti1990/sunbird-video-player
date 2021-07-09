@@ -2,7 +2,7 @@ import {
   ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
-import { ErrorService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v8';
+import { ErrorService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
@@ -20,6 +20,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
   viewState = 'player';
   public traceId: string;
+  public nextContent: any;
+  showContentError: boolean;
   showControls = true;
   sideMenuConfig = {
     showShare: true,
@@ -27,8 +29,9 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     showReplay: true,
     showExit: true
   };
-  private unlistenMouseEnter: () => void;
-  private unlistenMouseLeave: () => void;
+  private unlistenTouchStart: () => void;
+  private unlistenMouseMove: () => void;
+  isPaused = false;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -39,6 +42,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   ) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
+      if(event.type === 'pause') {
+        this.isPaused = true;
+        this.showControls = true;
+      }
+      if(event.type === 'play') {
+        this.isPaused = false;
+      }
       if (event.type === 'loadstart') {
         this.viewerService.raiseStartEvent(event);
       }
@@ -48,10 +58,19 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewState = 'end';
       }
       if (event.type === 'error') {
-        this.viewerService.raiseErrorEvent(event);
-        this.viewerService.raiseExceptionLog(errorCode.contentLoadFails, errorMessage.contentLoadFails, event, this.traceId);
+        let code = errorCode.contentLoadFails,
+          message = errorMessage.contentLoadFails
+        if (this.viewerService.isAvailableLocally) {
+            code = errorCode.contentLoadFails,
+            message = errorMessage.contentLoadFails
+        }
+        if (code === errorCode.contentLoadFails) {
+          this.showContentError = true;
+        }
+        this.viewerService.raiseExceptionLog(code, message, event, this.traceId);
+
       }
-      const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' },
+      const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
       { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
       events.forEach(data => {
         if (event.type === data.type) {
@@ -67,25 +86,26 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
-    /* tslint:disable:no-string-literal */
-    this.traceId = this.playerConfig.config['traceId'];
-    // Log event when internet is not available
-    this.errorService.getInternetConnectivityError.subscribe(event => {
-      this.viewerService.raiseExceptionLog(errorCode.internetConnectivity, errorMessage.internetConnectivity, event['error'], this.traceId);
-    });
-
-    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
-    if (contentCompabilityLevel) {
-      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
-      if (!checkContentCompatible['isCompitable']) {
-        this.viewerService.raiseErrorEvent(checkContentCompatible['error'], 'compatibility-error');
-        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility,
-          errorMessage.contentCompatibility, checkContentCompatible['error'], this.traceId);
+    setInterval(() => {
+      if (!this.isPaused) {
+        this.showControls = false;
       }
-    }
+    }, 5000);
+
+    /* tslint:disable:no-string-literal */
+    this.nextContent = this.playerConfig.config.nextContent;
+    this.traceId = this.playerConfig.config['traceId'];
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
-    this.videoPlayerService.initialize(this.playerConfig);
     this.viewerService.initialize(this.playerConfig);
+    this.videoPlayerService.initialize(this.playerConfig);
+    window.addEventListener('offline', this.raiseInternetDisconnectionError , true);
+  }
+
+  raiseInternetDisconnectionError = () => {
+    let code = errorCode.internetConnectivity;
+    let message = errorMessage.internetConnectivity;
+    let stacktrace = `${code}: ${message}`;
+    this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
   }
 
   sidebarMenuEvent(event) {
@@ -94,19 +114,21 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   ngAfterViewInit() {
     const videoPlayerElement = this.videoPlayerRef.nativeElement;
-    this.unlistenMouseEnter = this.renderer2.listen(videoPlayerElement, 'mouseenter', () => {
+    this.unlistenMouseMove = this.renderer2.listen(videoPlayerElement, 'mousemove', () => {
       this.showControls = true;
     });
 
-    this.unlistenMouseLeave = this.renderer2.listen(videoPlayerElement, 'mouseleave', () => {
-      this.showControls = false;
+    this.unlistenTouchStart = this.renderer2.listen(videoPlayerElement, 'touchstart', () => {
+      this.showControls = true;
     });
 
-    this.renderer2.listen(videoPlayerElement, 'touchend', () => {
-      setTimeout(() => {
-        this.showControls = false;
-      }, 3000);
-    });
+    const contentCompabilityLevel = this.playerConfig.metadata['compatibilityLevel'];
+    if (contentCompabilityLevel) {
+      const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
+      if (!checkContentCompatible['isCompitable']) {
+        this.viewerService.raiseExceptionLog(errorCode.contentCompatibility, errorMessage.contentCompatibility, checkContentCompatible['error']['message'], this.traceId);
+      }
+    }
   }
 
   sideBarEvents(event) {
@@ -125,10 +147,19 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     });
   }
 
+  playContent(event){
+    this.viewerService.raiseHeartBeatEvent(event.type);
+  }
+
   replayContent(event) {
     this.playerEvent.emit(event);
     this.viewState = 'player';
     this.viewerService.raiseHeartBeatEvent('REPLAY');
+  }
+
+  exitContent(event) {
+    this.playerEvent.emit(event);
+    this.viewerService.raiseHeartBeatEvent('EXIT');
   }
 
   downloadVideo() {
@@ -145,7 +176,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   @HostListener('window:beforeunload')
   ngOnDestroy() {
     this.viewerService.raiseEndEvent();
-    this.unlistenMouseEnter();
-    this.unlistenMouseLeave();
+    this.unlistenTouchStart();
+    this.unlistenMouseMove();
+    window.removeEventListener('offline', this.raiseInternetDisconnectionError , true);
   }
 }
