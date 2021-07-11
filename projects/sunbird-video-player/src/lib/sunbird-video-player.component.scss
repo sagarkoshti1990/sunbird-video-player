@@ -7,6 +7,14 @@
   position: relative;
 }
 
+.videoPlayerHide{
+  display: none;
+}
+
+.videoPlayerShow{
+  display: block;
+}
+
 pdf-menu {
   position: absolute;
   top: 0;

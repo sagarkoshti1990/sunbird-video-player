@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { ViewerService } from '../../services/viewer.service';
 @Component({
   selector: 'video-player',
@@ -7,6 +7,8 @@ import { ViewerService } from '../../services/viewer.service';
   encapsulation: ViewEncapsulation.None
 })
 export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
+  @Output() questionSetData = new EventEmitter();
+  @Output() playerInstance = new EventEmitter();
   showBackwardButton = false;
   showForwardButton = false;
   showPlayButton = true;
@@ -37,24 +39,38 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         autoplay: true,
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
-          children: ['playToggle', 'volumePanel', 'durationDisplay', 
+          children: ['playToggle', 'volumePanel', 'durationDisplay',
             'progressControl', 'remainingTimeDisplay',
             'playbackRateMenuButton', 'fullscreenToggle']
         }
       }, function onLoad() {
 
       });
-      let markers = this.viewerService.getMarkers()
+      const markers = this.viewerService.getMarkers()
       if (markers) {
-        this.player.markers( {markers, 
+        this.player.markers({
+          markers,
           markerStyle: {
             'height': '7px',
             'bottom': '39%',
             'background-color': 'orange'
           },
           onMarkerReached: (marker) => {
-            console.log(marker)
-          }})
+            if(marker){
+              const { time, text, identifier, duration } = marker;
+              if (!(this.player.currentTime() > (time + duration))) {
+                this.viewerService.getQuestionSet(identifier).subscribe(
+                  (response) => {
+                    this.questionSetData.emit({response, time, identifier});
+                  }, (error) => {
+                    console.log(error); 
+                  }
+                );
+              }
+            }
+          }
+        });
+        this.playerInstance.emit(this.player);
       }
       this.registerEvents();
     });
@@ -92,7 +108,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
     this.player.on('fullscreenchange', (data) => {
       // This code is to show the controldiv in fullscreen mode
-      if(this.player.isFullscreen()) {
+      if (this.player.isFullscreen()) {
         this.target.nativeElement.parentNode.appendChild(this.controlDiv.nativeElement);
       }
       this.viewerService.raiseHeartBeatEvent('FULLSCREEN');
@@ -108,7 +124,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.showPlayButton = false;
       this.viewerService.raiseHeartBeatEvent('PLAY');
       this.isAutoplayPrevented = false;
-    });   
+    });
 
     this.player.on('timeupdate', (data) => {
       this.handleVideoControls(data);
@@ -210,6 +226,18 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       }
       this.viewerService.totalSeekedLength = this.totalSeekedLength;
       this.seekStart = null;
+      if(this.player.markers && this.player.markers.getMarkers) {
+        const markers = this.player.markers.getMarkers()
+        markers.forEach(marker => {
+          if(!this.viewerService.interceptionResponses[marker.time] && marker.time < this.currentTime) {
+            this.viewerService.interceptionResponses[marker.time] = {
+              score: 0,
+              isSkipped: false
+            }
+            document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = "red";
+          }
+        });
+      }
     }
   }
 
