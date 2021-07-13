@@ -108,6 +108,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.config = this.playerConfig.config;
     this.QumlPlayerConfig.config.sideMenu.enable = false;
     this.QumlPlayerConfig.context = this.playerConfig.context;
+    this.setTelemetryObjectRollup(this.playerConfig.metadata.identifier)
   }
 
   raiseInternetDisconnectionError = () => {
@@ -156,6 +157,17 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     });
   }
 
+  setTelemetryObjectRollup(id) {
+    if(this.QumlPlayerConfig.context) {
+      const hasObjectRollup = this.QumlPlayerConfig && this.QumlPlayerConfig.context && this.QumlPlayerConfig.context.objectRollup
+      if(!hasObjectRollup) {
+        this.QumlPlayerConfig.context.objectRollup = {}
+      }
+      const levels = Object.keys(this.QumlPlayerConfig.context.objectRollup)
+      this.QumlPlayerConfig.context.objectRollup[`l${levels.length +  1}`] = id
+    }
+  }
+
   playContent(event){
     this.viewerService.raiseHeartBeatEvent(event.type);
   }
@@ -201,7 +213,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   questionSetData({response, time,identifier}) {
 
-    this.QumlPlayerConfig.metadata = response.questionSet;
+    this.QumlPlayerConfig.metadata = response;
     this.QumlPlayerConfig.metadata['showStartPage'] = 'No';
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
     this.currentInterceptionTime = time

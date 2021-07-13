@@ -5,6 +5,8 @@ import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
 import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,9 @@ export class ViewerService {
   public interceptionResponses: any = {};
   public showScore = false;
   public scoreObtained:any = 0;
+  public playerInstance: any;
+  public contentMap = {};
+
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
     private utilService: UtilService,
     private http: HttpClient,
@@ -89,17 +94,54 @@ export class ViewerService {
 
   getMarkers()  {
     if (this.interceptionPoints) {
-      this.showScore = true;
-      return this.interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
-        return { time: interceptionPoint, text: '', identifier, duration: 3 };
-      });
+      try {
+        const interceptionPoints = JSON.parse(this.interceptionPoints)
+        this.showScore = true;
+        return interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
+          return { time: interceptionPoint, text: '', identifier, duration: 3 };
+        });
+        
+      } catch (error) {
+        console.log(error)
+        this.raiseExceptionLog("CPV2_CONT_INTERCEPTION_PARSE", "error parsing the inteception points string", error, '')
+        this.showScore = false;
+      }
+      
     }
     return null;
   }
 
 
   getQuestionSet(identifier) {
-    return this.questionCursor.getQuestionSet(identifier);
+    const content = this.contentMap[identifier];
+    if(!content) {
+     return this.questionCursor.getQuestionSet(identifier)
+     .pipe(map((response) => {
+        this.contentMap[identifier] = response.questionSet;
+        return this.contentMap[identifier];
+       }))
+    } else {
+      return of(content);
+    }
+  }
+
+  preFetchContent() {
+    const nextMarker = this.getNextMarker()
+    if(nextMarker) {
+      const identifier = nextMarker.identifier;
+      this.getQuestionSet(nextMarker.identifier)
+    }
+  }
+
+  getNextMarker() {
+    var currentTime = this.playerInstance.currentTime();
+    const markersList = this.getMarkers()
+    if(!markersList) return null;
+
+    return markersList.find(marker => {
+      const markerTime = marker.time;
+      return markerTime > currentTime
+    })
   }
 
   raiseStartEvent(event) {
