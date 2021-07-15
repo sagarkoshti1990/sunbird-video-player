@@ -212,16 +212,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
 
   questionSetData({response, time,identifier}) {
-
+    
     this.QumlPlayerConfig.metadata = response;
     this.QumlPlayerConfig.metadata['showStartPage'] = 'No';
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
     this.currentInterceptionTime = time
     this.currentInterceptionUIId = identifier;
     this.showQumlPlayer = true;
-    this.videoInstance.pause();
-    this.videoInstance.controls(false);
-
   }
 
   playerInstance(event) {

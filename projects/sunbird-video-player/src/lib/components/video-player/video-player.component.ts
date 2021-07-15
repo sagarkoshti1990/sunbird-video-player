@@ -59,10 +59,16 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
             if(marker){
               const { time, text, identifier, duration } = marker;
               if (!(this.player.currentTime() > (time + duration))) {
+                setTimeout(() => {
+                    this.pause()
+                    this.player.controls(false);  
+                }, 1000);
                 this.viewerService.getQuestionSet(identifier).subscribe(
                   (response) => {
                     this.questionSetData.emit({response, time, identifier});
                   }, (error) => {
+                    this.play()
+                    this.player.controls(true);
                     console.log(error); 
                   }
                 );
