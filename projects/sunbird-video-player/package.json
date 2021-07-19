@@ -11,7 +11,7 @@
     "@project-sunbird/sunbird-quml-player-v9": "4.1.17"
   },
   "dependencies": {
-    "@project-sunbird/sunbird-player-sdk-v9": "4.1.3"
+    "@project-sunbird/sunbird-player-sdk-v9": "4.1.4"
   },
   "devdependencies": {
     "video.js": "7.5.5",
