@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { ViewerService } from '../../services/viewer.service';
+import 'videojs-contrib-quality-levels';
+import videojshttpsourceselector from 'videojs-http-source-selector';
 @Component({
   selector: 'video-player',
   templateUrl: './video-player.component.html',
@@ -42,10 +44,18 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
           children: ['playToggle', 'volumePanel', 'durationDisplay',
             'progressControl', 'remainingTimeDisplay',
             'playbackRateMenuButton', 'fullscreenToggle']
+        },
+        plugins: {
+          httpSourceSelector:
+          {
+            default: 'low'
+          }
         }
       }, function onLoad() {
 
       });
+      this.player.videojshttpsourceselector = videojshttpsourceselector;
+      this.player.videojshttpsourceselector();
       const markers = this.viewerService.getMarkers()
       if (markers) {
         this.player.markers({
