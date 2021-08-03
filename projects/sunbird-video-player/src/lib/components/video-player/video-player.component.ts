@@ -37,6 +37,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     this.viewerService.getPlayerOptions().then(options => {
       this.player = videojs(this.target.nativeElement, {
         fluid: true,
+        responsive: true,
         sources: options,
         autoplay: true,
         playbackRates: [0.5, 1, 1.5, 2],
@@ -50,6 +51,13 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
           {
             default: 'low'
           }
+        },
+        html5: {
+          hls: {
+            overrideNative: true
+          },
+          nativeAudioTracks: false,
+          nativeVideoTracks: false,
         }
       }, function onLoad() {
 
