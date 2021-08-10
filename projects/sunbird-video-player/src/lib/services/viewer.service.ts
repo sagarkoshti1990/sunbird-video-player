@@ -66,7 +66,10 @@ export class ViewerService {
       ],
       volume: [],
       playBackSpeeds: [],
-      totalDuration: 0
+      totalDuration: 0,
+      muted: undefined,
+      currentDuration: undefined,
+      qualityIndex: []
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
