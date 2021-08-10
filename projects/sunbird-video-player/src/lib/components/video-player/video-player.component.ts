@@ -35,8 +35,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   setMetaDataConfig = false;
   qualityPixel = [180, 270, 360, 540, 720];
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2) {
-  }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2) {}
 
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(options => {
