@@ -302,13 +302,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if(!_.isEmpty(_.get(this.config, 'playBackSpeeds'))) {
       this.player.playbackRate(_.last(_.get(this.config, 'playBackSpeeds')));
     }
-
-    // This is not working, needs to check
-    if(!_.isEmpty(_.get(this.config, 'qualityIndex'))) {
-      let qualityLevels = this.player.qualityLevels();
-      qualityLevels.selectedIndex_ = _.last(_.get(this.config, 'qualityIndex'));
-      qualityLevels.trigger({ type: 'change', selectedIndex: qualityLevels.selectedIndex_ });
-    }
   }
 
   updatePlayerEventsMetadata({ type }) {
