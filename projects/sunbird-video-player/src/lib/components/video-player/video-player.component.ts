@@ -157,11 +157,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.viewerService.metaData.muted = this.player.muted();
     });
 
-    this.player.qualityLevels().on('change', () => {
-      let index = this.player.qualityLevels().selectedIndex;
-      this.viewerService.metaData.qualityIndex.push(index);
-    });
-
     this.player.on('play', (data) => {
       this.currentPlayerState = 'play';
       this.showPauseButton = true;
