@@ -33,7 +33,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   totalSpentTime = 0;
   isAutoplayPrevented = false;
   setMetaDataConfig = false;
-  qualityPixel = [180, 270, 360, 540, 720];
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
 
@@ -160,7 +159,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
     this.player.qualityLevels().on('change', () => {
       let index = this.player.qualityLevels().selectedIndex;
-      this.viewerService.metaData.qualityIndex.push(this.qualityPixel[index]);
+      this.viewerService.metaData.qualityIndex.push(index);
     });
 
     this.player.on('play', (data) => {
@@ -307,11 +306,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     // This is not working, needs to check
     if(!_.isEmpty(_.get(this.config, 'qualityIndex'))) {
       let qualityLevels = this.player.qualityLevels();
-      qualityLevels.selectedIndex_ = 0;
-      qualityLevels.trigger({ type: 'change', selectedIndex: 0 });
-      this.player.qualityLevels(180)
-      this.player.qualityLevel.height = 180;
-      console.log('scores.indexOf(10)', this.qualityPixel.indexOf(360))
+      qualityLevels.selectedIndex_ = _.last(_.get(this.config, 'qualityIndex'));
+      qualityLevels.trigger({ type: 'change', selectedIndex: qualityLevels.selectedIndex_ });
     }
   }
 
