@@ -68,8 +68,7 @@ export class ViewerService {
       playBackSpeeds: [],
       totalDuration: 0,
       muted: undefined,
-      currentDuration: undefined,
-      qualityIndex: []
+      currentDuration: undefined
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
