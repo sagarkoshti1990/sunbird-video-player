@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { ViewerService } from '../../services/viewer.service';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
 @Component({
@@ -31,7 +32,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   totalSpentTime = 0;
   isAutoplayPrevented = false;
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2,public questionCursor: QuestionCursor) { }
 
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(options => {
@@ -65,6 +66,33 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.player.videojshttpsourceselector = videojshttpsourceselector;
       this.player.videojshttpsourceselector();
       const markers = this.viewerService.getMarkers()
+
+      if(markers && markers.length >0){
+        var maxScore = 0
+        markers.map(item=>{
+          var doIds = []
+           this.viewerService.questionCursor.getQuestionSet(item.identifier).subscribe(
+            (response) => {
+              response.questionSet.children.map(data => {
+                doIds.push(data.identifier)
+              })
+              this.viewerService.questionCursor.getQuestions(doIds).subscribe(
+                (resps1 ) => {
+                  resps1["questions"].map(score => {
+                    maxScore += score.responseDeclaration.response1.maxScore
+                  })
+                  this.viewerService.maxScore = maxScore
+                }
+              )
+            }, (error) => {
+              this.play()
+              this.player.controls(true);
+              console.log(error); 
+            }
+          );
+        })
+      }
+
       if (markers) {
         this.player.markers({
           markers,
