@@ -8,7 +8,7 @@
     "video.js": "7.4.1",
     "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7",
-    "@project-sunbird/sunbird-quml-player-v9": "4.1.17",
+    "@project-sunbird/sunbird-quml-player-v9": "4.2.3",
     "videojs-http-source-selector": ">= 1.1.6",
     "videojs-contrib-quality-levels": ">= 2.1.0"
   },
@@ -19,7 +19,7 @@
     "video.js": "7.4.1",
     "@project-sunbird/client-services": "^3.4.11",
     "@project-sunbird/sb-styles": "0.0.7",
-    "@project-sunbird/sunbird-quml-player-v9": "4.1.17"
+    "@project-sunbird/sunbird-quml-player-v9": "4.2.3"
   },
   "homepage": "https://github.com/project-sunbird/sunbird-video-player/tree/release-4.0.0/projects/sunbird-video-player#readme",
   "keywords": [
