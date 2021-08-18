@@ -37,6 +37,7 @@ export class ViewerService {
   public interceptionResponses: any = {};
   public showScore = false;
   public scoreObtained:any = 0;
+  public maxScore:any = 0;
   public playerInstance: any;
   public contentMap = {};
 
@@ -164,7 +165,6 @@ export class ViewerService {
   }
 
   calculateScore() {
-
     this.scoreObtained =  Object.values(this.interceptionResponses).reduce(
       (acc, response) => acc + response['score'] ,0);
   }

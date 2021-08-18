@@ -452,6 +452,17 @@ export class QuestionCursorImplementationService implements QuestionCursor {
         // } 
     }
 
+    getAllQuestionSet(identifiers) {
+        const requests = identifiers.map(id => {
+            return this.http.get(`https://staging.sunbirded.org/learner/questionset/v1/hierarchy/${id}?fields=maxScore`)
+        })
+        return forkJoin(requests).pipe(
+            map(res => {
+                return res.map(item => item["result"].questionSet.maxScore);
+            })
+        )
+    }
+
     getQuestions(identifiers: string[]): Observable<any> {
         if (this.listUrl) {
             const option: any = {
