@@ -9,7 +9,7 @@
       <sb-player-end-page 
       [contentName]="viewerService.contentName" 
       [outcomeLabel]="viewerService.showScore ? 'Score: ': ''" 
-      [outcome]="viewerService.showScore ? viewerService.scoreObtained + '/' + viewerService.maxScore + '' : ''"
+      [outcome]="viewerService.showScore ? viewerService.scoreObtained + ((viewerService.maxScore && viewerService.maxScore > 0) ? '/' + viewerService.maxScore : '')  : ''"
       [nextContent]="nextContent" [userName]="viewerService.userName" 
       [showExit]="sideMenuConfig.showExit"
             [timeSpentLabel]="viewerService.timeSpent" (playNextContent)="playContent($event)" 

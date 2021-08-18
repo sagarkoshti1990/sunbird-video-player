@@ -3,6 +3,9 @@ import { ViewerService } from '../../services/viewer.service';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
+import { forkJoin } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'video-player',
   templateUrl: './video-player.component.html',
@@ -32,9 +35,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   totalSpentTime = 0;
   isAutoplayPrevented = false;
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2,public questionCursor: QuestionCursor) { }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2,public questionCursor: QuestionCursor,private http: HttpClient,) { }
 
-  ngAfterViewInit() {
+ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(options => {
       this.player = videojs(this.target.nativeElement, {
         fluid: true,
@@ -67,30 +70,15 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.player.videojshttpsourceselector();
       const markers = this.viewerService.getMarkers()
 
-      if(markers && markers.length >0){
-        var maxScore = 0
-        markers.map(item=>{
-          var doIds = []
-           this.viewerService.questionCursor.getQuestionSet(item.identifier).subscribe(
+       if(markers && markers.length >0){
+          const identifiers = markers.map( item => {
+            return item.identifier;
+          })
+          this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
             (response) => {
-              response.questionSet.children.map(data => {
-                doIds.push(data.identifier)
-              })
-              this.viewerService.questionCursor.getQuestions(doIds).subscribe(
-                (resps1 ) => {
-                  resps1["questions"].map(score => {
-                    maxScore += score.responseDeclaration.response1.maxScore
-                  })
-                  this.viewerService.maxScore = maxScore
-                }
-              )
-            }, (error) => {
-              this.play()
-              this.player.controls(true);
-              console.log(error); 
+              this.viewerService.maxScore = response.reduce((a,b) => a+b,0)
             }
-          );
-        })
+          ) 
       }
 
       if (markers) {
