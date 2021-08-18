@@ -454,8 +454,7 @@ export class QuestionCursorImplementationService implements QuestionCursor {
 
     getAllQuestionSet(identifiers) {
         const requests = identifiers.map(id => {
-            let identifier = "do_2133464844687196161233"
-            return this.http.get(`https://staging.sunbirded.org/learner/questionset/v1/hierarchy/${identifier}?fields=maxScore`)
+            return this.http.get(`https://staging.sunbirded.org/learner/questionset/v1/hierarchy/${id}?fields=maxScore`)
         })
         return forkJoin(requests).pipe(
             map(res => {
