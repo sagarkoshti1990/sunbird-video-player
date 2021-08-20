@@ -98,7 +98,7 @@ export class ViewerService {
   getMarkers()  {
     if (this.interceptionPoints) {
       try {
-        const interceptionPoints = JSON.parse(this.interceptionPoints)
+        const interceptionPoints = this.interceptionPoints
         this.showScore = true;
         return interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
           return { time: interceptionPoint, text: '', identifier, duration: 3 };
