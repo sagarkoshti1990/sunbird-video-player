@@ -1,6 +1,6 @@
 {
   "name": "@project-sunbird/sunbird-video-player-v9",
-  "version": "4.1.7",
+  "version": "4.1.8",
   "peerDependencies": {
     "@angular/common": "^8.0.0",
     "@angular/core": "^8.0.0",
@@ -11,7 +11,7 @@
     "@project-sunbird/sunbird-quml-player-v9": "4.1.17"
   },
   "dependencies": {
-    "@project-sunbird/sunbird-player-sdk-v9": "4.1.4"
+    "@project-sunbird/sunbird-player-sdk-v9": "4.1.5"
   },
   "devdependencies": {
     "video.js": "7.5.5",
