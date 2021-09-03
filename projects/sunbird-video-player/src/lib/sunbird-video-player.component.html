@@ -1,7 +1,8 @@
 <div class="sunbird-video-player-container" #videoPlayer [ngClass]="showQumlPlayer ? 'videoPlayerHide': 'videoPlayerShow'">
-      <sb-player-side-menu-icon class="sb-player-side-menu-icon notVisible" (sidebarMenuEvent)="viewerService.raiseHeartBeatEvent($event); sidebarMenuEvent($event);" tabindex="0"
+      <sb-player-side-menu-icon class="sb-player-side-menu-icon notVisible" tabindex="0" (sidebarMenuEvent)="viewerService.raiseHeartBeatEvent($event); sidebarMenuEvent($event);"
+
             *ngIf="viewState ==='player'" [ngClass]="{'isVisible': showControls}"></sb-player-side-menu-icon>
-      <video-player *ngIf="viewState === 'player'" (questionSetData)="questionSetData($event)" (playerInstance)="playerInstance($event)" >
+      <video-player *ngIf="viewState === 'player'" (questionSetData)="questionSetData($event)" (playerInstance)="playerInstance($event)" [config]="playerConfig.config">
       </video-player>
       <sb-player-sidebar *ngIf="viewState ==='player'"
        [title]="viewerService.contentName"
@@ -9,11 +10,11 @@
       <sb-player-end-page 
       [contentName]="viewerService.contentName" 
       [outcomeLabel]="viewerService.showScore ? 'Score: ': ''" 
-      [outcome]="viewerService.showScore ? viewerService.scoreObtained + '' : ''"
+      [outcome]="viewerService.showScore ? viewerService.scoreObtained + ((viewerService.maxScore && viewerService.maxScore > 0) ? '/' + viewerService.maxScore : '')  : ''"
       [nextContent]="nextContent" [userName]="viewerService.userName" 
       [showExit]="sideMenuConfig.showExit"
-            [timeSpentLabel]="viewerService.timeSpent" (playNextContent)="playContent($event)" 
-            (exitContent)="exitContent($event)"   (replayContent)="replayContent($event)" tabindex="0"
+            [timeSpentLabel]="viewerService.timeSpent" tabindex="0" (playNextContent)="playContent($event)" 
+            (exitContent)="exitContent($event)"   (replayContent)="replayContent($event)"
             *ngIf="viewState === 'end'"></sb-player-end-page>
       <sb-player-contenterror *ngIf="showContentError"></sb-player-contenterror>
 </div>

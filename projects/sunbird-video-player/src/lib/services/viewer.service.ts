@@ -37,6 +37,7 @@ export class ViewerService {
   public interceptionResponses: any = {};
   public showScore = false;
   public scoreObtained:any = 0;
+  public maxScore:any = 0;
   public playerInstance: any;
   public contentMap = {};
 
@@ -66,7 +67,9 @@ export class ViewerService {
       ],
       volume: [],
       playBackSpeeds: [],
-      totalDuration: 0
+      totalDuration: 0,
+      muted: undefined,
+      currentDuration: undefined
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
@@ -95,7 +98,7 @@ export class ViewerService {
   getMarkers()  {
     if (this.interceptionPoints) {
       try {
-        const interceptionPoints = JSON.parse(this.interceptionPoints)
+        const interceptionPoints = this.interceptionPoints
         this.showScore = true;
         return interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
           return { time: interceptionPoint, text: '', identifier, duration: 3 };
@@ -162,7 +165,6 @@ export class ViewerService {
   }
 
   calculateScore() {
-
     this.scoreObtained =  Object.values(this.interceptionResponses).reduce(
       (acc, response) => acc + response['score'] ,0);
   }

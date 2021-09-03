@@ -1,5 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy, EventEmitter, Output, Input } from '@angular/core';
 import { ViewerService } from '../../services/viewer.service';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import 'videojs-contrib-quality-levels';
+import videojshttpsourceselector from 'videojs-http-source-selector';
+import { forkJoin } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import * as _ from 'lodash-es';
+
 @Component({
   selector: 'video-player',
   templateUrl: './video-player.component.html',
@@ -7,6 +15,7 @@ import { ViewerService } from '../../services/viewer.service';
   encapsulation: ViewEncapsulation.None
 })
 export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
+  @Input() config: any;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
   showBackwardButton = false;
@@ -28,25 +37,55 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   startTime;
   totalSpentTime = 0;
   isAutoplayPrevented = false;
+  setMetaDataConfig = false;
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2) { }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2,public questionCursor: QuestionCursor,private http: HttpClient,) { }
 
-  ngAfterViewInit() {
+ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(options => {
       this.player = videojs(this.target.nativeElement, {
         fluid: true,
+        responsive: true,
         sources: options,
         autoplay: true,
+        muted: _.get(this.config, 'muted'),
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
           children: ['playToggle', 'volumePanel', 'durationDisplay',
             'progressControl', 'remainingTimeDisplay',
             'playbackRateMenuButton', 'fullscreenToggle']
+        },
+        plugins: {
+          httpSourceSelector:
+          {
+            default: 'low'
+          }
+        },
+        html5: {
+          hls: {
+            overrideNative: true
+          },
+          nativeAudioTracks: false,
+          nativeVideoTracks: false,
         }
       }, function onLoad() {
 
       });
+      this.player.videojshttpsourceselector = videojshttpsourceselector;
+      this.player.videojshttpsourceselector();
       const markers = this.viewerService.getMarkers()
+
+       if(markers && markers.length >0){
+          const identifiers = markers.map( item => {
+            return item.identifier;
+          })
+          this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
+            (response) => {
+              this.viewerService.maxScore = response.reduce((a,b) => a+b,0)
+            }
+          ) 
+      }
+
       if (markers) {
         this.player.markers({
           markers,
@@ -126,6 +165,15 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       this.pause();
     });
 
+    this.player.on('ratechange', (data) => {
+      this.viewerService.metaData.playBackSpeeds.push(this.player.playbackRate());
+    });
+
+    this.player.on('volumechange', (data) => {
+      this.viewerService.metaData.volume.push(this.player.volume());
+      this.viewerService.metaData.muted = this.player.muted();
+    });
+
     this.player.on('play', (data) => {
       this.currentPlayerState = 'play';
       this.showPauseButton = true;
@@ -135,9 +183,12 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     });
 
     this.player.on('timeupdate', (data) => {
+      this.viewerService.metaData.currentDuration = this.player.currentTime();
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
+
       if (this.player.currentTime() >= this.player.duration()) {
+        this.viewerService.metaData.currentDuration = 0;
         this.handleVideoControls({ type: 'ended' });
         this.viewerService.playerEvent.emit({ type: 'ended' });
       }
@@ -195,6 +246,10 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if (type === 'playing') {
       this.showPlayButton = false;
       this.showPauseButton = true;
+      if (this.setMetaDataConfig) {
+        this.setMetaDataConfig = false;
+        this.setPreMetaDataConfig();
+      }
     }
     if (type === 'ended') {
       this.totalSpentTime += new Date().getTime() - this.startTime;
@@ -214,6 +269,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
     if (type === 'loadstart') {
       this.startTime = new Date().getTime();
+      this.setMetaDataConfig = true;
     }
 
     // Calulating total seeked length
@@ -249,10 +305,20 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  setPreMetaDataConfig() {
+    if(!_.isEmpty(_.get(this.config, 'volume'))) {
+      this.player.volume(_.last(_.get(this.config, 'volume')));
+    }
+    if(_.get(this.config, 'currentDuration')) {
+      this.player.currentTime(_.get(this.config, 'currentDuration'));
+    }
+    if(!_.isEmpty(_.get(this.config, 'playBackSpeeds'))) {
+      this.player.playbackRate(_.last(_.get(this.config, 'playBackSpeeds')));
+    }
+  }
+
   updatePlayerEventsMetadata({ type }) {
     this.viewerService.metaData.totalDuration = this.player.duration();
-    this.viewerService.metaData.playBackSpeeds.push(this.player.playbackRate());
-    this.viewerService.metaData.volume.push(this.player.volume());
     const action = {};
     action[type + ''] = this.player.currentTime();
     this.viewerService.metaData.actions.push(action);
