@@ -186,7 +186,8 @@ ngAfterViewInit() {
       this.viewerService.metaData.currentDuration = this.player.currentTime();
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
-      if (this.player.currentTime() === this.player.duration()) {
+
+      if (this.player.currentTime() >= this.player.duration()) {
         this.viewerService.metaData.currentDuration = 0;
         this.handleVideoControls({ type: 'ended' });
         this.viewerService.playerEvent.emit({ type: 'ended' });
