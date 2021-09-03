@@ -137,7 +137,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     this.player.on('timeupdate', (data) => {
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
-      if (this.player.currentTime() === this.player.duration()) {
+      if (this.player.currentTime() >= this.player.duration()) {
         this.handleVideoControls({ type: 'ended' });
         this.viewerService.playerEvent.emit({ type: 'ended' });
       }
