@@ -1,95 +1,119 @@
-# Sunbird Video Player
-Player for playing Video/Audio contents for sunbird applications
+# Video player library for Sunbird platform!
+Contains Video player library components powered by angular. These components are designed to be used in sunbird consumption platforms *(mobile app, web portal, offline desktop app)* to drive reusability, maintainability hence reducing the redundant development effort significantly.
 
-## Prerequisite
+# Getting Started
+For help getting started with a new Angular app, check out the Angular CLI.
+For existing apps, follow these steps to begin using .
 
-  Node JS version > 12
+## Step 1: Install the packages
 
-## Usage
+    npm install @project-sunbird/sunbird-video-player-v9 --save
+    npm install @project-sunbird/sunbird-quml-player-v9 --save
+    npm install @project-sunbird/sb-styles --save
+    npm install @project-sunbird/client-services --save
+    npm install lodash-es --save
+    npm install ngx-bootstrap --save
+    npm install jquery --save
+    npm install video.js --save
+    npm install videojs-contrib-quality-levels --save
+    npm install videojs-http-source-selector --save
+    npm install videojs-thumbnails --save
 
+## Step 2: Include the styles, scripts and assets in angular.json
+    "styles": [
+    ...
+    ...
+    "src/styles.css",
+    "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+    "./node_modules/video.js/dist/video-js.min.css",
+    "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
+    "./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+    ],
+    "scripts": [
+    ...
+    ...
+    "node_modules/jquery/dist/jquery.min.js",
+    "node_modules/video.js/dist/video.js",
+    "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
+    "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+    "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+    ]
 
-`npm i @project-sunbird/sunbird-video-player-v9`
+  Add following under architect.build.assets
 
+     {
+	    ...
+	    "build": {
+	    
+	    "builder": "@angular-devkit/build-angular:browser",
+	    
+	    "options": {
+		    ...
+		    ...
+    
+		    "assets": [
+		    
+			   ...
+			   ...
+			    
+			    {
+				    "glob": "**/*.*",
+				    "input": "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
+				    "output": "/assets/"
+			    }
+		    
+		    ],
+    
+	    "styles": [
+	    
+	    ...
+	    
+	    "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+	    "./node_modules/video.js/dist/video-js.min.css",
+        "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
+        "./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+	    ],
+	    "scripts": [
+         ...
+         "node_modules/jquery/dist/jquery.min.js",
+         "node_modules/video.js/dist/video.js",
+         "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
+         "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+         "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+         ]
+	    ...
+	    ...
+    
+    },
 
-Add the module to the your player root module 
-
-`import  { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';`
-
-```javascript
-@NgModule({
-  ...
-  imports: [
-    ...,
-    SunbirdVideoPlayerModule
-  ]
-})
-```
-
-add the assets, scripts and styles in angular.json file
-
-```javascript
-....
- "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
-                "output": "/assets/"
-              }
-],
-  "scripts": [
-  ...
-    "node_modules/@project-sunbird/telemetry-sdk/index.js"
-    ....
-  ],
   
-"styles": [
-...
-"node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
-"node_modules/video.js/dist/video-js.min.css",
-"src/styles.css"
-....
-],
-...
 
-```
+## Step 3: Import the modules and components
+Import the NgModule where you want to use. Also create a [question-cursor-implementation.service](../../src/app/question-cursor-implementation.service.ts)
+       
+    import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
+    import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+    import { QuestionCursorImplementationService } from './question-cursor-implementation.service';
 
-add peer dependecies of the player as dependecies in your project
- 
+    
+    @NgModule({
+	    ...
+	    
+	    imports: [SunbirdVideoPlayerModule],
+	    providers: [{ provide: QuestionCursor, useClass: QuestionCursorImplementationService }],
+	    
+	    ...
+    })
 
-add the component selector in your component like below
+  
+    export class TestAppModule { }
 
-```html
+## Step 4: Send input to render Video player
 
-    <sunbird-video-player 
-                [playerConfig]="playerConfig" 
-                (playerEvent)="playerEvent($event)" 
-                (telemetryEvent)="telemetryEvent($event)">
-    </sunbird-video-player>
+Use the mock config in your component to send input to Video player
+Click to see the mock - [playerConfig](../../src/app/data.ts)
 
-```
-
-Still facing issues please refer the demo project in this repo as example
-
-## Development
-
-  check out this repo with latest release version branch
-
-  cd to {repo_path} in terminal
-
-  run  `sh setup.sh`
-
-  above script installs the dependecies and link the epub player library project to demo app
-
-  if you do any changes in library project run to get latest changes in demo app
-
-  `npm run build-lib-link`
-
-  once above command completed run `npm run start` which will run the player in demo app at http://localhost:4200
-
-
-
-## References
-
-https://docs.videojs.com/
+## Available components
+|Feature| Notes| Selector|Code|Input|Output
+|--|--|--|------------------------------------------------------------------------------------------|---|--|
+| Video Player | Can be used to render videos | sunbird-video-player| *`<sunbird-video-player [playerConfig]="playerConfig"><sunbird-video-player>`*|playerConfig|playerEvent, telemetryEvent|

@@ -1,27 +1,119 @@
-# SunbirdVideoPlayerApp
+# Video player library for Sunbird platform!
+Contains Video player library components powered by angular. These components are designed to be used in sunbird consumption platforms *(mobile app, web portal, offline desktop app)* to drive reusability, maintainability hence reducing the redundant development effort significantly.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.10.
+# Getting Started
+For help getting started with a new Angular app, check out the Angular CLI.
+For existing apps, follow these steps to begin using .
 
-## Development server
+## Step 1: Install the packages
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+    npm install @project-sunbird/sunbird-video-player-v9 --save
+    npm install @project-sunbird/sunbird-quml-player-v9 --save
+    npm install @project-sunbird/sb-styles --save
+    npm install @project-sunbird/client-services --save
+    npm install lodash-es --save
+    npm install ngx-bootstrap --save
+    npm install jquery --save
+    npm install video.js --save
+    npm install videojs-contrib-quality-levels --save
+    npm install videojs-http-source-selector --save
+    npm install videojs-thumbnails --save
 
-## Code scaffolding
+## Step 2: Include the styles, scripts and assets in angular.json
+    "styles": [
+    ...
+    ...
+    "src/styles.css",
+    "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+    "./node_modules/video.js/dist/video-js.min.css",
+    "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
+    "./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+    ],
+    "scripts": [
+    ...
+    ...
+    "node_modules/jquery/dist/jquery.min.js",
+    "node_modules/video.js/dist/video.js",
+    "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
+    "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+    "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+    ]
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  Add following under architect.build.assets
 
-## Build
+     {
+	    ...
+	    "build": {
+	    
+	    "builder": "@angular-devkit/build-angular:browser",
+	    
+	    "options": {
+		    ...
+		    ...
+    
+		    "assets": [
+		    
+			   ...
+			   ...
+			    
+			    {
+				    "glob": "**/*.*",
+				    "input": "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
+				    "output": "/assets/"
+			    }
+		    
+		    ],
+    
+	    "styles": [
+	    
+	    ...
+	    
+	    "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+	    "./node_modules/video.js/dist/video-js.min.css",
+        "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
+        "./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+	    ],
+	    "scripts": [
+         ...
+         "node_modules/jquery/dist/jquery.min.js",
+         "node_modules/video.js/dist/video.js",
+         "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
+         "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+         "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+         ]
+	    ...
+	    ...
+    
+    },
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+  
 
-## Running unit tests
+## Step 3: Import the modules and components
+Import the NgModule where you want to use. Also create a [question-cursor-implementation.service](src/app/question-cursor-implementation.service.ts)
+       
+    import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
+    import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+    import { QuestionCursorImplementationService } from './question-cursor-implementation.service';
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    
+    @NgModule({
+	    ...
+	    
+	    imports: [SunbirdVideoPlayerModule],
+	    providers: [{ provide: QuestionCursor, useClass: QuestionCursorImplementationService }],
+	    
+	    ...
+    })
 
-## Running end-to-end tests
+  
+    export class TestAppModule { }
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Step 4: Send input to render Video player
 
-## Further help
+Use the mock config in your component to send input to Video player
+Click to see the mock - [playerConfig](src/app/data.ts)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Available components
+|Feature| Notes| Selector|Code|Input|Output
+|--|--|--|------------------------------------------------------------------------------------------|---|--|
+| Video Player | Can be used to render videos | sunbird-video-player| *`<sunbird-video-player [playerConfig]="playerConfig"><sunbird-video-player>`*|playerConfig|playerEvent, telemetryEvent|

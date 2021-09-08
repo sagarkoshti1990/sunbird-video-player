@@ -1,6 +1,6 @@
 {
   "name": "@project-sunbird/sunbird-video-player-v9",
-  "version": "4.2.6",
+  "version": "4.3.0",
   "peerDependencies": {
     "@angular/common": "^8.0.0",
     "@angular/core": "^8.0.0",
@@ -21,7 +21,7 @@
     "@project-sunbird/sb-styles": "0.0.7",
     "@project-sunbird/sunbird-quml-player-v9": "4.2.3"
   },
-  "homepage": "https://github.com/project-sunbird/sunbird-video-player/tree/release-4.0.0/projects/sunbird-video-player#readme",
+  "homepage": "https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/README.md",
   "keywords": [
     "sunbird",
     "sunbird video player",
