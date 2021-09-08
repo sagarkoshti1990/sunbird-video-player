@@ -32,7 +32,7 @@ export class AppModule implements DoBootstrap {
   constructor(private injector: Injector) { }
   ngDoBootstrap() {
     const customElement = createCustomElement(SunbirdVideoPlayerComponent, { injector: this.injector });
-    customElements.define('my-comp', customElement);
+    customElements.define('sunbird-video-player', customElement);
   }
 }
 
