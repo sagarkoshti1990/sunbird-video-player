@@ -1,13 +1,12 @@
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { mergeMap, map } from 'rxjs/operators';
-import { of, throwError as observableThrowError, Observable, forkJoin } from 'rxjs';
-import * as _ from 'lodash-es';
-import { Injectable } from '@angular/core';
-
+import { Inject, Injectable } from '@angular/core';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { forkJoin, Observable, of, throwError as observableThrowError } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 @Injectable()
 export class QCImplementationService implements QuestionCursor {
-    listUrl = 'action/question/v1/list'; // Define this url to call list api in server
+    listUrl; // Define this url to call list api in server
     questionsArray = {
         questions: [{
             copyright: 'tn',
@@ -432,7 +431,10 @@ export class QCImplementationService implements QuestionCursor {
         }],
         count: 4
     };
-    constructor(private http: HttpClient) { }
+    constructor(@Inject(DOCUMENT) private document: Document, private http: HttpClient) {
+        const url = (document.defaultView as any).questionListUrl;
+        this.listUrl = url ? url : this.listUrl;
+    }
 
     getQuestionSet(identifier) {
         // if (this.listUrl) {
