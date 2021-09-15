@@ -92,6 +92,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    if (typeof this.playerConfig === 'string') {
+      try {
+        this.playerConfig = JSON.parse(this.playerConfig);
+      } catch (error) {
+        console.error('Invalid playerConfig: ', error);
+      }
+    }
+
     setInterval(() => {
       if (!this.isPaused) {
         this.showControls = false;
