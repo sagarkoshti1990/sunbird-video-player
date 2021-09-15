@@ -15,7 +15,7 @@ export class QCImplementationService implements QuestionCursor {
     }
 
     getQuestionSet(identifier) {
-        if (this.listUrl) {
+        if (this.questionSetBaseUrl) {
             const hierarchy = this.http.get(`${this.questionSetBaseUrl}/v1/hierarchy/${identifier}`);
             const questionSet = this.http.get(`${this.questionSetBaseUrl}/v1/read/${identifier}?fields=instructions`);
             return (
