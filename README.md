@@ -117,3 +117,51 @@ Click to see the mock - [playerConfig](src/app/data.ts)
 |Feature| Notes| Selector|Code|Input|Output
 |--|--|--|------------------------------------------------------------------------------------------|---|--|
 | Video Player | Can be used to render videos | sunbird-video-player| *`<sunbird-video-player [playerConfig]="playerConfig"><sunbird-video-player>`*|playerConfig|playerEvent, telemetryEvent|
+
+## Use as web components	
+
+Import this library in any web application and use the custom component.
+
+Follow below-mentioned steps to use it in plain javascript project:
+
+- Insert [library](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/sunbird-video-player.js) as below:
+	```javascript
+	<script type="text/javascript" src="sunbird-video-player.js"></script>
+	```
+- Create a asset folder and copy all the files from [here](https://github.com/project-sunbird/sunbird-video-player/tree/release-4.3.0/web-component/assets), library requires these assets internally to work well.
+- Get sample playerConfig from here: [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/src/app/data.ts)
+
+- Pass the QuestionListAPI baseUrl for eg. 
+	```javascript
+    window.questionListUrl = 'https://staging.sunbirded.org/api/question/v1/list';
+    window.questionSetBaseUrl = 'https://staging.sunbirded.org/api/questionset';
+    ```
+  
+- Create a custom html element: `sunbird-video-player`
+	```javascript
+    const  videoElement = document.createElement('sunbird-video-player');
+   ```
+
+- Pass data using `player-config`
+	```javascript
+	videoElement.setAttribute('player-config', JSON.stringify(playerConfig));
+	```
+
+	**Note:** Attribute should be in **string** type
+
+- Listen for the output events: **playerEvent** and **telemetryEvent**
+
+	```javascript
+	videoElement.addEventListener('playerEvent', (event) => {
+		console.log("On playerEvent", event);
+	});
+	videoElement.addEventListener('telemetryEvent', (event) => {
+		console.log("On telemetryEvent", event);
+	});
+	```
+- Append this element to existing element
+	```javascript
+	const  myPlayer = document.getElementById("my-player");
+	myPlayer.appendChild(qumlPlayerElement);
+	```
+- Refer demo [example](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/index.html)

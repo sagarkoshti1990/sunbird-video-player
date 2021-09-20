@@ -22,6 +22,10 @@
     "@project-sunbird/sunbird-quml-player-v9": "4.2.3"
   },
   "homepage": "https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/project-sunbird/sunbird-video-player.git"
+  },
   "keywords": [
     "sunbird",
     "sunbird video player",
