@@ -272,7 +272,7 @@ ngAfterViewInit() {
       this.setMetaDataConfig = true;
     }
 
-    // Calulating total seeked length
+    // Calculating total seeked length
     if (type === 'timeupdate') {
       this.previousTime = this.currentTime;
       this.currentTime = this.player.currentTime();

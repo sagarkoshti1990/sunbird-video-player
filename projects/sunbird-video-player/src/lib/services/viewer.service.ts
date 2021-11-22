@@ -40,6 +40,7 @@ export class ViewerService {
   public maxScore:any = 0;
   public playerInstance: any;
   public contentMap = {};
+  public isEndEventRaised = false;
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
     private utilService: UtilService,
@@ -168,24 +169,35 @@ export class ViewerService {
     this.scoreObtained =  Object.values(this.interceptionResponses).reduce(
       (acc, response) => acc + response['score'] ,0);
   }
+
   raiseEndEvent() {
-    this.calculateScore()
-    const duration = new Date().getTime() - this.PlayerLoadStartedAt;
-    const endEvent = {
-      eid: 'END',
-      ver: this.version,
-      edata: {
-        type: 'END',
-        currentTime: this.currentlength,
-        totalTime: this.totalLength,
-        duration
-      },
-      metaData: this.metaData
-    };
-    this.playerEvent.emit(endEvent);
-    this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
-    this.videoPlayerService.end(duration, this.totalLength, this.currentlength, this.endPageSeen, this.totalSeekedLength,
-      this.visitedLength / 1000, this.scoreObtained);
+    if (!this.isEndEventRaised) {
+      this.calculateScore()
+      const duration = new Date().getTime() - this.PlayerLoadStartedAt;
+      const endEvent = {
+        eid: 'END',
+        ver: this.version,
+        edata: {
+          type: 'END',
+          currentTime: this.currentlength,
+          totalTime: this.totalLength,
+          duration
+        },
+        metaData: this.metaData
+      };
+      this.playerEvent.emit(endEvent);
+      this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
+      this.videoPlayerService.end(
+        duration,
+        this.totalLength,
+        this.currentlength,
+        this.endPageSeen,
+        this.totalSeekedLength,
+        this.visitedLength / 1000,
+        this.scoreObtained
+      );
+      this.isEndEventRaised = true;
+    }
   }
 
 
