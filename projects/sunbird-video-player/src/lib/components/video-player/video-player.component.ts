@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild, ViewEncapsulation, OnDestroy, EventEmitter, Output, Input } from '@angular/core';
-import { ViewerService } from '../../services/viewer.service';
+import { HttpClient } from '@angular/common/http';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
-import { forkJoin } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import * as _ from 'lodash-es';
+import { ViewerService } from '../../services/viewer.service';
 
 @Component({
   selector: 'video-player',
@@ -38,12 +36,13 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   totalSpentTime = 0;
   isAutoplayPrevented = false;
   setMetaDataConfig = false;
+  totalDuration = 0;
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2,public questionCursor: QuestionCursor,private http: HttpClient,) { }
 
-ngAfterViewInit() {
-    this.viewerService.getPlayerOptions().then(options => {
-      this.player = videojs(this.target.nativeElement, {
+  ngAfterViewInit() {
+    this.viewerService.getPlayerOptions().then(async (options) => {
+      this.player = await videojs(this.target.nativeElement, {
         fluid: true,
         responsive: true,
         sources: options,
@@ -68,8 +67,6 @@ ngAfterViewInit() {
           nativeAudioTracks: false,
           nativeVideoTracks: false,
         }
-      }, function onLoad() {
-
       });
       this.player.videojshttpsourceselector = videojshttpsourceselector;
       this.player.videojshttpsourceselector();
@@ -141,6 +138,10 @@ ngAfterViewInit() {
     });
   }
 
+  onLoadMetadata(e) {
+    this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+  }
+
   registerEvents() {
     const promise = this.player.play();
     if (promise !== undefined) {
@@ -187,7 +188,7 @@ ngAfterViewInit() {
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
 
-      if (this.player.currentTime() >= this.player.duration()) {
+      if (this.player.currentTime() >= this.totalDuration) {
         this.viewerService.metaData.currentDuration = 0;
         this.handleVideoControls({ type: 'ended' });
         this.viewerService.playerEvent.emit({ type: 'ended' });
@@ -205,7 +206,7 @@ ngAfterViewInit() {
   toggleForwardRewindButton() {
     this.showForwardButton = true;
     this.showBackwardButton = true;
-    if ((this.player.currentTime() + this.time) > this.player.duration()) {
+    if ((this.player.currentTime() + this.time) > this.totalDuration) {
       this.showForwardButton = false;
     }
     if ((this.player.currentTime() - this.time) < 0) {
@@ -255,7 +256,7 @@ ngAfterViewInit() {
       this.totalSpentTime += new Date().getTime() - this.startTime;
       this.viewerService.visitedLength = this.totalSpentTime;
       this.viewerService.currentlength = this.player.currentTime();
-      this.viewerService.totalLength = this.player.duration();
+      this.viewerService.totalLength = this.totalDuration;
       this.updatePlayerEventsMetadata({ type });
     }
     if (type === 'pause') {
@@ -318,11 +319,11 @@ ngAfterViewInit() {
   }
 
   updatePlayerEventsMetadata({ type }) {
-    this.viewerService.metaData.totalDuration = this.player.duration();
     const action = {};
     action[type + ''] = this.player.currentTime();
     this.viewerService.metaData.actions.push(action);
   }
+
   ngOnDestroy() {
     if (this.player) {
       this.player.dispose();
