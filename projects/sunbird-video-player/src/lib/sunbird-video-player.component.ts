@@ -183,6 +183,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   replayContent(event) {
     this.playerEvent.emit(event);
     this.viewState = 'player';
+    this.viewerService.isEndEventRaised = false;
     this.viewerService.raiseHeartBeatEvent('REPLAY');
   }
 
@@ -238,6 +239,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseEndEvent();
     this.unlistenTouchStart();
     this.unlistenMouseMove();
+    this.viewerService.isEndEventRaised = false;
     window.removeEventListener('offline', this.raiseInternetDisconnectionError , true);
   }
 }
