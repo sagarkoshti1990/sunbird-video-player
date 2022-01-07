@@ -2,8 +2,7 @@ import {
   ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
-import { ErrorService , errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
-import { identity } from 'rxjs';
+import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
@@ -126,10 +125,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
   }
 
-  sidebarMenuEvent(event) {
-    this.viewerService.sidebarMenuEvent.emit(event);
-  }
-
   ngAfterViewInit() {
     const videoPlayerElement = this.videoPlayerRef.nativeElement;
     this.unlistenMouseMove = this.renderer2.listen(videoPlayerElement, 'mousemove', () => {
@@ -149,17 +144,17 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
-  sideBarEvents(event) {
+  sideBarEvents(event: ISideBarEvent) {
     this.playerEvent.emit(event);
-    if (event === 'DOWNLOAD') {
+    if (event.type === 'DOWNLOAD') {
       this.downloadVideo();
     }
-    const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU'];
+    const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU', 'OPEN_MENU', 'DOWNLOAD_POPUP_CANCEL', 'DOWNLOAD_POPUP_CLOSE'];
     events.forEach(data => {
-      if (event === data) {
+      if (event.type === data) {
         this.viewerService.raiseHeartBeatEvent(data);
       }
-      if (event === 'EXIT') {
+      if (event.type === 'EXIT') {
         this.viewerService.sidebarMenuEvent.emit('CLOSE_MENU');
       }
     });

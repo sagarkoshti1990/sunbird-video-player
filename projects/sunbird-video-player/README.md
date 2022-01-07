@@ -17,7 +17,6 @@ For existing apps, follow these steps to begin using .
     npm install video.js --save
     npm install videojs-contrib-quality-levels --save
     npm install videojs-http-source-selector --save
-    npm install videojs-thumbnails --save
 
 ## Step 2: Include the styles, scripts and assets in angular.json
     "styles": [
