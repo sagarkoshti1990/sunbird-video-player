@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { ViewerService } from './viewer.service';
 
-describe('ViewerService', () => {
+xdescribe('ViewerService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [HttpClientModule]
   }));
