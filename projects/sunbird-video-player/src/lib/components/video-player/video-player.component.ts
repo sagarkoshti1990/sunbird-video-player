@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output,
+   Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
@@ -38,7 +39,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   setMetaDataConfig = false;
   totalDuration = 0;
 
-  constructor(public viewerService: ViewerService, private renderer2: Renderer2,public questionCursor: QuestionCursor,private http: HttpClient,) { }
+  constructor(public viewerService: ViewerService, private renderer2: Renderer2,
+              public questionCursor: QuestionCursor, private http: HttpClient ) { }
 
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(async (options) => {
@@ -70,17 +72,17 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       });
       this.player.videojshttpsourceselector = videojshttpsourceselector;
       this.player.videojshttpsourceselector();
-      const markers = this.viewerService.getMarkers()
+      const markers = this.viewerService.getMarkers();
 
-       if(markers && markers.length >0){
-          const identifiers = markers.map( item => {
-            return item.identifier;
-          })
-          this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
-            (response) => {
-              this.viewerService.maxScore = response.reduce((a,b) => a+b,0)
-            }
-          ) 
+      if (markers && markers.length > 0) {
+        const identifiers = markers.map(item => {
+          return item.identifier;
+        });
+        this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
+          (response) => {
+            this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+          }
+        );
       }
 
       if (markers) {
@@ -92,20 +94,20 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
             'background-color': 'orange'
           },
           onMarkerReached: (marker) => {
-            if(marker){
+            if (marker) {
               const { time, text, identifier, duration } = marker;
               if (!(this.player.currentTime() > (time + duration))) {
                 setTimeout(() => {
-                    this.pause()
-                    this.player.controls(false);  
+                  this.pause();
+                  this.player.controls(false);
                 }, 1000);
                 this.viewerService.getQuestionSet(identifier).subscribe(
                   (response) => {
-                    this.questionSetData.emit({response, time, identifier});
+                    this.questionSetData.emit({ response, time, identifier });
                   }, (error) => {
-                    this.play()
+                    this.play();
                     this.player.controls(true);
-                    console.log(error); 
+                    console.log(error);
                   }
                 );
               }
@@ -160,7 +162,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         this.target.nativeElement.parentNode.appendChild(this.controlDiv.nativeElement);
       }
       this.viewerService.raiseHeartBeatEvent('FULLSCREEN');
-    })
+    });
 
     this.player.on('pause', (data) => {
       this.pause();
@@ -291,15 +293,15 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       }
       this.viewerService.totalSeekedLength = this.totalSeekedLength;
       this.seekStart = null;
-      if(this.player.markers && this.player.markers.getMarkers) {
-        const markers = this.player.markers.getMarkers()
+      if (this.player.markers && this.player.markers.getMarkers) {
+        const markers = this.player.markers.getMarkers();
         markers.forEach(marker => {
-          if(!this.viewerService.interceptionResponses[marker.time] && marker.time < this.currentTime) {
+          if (!this.viewerService.interceptionResponses[marker.time] && marker.time < this.currentTime) {
             this.viewerService.interceptionResponses[marker.time] = {
               score: 0,
               isSkipped: false
-            }
-            document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = "red";
+            };
+            document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = 'red';
           }
         });
       }
@@ -307,13 +309,13 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   setPreMetaDataConfig() {
-    if(!_.isEmpty(_.get(this.config, 'volume'))) {
+    if (!_.isEmpty(_.get(this.config, 'volume'))) {
       this.player.volume(_.last(_.get(this.config, 'volume')));
     }
-    if(_.get(this.config, 'currentDuration')) {
+    if (_.get(this.config, 'currentDuration')) {
       this.player.currentTime(_.get(this.config, 'currentDuration'));
     }
-    if(!_.isEmpty(_.get(this.config, 'playBackSpeeds'))) {
+    if (!_.isEmpty(_.get(this.config, 'playBackSpeeds'))) {
       this.player.playbackRate(_.last(_.get(this.config, 'playBackSpeeds')));
     }
   }

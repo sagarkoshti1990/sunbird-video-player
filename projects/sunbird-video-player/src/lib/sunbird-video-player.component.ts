@@ -33,7 +33,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   private unlistenMouseMove: () => void;
   isPaused = false;
   showQumlPlayer = false;
-  QumlPlayerConfig :any = {};
+  QumlPlayerConfig: any = {};
   videoInstance: any;
   currentInterceptionTime;
   currentInterceptionUIId;
@@ -47,11 +47,11 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   ) {
     this.playerEvent = this.viewerService.playerEvent;
     this.viewerService.playerEvent.subscribe(event => {
-      if(event.type === 'pause') {
+      if (event.type === 'pause') {
         this.isPaused = true;
         this.showControls = true;
       }
-      if(event.type === 'play') {
+      if (event.type === 'play') {
         this.isPaused = false;
       }
       if (event.type === 'loadstart') {
@@ -63,11 +63,12 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewState = 'end';
       }
       if (event.type === 'error') {
+        // tslint:disable-next-line:one-variable-per-declaration
         let code = errorCode.contentLoadFails,
-          message = errorMessage.contentLoadFails
+          message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
             code = errorCode.contentLoadFails,
-            message = errorMessage.contentLoadFails
+            message = errorMessage.contentLoadFails;
         }
         if (code === errorCode.contentLoadFails) {
           this.showContentError = true;
@@ -75,6 +76,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewerService.raiseExceptionLog(code, message, event, this.traceId);
 
       }
+      // tslint:disable-next-line:max-line-length
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
       { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
       events.forEach(data => {
@@ -115,13 +117,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.config = this.playerConfig.config;
     this.QumlPlayerConfig.config.sideMenu.enable = false;
     this.QumlPlayerConfig.context = this.playerConfig.context;
-    this.setTelemetryObjectRollup(this.playerConfig.metadata.identifier)
+    this.setTelemetryObjectRollup(this.playerConfig.metadata.identifier);
   }
 
   raiseInternetDisconnectionError = () => {
-    let code = errorCode.internetConnectivity;
-    let message = errorMessage.internetConnectivity;
-    let stacktrace = `${code}: ${message}`;
+    const code = errorCode.internetConnectivity;
+    const message = errorMessage.internetConnectivity;
+    const stacktrace = `${code}: ${message}`;
     this.viewerService.raiseExceptionLog(code, message, stacktrace, this.traceId);
   }
 
@@ -139,6 +141,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     if (contentCompabilityLevel) {
       const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
+        // tslint:disable-next-line:max-line-length
         this.viewerService.raiseExceptionLog(errorCode.contentCompatibility, errorMessage.contentCompatibility, checkContentCompatible['error']['message'], this.traceId);
       }
     }
@@ -161,17 +164,17 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   setTelemetryObjectRollup(id) {
-    if(this.QumlPlayerConfig.context) {
-      const hasObjectRollup = this.QumlPlayerConfig && this.QumlPlayerConfig.context && this.QumlPlayerConfig.context.objectRollup
-      if(!hasObjectRollup) {
-        this.QumlPlayerConfig.context.objectRollup = {}
+    if (this.QumlPlayerConfig.context) {
+      const hasObjectRollup = this.QumlPlayerConfig && this.QumlPlayerConfig.context && this.QumlPlayerConfig.context.objectRollup;
+      if (!hasObjectRollup) {
+        this.QumlPlayerConfig.context.objectRollup = {};
       }
-      const levels = Object.keys(this.QumlPlayerConfig.context.objectRollup)
-      this.QumlPlayerConfig.context.objectRollup[`l${levels.length +  1}`] = id
+      const levels = Object.keys(this.QumlPlayerConfig.context.objectRollup);
+      this.QumlPlayerConfig.context.objectRollup[`l${levels.length +  1}`] = id;
     }
   }
 
-  playContent(event){
+  playContent(event) {
     this.viewerService.raiseHeartBeatEvent(event.type);
   }
 
@@ -198,16 +201,16 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseHeartBeatEvent('DOWNLOAD');
   }
 
-  
+
 
   qumlPlayerEvents(event) {
-    if(event.eid === "QUML_SUMMARY"){
-      const score = parseInt(event.edata.extra.find(p => p.id === "score")["value"],10)
+    if (event.eid === 'QUML_SUMMARY') {
+      const score = parseInt(event.edata.extra.find(p => p.id === 'score')['value'], 10);
       this.viewerService.interceptionResponses[this.currentInterceptionTime] = {
         score,
         isSkipped: false
-      }
-      document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`)['style'].backgroundColor = "green";
+      };
+      document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`)['style'].backgroundColor = 'green';
       this.showQumlPlayer = false;
       this.videoInstance.play();
       this.videoInstance.controls(true);
@@ -215,12 +218,11 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
 
-  questionSetData({response, time,identifier}) {
-    
+  questionSetData({response, time, identifier}) {
     this.QumlPlayerConfig.metadata = response;
     this.QumlPlayerConfig.metadata['showStartPage'] = 'No';
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
-    this.currentInterceptionTime = time
+    this.currentInterceptionTime = time;
     this.currentInterceptionUIId = identifier;
     this.showQumlPlayer = true;
   }

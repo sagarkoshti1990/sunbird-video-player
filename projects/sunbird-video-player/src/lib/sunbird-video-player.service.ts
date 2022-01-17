@@ -42,7 +42,7 @@ export class SunbirdVideoPlayerService {
             tags: context.tags,
             cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
             { id: this.playSessionId, type: 'PlaySession' },
-            {id: "2.0" , type: "PlayerVersion"}]
+            {id: '2.0' , type: 'PlayerVersion'}]
           },
           userOrgDetails: {}
         }
@@ -123,7 +123,7 @@ export class SunbirdVideoPlayerService {
     });
   }
 
-  public error(errorCode: string , errorType:string ,  stacktrace?:Error) {
+  public error(errorCode: string , errorType: string ,  stacktrace?: Error) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
       options: this.getEventOptions(),
       edata: {
@@ -145,7 +145,7 @@ export class SunbirdVideoPlayerService {
         uid: this.context.uid,
         cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
         { id: this.playSessionId, type: 'PlaySession' },
-        {id: "2.0" , type: "PlayerVersion"}],
+        {id: '2.0' , type: 'PlayerVersion'}],
         rollup: this.context.contextRollup || {}
       }
     });

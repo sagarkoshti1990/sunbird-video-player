@@ -36,16 +36,16 @@ export class ViewerService {
   public interceptionPoints: any;
   public interceptionResponses: any = {};
   public showScore = false;
-  public scoreObtained:any = 0;
-  public maxScore:any = 0;
+  public scoreObtained: any = 0;
+  public maxScore: any = 0;
   public playerInstance: any;
   public contentMap = {};
   public isEndEventRaised = false;
 
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
-    private utilService: UtilService,
-    private http: HttpClient,
-    public questionCursor: QuestionCursor) {
+              private utilService: UtilService,
+              private http: HttpClient,
+              public questionCursor: QuestionCursor) {
     this.PlayerLoadStartedAt = new Date().getTime();
   }
 
@@ -74,11 +74,11 @@ export class ViewerService {
     };
     this.showDownloadPopup = false;
     this.endPageSeen = false;
-    if(this.isAvailableLocally) {
-      const basePath = (metadata.streamingUrl) ? (metadata.streamingUrl) : (metadata.basePath || metadata.baseDir)
+    if (this.isAvailableLocally) {
+      const basePath = (metadata.streamingUrl) ? (metadata.streamingUrl) : (metadata.basePath || metadata.baseDir);
       this.streamingUrl = `${basePath}/${metadata.artifactUrl}`;
       this.mimeType = metadata.mimeType;
-    } 
+    }
   }
 
   async getPlayerOptions() {
@@ -86,6 +86,7 @@ export class ViewerService {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
       const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
+        // tslint:disable-next-line:max-line-length
         this.raiseExceptionLog(errorCode.streamingUrlSupport , errorMessage.streamingUrlSupport , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`), this.traceId);
       });
       if (data) {
@@ -99,18 +100,16 @@ export class ViewerService {
   getMarkers()  {
     if (this.interceptionPoints) {
       try {
-        const interceptionPoints = this.interceptionPoints
+        const interceptionPoints = this.interceptionPoints;
         this.showScore = true;
         return interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
           return { time: interceptionPoint, text: '', identifier, duration: 3 };
         });
-        
       } catch (error) {
-        console.log(error)
-        this.raiseExceptionLog("CPV2_CONT_INTERCEPTION_PARSE", "error parsing the inteception points string", error, '')
+        console.log(error);
+        this.raiseExceptionLog('CPV2_CONT_INTERCEPTION_PARSE', 'error parsing the inteception points string', error, '');
         this.showScore = false;
       }
-      
     }
     return null;
   }
@@ -118,34 +117,34 @@ export class ViewerService {
 
   getQuestionSet(identifier) {
     const content = this.contentMap[identifier];
-    if(!content) {
+    if (!content) {
      return this.questionCursor.getQuestionSet(identifier)
      .pipe(map((response) => {
         this.contentMap[identifier] = response.questionSet;
         return this.contentMap[identifier];
-       }))
+       }));
     } else {
       return of(content);
     }
   }
 
   preFetchContent() {
-    const nextMarker = this.getNextMarker()
-    if(nextMarker) {
+    const nextMarker = this.getNextMarker();
+    if (nextMarker) {
       const identifier = nextMarker.identifier;
-      this.getQuestionSet(nextMarker.identifier)
+      this.getQuestionSet(nextMarker.identifier);
     }
   }
 
   getNextMarker() {
-    var currentTime = this.playerInstance.currentTime();
-    const markersList = this.getMarkers()
-    if(!markersList) return null;
+    const currentTime = this.playerInstance.currentTime();
+    const markersList = this.getMarkers();
+    if (!markersList) { return null; }
 
     return markersList.find(marker => {
       const markerTime = marker.time;
-      return markerTime > currentTime
-    })
+      return markerTime > currentTime;
+    });
   }
 
   raiseStartEvent(event) {
@@ -167,12 +166,13 @@ export class ViewerService {
 
   calculateScore() {
     this.scoreObtained =  Object.values(this.interceptionResponses).reduce(
-      (acc, response) => acc + response['score'] ,0);
+      // tslint:disable-next-line:no-string-literal
+      (acc, response) => acc + response['score'] , 0);
   }
 
   raiseEndEvent() {
     if (!this.isEndEventRaised) {
-      this.calculateScore()
+      this.calculateScore();
       const duration = new Date().getTime() - this.PlayerLoadStartedAt;
       const endEvent = {
         eid: 'END',
@@ -202,7 +202,7 @@ export class ViewerService {
 
 
   raiseHeartBeatEvent(type: string) {
-    if(type === "REPLAY") {
+    if (type === 'REPLAY') {
       this.interceptionResponses = {};
       this.showScore = false;
       this.scoreObtained = 0;
@@ -229,6 +229,7 @@ export class ViewerService {
 
   }
 
+  // tslint:disable-next-line:no-shadowed-variable
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
     const exceptionLogEvent = {
       eid: 'ERROR',
