@@ -329,6 +329,6 @@
   },
   "defaultProject": "sunbird-video-player-app",
   "cli": {
-    "analytics": false
+    "analytics": "931de5e9-e583-4631-b69f-cd0c4f7c2030"
   }
 }
