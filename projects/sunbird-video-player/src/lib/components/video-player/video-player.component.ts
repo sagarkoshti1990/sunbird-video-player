@@ -89,8 +89,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         this.player.markers({
           markers,
           markerStyle: {
-            'height': '7px',
-            'bottom': '39%',
+            height: '7px',
+            bottom: '39%',
             'background-color': 'orange'
           },
           onMarkerReached: (marker) => {
@@ -301,7 +301,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
               score: 0,
               isSkipped: false
             };
-            document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = 'red';
+            document.querySelector(`[data-marker-time='${marker.time}']`)['style'].backgroundColor = 'red';
           }
         });
       }

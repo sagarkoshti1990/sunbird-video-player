@@ -27,13 +27,14 @@ xdescribe('SunbirdVideoPlayerComponent', () => {
     fixture = TestBed.createComponent(SunbirdVideoPlayerComponent);
     component = fixture.componentInstance;
     component.playerConfig = mockData.playerConfig;
-    timerCallback = jasmine.createSpy("timerCallback");
+    timerCallback = jasmine.createSpy('timerCallback');
     jasmine.clock().uninstall();
     jasmine.clock().install();
     fixture.detectChanges();
   });
 
-  afterEach(function () {
+  // tslint:disable-next-line:only-arrow-functions
+  afterEach(function() {
     jasmine.clock().uninstall();
   });
 
