@@ -301,7 +301,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
               score: 0,
               isSkipped: false
             };
-            document.querySelector(`[data-marker-time='${marker.time}']`)['style'].backgroundColor = 'red';
+            document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = 'red';
           }
         });
       }
