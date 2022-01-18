@@ -20,7 +20,7 @@ jobs:
           command: npm run test -- --no-watch
       - run: 
           name: Install sonar scanner
-          command: 'npm install -i -g sonarqube-scanner'
+          command: 'sudo npm install -i -g sonarqube-scanner'
       - run: 
           name: Sonar scanner
           command: sonar-scanner -Dsonar.projectKey=project-sunbird_sunbird-video-player -Dsonar.organization=project-sunbird -Dsonar.host.url=https://sonarcloud.io -Dsonar.language=ts -Dsonar.sources=projects/sunbird-video-player/src -Dsonar.typescript.lcov.reportPaths=coverage/sunbird-video-player/lcov.info
