@@ -13,12 +13,12 @@ describe('VideoPlayerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      declarations: [ VideoPlayerComponent ],
+      declarations: [VideoPlayerComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [ViewerService, SunbirdVideoPlayerService,
-         { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
+        { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
