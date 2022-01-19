@@ -5,7 +5,7 @@ import { UtilService } from './util.service';
 describe('UtilService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  xit('should be created', () => {
+  it('should be created UtilService', () => {
     const service: UtilService = TestBed.get(UtilService);
     expect(service).toBeTruthy();
   });

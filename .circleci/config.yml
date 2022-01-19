@@ -13,10 +13,10 @@ jobs:
       - run: cd projects/sunbird-video-player &&  npm install --no-progress
       - run: npm install --no-progress
       - run:
-          name: Linting
+          name: ng lint
           command: npm run lint
       - run:
-          name: Testing
+          name: Executing test cases
           command: npm run test -- --no-watch
       - run: 
           name: Install sonar scanner

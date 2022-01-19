@@ -42,21 +42,6 @@ describe('SunbirdVideoPlayerComponent', () => {
   it('should create SunbirdVideoPlayerComponent', () => {
     expect(component).toBeTruthy();
   });
-  // xit('should initialize player config and log event when offline', () => {
-  //   component.QumlPlayerConfig.config.sideMenu.enable = false;
-  //   const sunbirdVideoPlayerService = TestBed.get(SunbirdVideoPlayerService);
-  //   const viewerService = TestBed.get(ViewerService);
-  //   const errorService = TestBed.get(ErrorService);
-  //   spyOn(sunbirdVideoPlayerService, 'initialize');
-  //   spyOn(viewerService, 'initialize');
-  //   spyOn(viewerService, 'raiseExceptionLog');
-  //   errorService.getInternetConnectivityError.emit({ error: 'test' });
-  //   component.ngOnInit();
-  //   expect(component.viewState).toEqual('player');
-  //   expect(sunbirdVideoPlayerService.initialize).toHaveBeenCalled();
-  //   expect(viewerService.initialize).toHaveBeenCalled();
-  // });
-
   it('show controls sould be false after mentioned time', () => {
     component.isPaused = false;
     setInterval(() => {
@@ -71,14 +56,6 @@ describe('SunbirdVideoPlayerComponent', () => {
   it('should call the playerInstance and define the videoInstance', () => {
     component.playerInstance({});
     expect(component.videoInstance).toEqual({});
-  });
-  xit('should call questionSetData and assign QumlPlayerConfig', () => {
-    const data = {response: {}, time: 1234, identifier: 2344};
-    component.questionSetData(data);
-    expect(component.QumlPlayerConfig.metadata).toEqual({});
-    expect(component.currentInterceptionTime).toEqual(1234);
-    expect(component.currentInterceptionUIId).toEqual(2344);
-    expect(component.showQumlPlayer).toBeTruthy();
   });
   it('should call exitContent and emit player event', () => {
     const event = {};
@@ -103,5 +80,35 @@ describe('SunbirdVideoPlayerComponent', () => {
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
     component.playContent(event);
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('PLAY');
+  });
+  it('should call sideBarEvents and call download video', () => {
+    const event = {type: 'DOWNLOAD', event: new MouseEvent('')};
+    spyOn(component, 'downloadVideo').and.callFake(() => { });
+    spyOn(component.viewerService.sidebarMenuEvent, 'emit').and.callThrough();
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    component.sideBarEvents(event);
+    expect(component.downloadVideo).toHaveBeenCalled();
+    expect(component.viewerService.raiseHeartBeatEvent).not.toHaveBeenCalledWith('DOWNLOAD');
+    expect(component.viewerService.sidebarMenuEvent.emit).not.toHaveBeenCalledWith('CLOSE_MENU');
+  });
+  it('should call sideBarEvents and call raiseHeartBeatEvent for event EXIT', () => {
+    const event = {type: 'EXIT', event: new MouseEvent('')};
+    spyOn(component, 'downloadVideo').and.callFake(() => { });
+    spyOn(component.viewerService.sidebarMenuEvent, 'emit').and.callThrough();
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    component.sideBarEvents(event);
+    expect(component.downloadVideo).not.toHaveBeenCalled();
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('EXIT');
+    expect(component.viewerService.sidebarMenuEvent.emit).toHaveBeenCalledWith('CLOSE_MENU');
+  });
+  it('should call sideBarEvents and call raiseHeartBeatEvent for events share and etc', () => {
+    const event = {type: 'SHARE', event: new MouseEvent('')};
+    spyOn(component, 'downloadVideo').and.callFake(() => { });
+    spyOn(component.viewerService.sidebarMenuEvent, 'emit').and.callThrough();
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    component.sideBarEvents(event);
+    expect(component.downloadVideo).not.toHaveBeenCalled();
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('SHARE');
+    expect(component.viewerService.sidebarMenuEvent.emit).not.toHaveBeenCalledWith('CLOSE_MENU');
   });
 });
