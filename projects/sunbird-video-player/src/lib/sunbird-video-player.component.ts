@@ -7,6 +7,7 @@ import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
+import * as _ from 'lodash-es';
 @Component({
   selector: 'sunbird-video-player',
   templateUrl: './sunbird-video-player.component.html',

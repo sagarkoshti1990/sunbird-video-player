@@ -42,21 +42,22 @@ describe('SunbirdVideoPlayerComponent', () => {
   it('should create SunbirdVideoPlayerComponent', () => {
     expect(component).toBeTruthy();
   });
-  xit('should initialize player config and log event when offline', () => {
-    const sunbirdVideoPlayerService = TestBed.get(SunbirdVideoPlayerService);
-    const viewerService = TestBed.get(ViewerService);
-    const errorService = TestBed.get(ErrorService);
-    spyOn(sunbirdVideoPlayerService, 'initialize');
-    spyOn(viewerService, 'initialize');
-    spyOn(viewerService, 'raiseExceptionLog');
-    errorService.getInternetConnectivityError.emit({ error: 'test' });
-    component.ngOnInit();
-    expect(component.viewState).toEqual('player');
-    expect(sunbirdVideoPlayerService.initialize).toHaveBeenCalled();
-    expect(viewerService.initialize).toHaveBeenCalled();
-  });
+  // xit('should initialize player config and log event when offline', () => {
+  //   component.QumlPlayerConfig.config.sideMenu.enable = false;
+  //   const sunbirdVideoPlayerService = TestBed.get(SunbirdVideoPlayerService);
+  //   const viewerService = TestBed.get(ViewerService);
+  //   const errorService = TestBed.get(ErrorService);
+  //   spyOn(sunbirdVideoPlayerService, 'initialize');
+  //   spyOn(viewerService, 'initialize');
+  //   spyOn(viewerService, 'raiseExceptionLog');
+  //   errorService.getInternetConnectivityError.emit({ error: 'test' });
+  //   component.ngOnInit();
+  //   expect(component.viewState).toEqual('player');
+  //   expect(sunbirdVideoPlayerService.initialize).toHaveBeenCalled();
+  //   expect(viewerService.initialize).toHaveBeenCalled();
+  // });
 
-  xit('show controls sould be false after mentioned time', () => {
+  it('show controls sould be false after mentioned time', () => {
     component.isPaused = false;
     setInterval(() => {
       if (!component.isPaused) {
@@ -67,4 +68,57 @@ describe('SunbirdVideoPlayerComponent', () => {
     jasmine.clock().tick(101);
     expect(component.showControls).toBeFalsy();
   });
+  it('should call the playerInstance and define the videoInstance', () => {
+    component.playerInstance({});
+    expect(component.videoInstance).toEqual({});
+  });
+  xit('should call questionSetData and assign QumlPlayerConfig', () => {
+    const data = {response: {}, time: 1234, identifier: 2344};
+    component.questionSetData(data);
+    expect(component.QumlPlayerConfig.metadata).toEqual({});
+    expect(component.currentInterceptionTime).toEqual(1234);
+    expect(component.currentInterceptionUIId).toEqual(2344);
+    expect(component.showQumlPlayer).toBeTruthy();
+  });
+  it('should call exitContent and emit player event', () => {
+    const event = {};
+    spyOn(component.playerEvent, 'emit').and.callThrough();
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    component.exitContent(event);
+    expect(component.playerEvent.emit).toHaveBeenCalledWith({});
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('EXIT');
+  });
+  it('should call replayContent and emit player event for REPLAY raiseHeartBeatEvent', () => {
+    const event = {};
+    spyOn(component.playerEvent, 'emit').and.callThrough();
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    component.replayContent(event);
+    expect(component.playerEvent.emit).toHaveBeenCalledWith({});
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('REPLAY');
+    expect(component.viewState).toEqual('player');
+    expect(component.viewerService.isEndEventRaised).toBeFalsy();
+  });
+  it('should call playContent and call raiseHeartBeatEvent ', () => {
+    const event = {type: 'PLAY'};
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    component.playContent(event);
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('PLAY');
+  });
 });
+
+
+// sideBarEvents(event: ISideBarEvent) {
+//   this.playerEvent.emit(event);
+//   if (event.type === 'DOWNLOAD') {
+//     this.downloadVideo();
+//   }
+//   const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU', 'OPEN_MENU', 'DOWNLOAD_POPUP_CANCEL', 'DOWNLOAD_POPUP_CLOSE'];
+//   events.forEach(data => {
+//     if (event.type === data) {
+//       this.viewerService.raiseHeartBeatEvent(data);
+//     }
+//     if (event.type === 'EXIT') {
+//       this.viewerService.sidebarMenuEvent.emit('CLOSE_MENU');
+//     }
+//   });
+// }
