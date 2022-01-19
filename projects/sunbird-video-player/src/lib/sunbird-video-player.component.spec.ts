@@ -105,20 +105,3 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('PLAY');
   });
 });
-
-
-// sideBarEvents(event: ISideBarEvent) {
-//   this.playerEvent.emit(event);
-//   if (event.type === 'DOWNLOAD') {
-//     this.downloadVideo();
-//   }
-//   const events = ['SHARE', 'DOWNLOAD_MENU', 'EXIT', 'CLOSE_MENU', 'OPEN_MENU', 'DOWNLOAD_POPUP_CANCEL', 'DOWNLOAD_POPUP_CLOSE'];
-//   events.forEach(data => {
-//     if (event.type === data) {
-//       this.viewerService.raiseHeartBeatEvent(data);
-//     }
-//     if (event.type === 'EXIT') {
-//       this.viewerService.sidebarMenuEvent.emit('CLOSE_MENU');
-//     }
-//   });
-// }
