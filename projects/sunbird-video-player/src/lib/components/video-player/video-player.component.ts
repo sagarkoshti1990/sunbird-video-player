@@ -217,7 +217,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   play() {
-    this.player.play();
+    if (this.player) {
+      this.player.play();
+    }
     this.currentPlayerState = 'play';
     this.showPauseButton = true;
     this.showPlayButton = false;
@@ -225,7 +227,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   pause() {
-    this.player.pause();
+    if (this.player) {
+      this.player.pause();
+    }
     this.currentPlayerState = 'pause';
     this.showPauseButton = false;
     this.showPlayButton = true;
@@ -234,13 +238,17 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   backward() {
-    this.player.currentTime(this.player.currentTime() - this.time);
+    if (this.player) {
+      this.player.currentTime(this.player.currentTime() + this.time);
+    }
     this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('BACKWARD');
   }
 
   forward() {
-    this.player.currentTime(this.player.currentTime() + this.time);
+    if (this.player) {
+      this.player.currentTime(this.player.currentTime() + this.time);
+    }
     this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('FORWARD');
   }
