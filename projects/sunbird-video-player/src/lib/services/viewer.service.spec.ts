@@ -14,13 +14,13 @@ describe('ViewerService', () => {
   }));
 
   it('should be created ViewerService', () => {
-    const service: ViewerService = TestBed.get(ViewerService);
+    const service = TestBed.inject(ViewerService);
     expect(service).toBeTruthy();
   });
   it('should call raiseExceptionLog', () => {
-    const service: ViewerService = TestBed.get(ViewerService);
+    const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
-    spyOn(service['videoPlayerService'], 'error').and.callFake(() => { });
+    spyOn(service['videoPlayerService'], 'error').and.callFake(() => 'true');
     const exceptionLogEvent = {
       eid: 'ERROR',
       edata: {
@@ -37,10 +37,10 @@ describe('ViewerService', () => {
       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
   });
   it('should call raiseHeartBeatEvent for REPLAY', () => {
-    const service: ViewerService = TestBed.get(ViewerService);
+    const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
-    spyOn(service['videoPlayerService'], 'heartBeat').and.callFake(() => { });
-    spyOn(service['videoPlayerService'], 'interact').and.callFake(() => { });
+    spyOn(service['videoPlayerService'], 'heartBeat').and.callFake(() => 'true');
+    spyOn(service['videoPlayerService'], 'interact').and.callFake(() => 'true');
     service.raiseHeartBeatEvent('REPLAY');
     expect(service.showScore).toBeFalsy();
     expect(service.scoreObtained).toEqual(0);

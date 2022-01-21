@@ -56,14 +56,14 @@ describe('VideoPlayerComponent', () => {
     expect(component.player.play).toHaveBeenCalled();
   });
   it('should call backward()', () => {
-    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => { });
+    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => 'true');
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.backward();
     expect(component.toggleForwardRewindButton).toHaveBeenCalled();
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('BACKWARD');
   });
   it('should call backward()', () => {
-    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => { });
+    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => 'true');
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() =>  'true');
     component.forward();
     expect(component.toggleForwardRewindButton).toHaveBeenCalled();
