@@ -24,15 +24,14 @@ describe('VideoPlayerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VideoPlayerComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
   it('should call pause()', () => {
-    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => { });
-    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => 'true');
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.player = {
       pause: jasmine.createSpy('pause')
     };
@@ -45,7 +44,7 @@ describe('VideoPlayerComponent', () => {
     expect(component.player.pause).toHaveBeenCalled();
   });
   it('should call play()', () => {
-    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => { });
+    spyOn(component, 'toggleForwardRewindButton').and.callFake(() => 'true');
     component.player = {
       play: jasmine.createSpy('play')
     };
@@ -58,14 +57,14 @@ describe('VideoPlayerComponent', () => {
   });
   it('should call backward()', () => {
     spyOn(component, 'toggleForwardRewindButton').and.callFake(() => { });
-    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.backward();
     expect(component.toggleForwardRewindButton).toHaveBeenCalled();
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('BACKWARD');
   });
   it('should call backward()', () => {
     spyOn(component, 'toggleForwardRewindButton').and.callFake(() => { });
-    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => { });
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() =>  'true');
     component.forward();
     expect(component.toggleForwardRewindButton).toHaveBeenCalled();
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('FORWARD');
