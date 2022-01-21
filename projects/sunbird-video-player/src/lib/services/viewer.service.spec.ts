@@ -46,4 +46,43 @@ describe('ViewerService', () => {
     expect(service.scoreObtained).toEqual(0);
     expect(service.interceptionResponses).toEqual({});
   });
+  it('should call calculateScore', () => {
+    const service = TestBed.inject(ViewerService);
+    service.interceptionResponses = {};
+    service.calculateScore();
+    expect(service.scoreObtained).toEqual(0);
+  });
+  it('should call raiseHeartBeatEvent for REPLAY', () => {
+    const service = TestBed.inject(ViewerService);
+    const startEvent = {
+      eid: 'START',
+      ver: '1.0',
+      edata: {
+        type: 'START',
+        mode: 'play',
+        duration: 0
+      },
+      metaData: undefined
+    };
+    spyOn(service.playerEvent, 'emit').and.callThrough();
+    spyOn(service['videoPlayerService'], 'start').and.callFake(() => 'true');
+    service.raiseStartEvent('');
+    expect(service.PlayerLoadStartedAt).toBeDefined();
+  });
+  it('should call preFetchContent', () => {
+    const service = TestBed.inject(ViewerService);
+    spyOn(service, 'getNextMarker').and.returnValue({identifier: '1234'});
+    spyOn(service, 'getQuestionSet').and.callFake(() => 'true');
+    service.preFetchContent();
+    expect(service.getQuestionSet).toHaveBeenCalledWith('1234');
+  });
+  it('should call raiseEndEvent', () => {
+    const service = TestBed.inject(ViewerService);
+    service.isEndEventRaised = true;
+    spyOn(service, 'calculateScore').and.callThrough();
+    spyOn(service['utilService'], 'getTimeSpentText').and.callFake(() => 'true');
+    service.raiseEndEvent();
+    expect(service['utilService'].getTimeSpentText).not.toHaveBeenCalledWith(10);
+    expect(service.calculateScore).not.toHaveBeenCalled();
+  });
 });

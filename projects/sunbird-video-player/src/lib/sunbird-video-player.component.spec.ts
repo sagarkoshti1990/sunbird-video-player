@@ -29,7 +29,6 @@ describe('SunbirdVideoPlayerComponent', () => {
     fixture = TestBed.createComponent(SunbirdVideoPlayerComponent);
     component = fixture.componentInstance;
     component.playerConfig = mockData.playerConfig;
-    timerCallback = jasmine.createSpy('timerCallback');
     jasmine.clock().uninstall();
     jasmine.clock().install();
   });
@@ -109,5 +108,35 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.downloadVideo).not.toHaveBeenCalled();
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('SHARE');
     expect(component.viewerService.sidebarMenuEvent.emit).not.toHaveBeenCalledWith('CLOSE_MENU');
+  });
+  it('should call downloadVideo ', () => {
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    component.downloadVideo();
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('DOWNLOAD');
+  });
+  it('should call onTelemetryEvent', () => {
+    spyOn(component.telemetryEvent, 'emit').and.callThrough();
+    const event = {detail: 'asdf'};
+    component.onTelemetryEvent(event);
+    expect(component.telemetryEvent.emit).toHaveBeenCalledWith(event.detail);
+  });
+  it('should call setTelemetryObjectRollup', () => {
+    component.QumlPlayerConfig = mockData.playerConfig;
+    component.setTelemetryObjectRollup(1234);
+    expect(component.QumlPlayerConfig.context).toBeDefined();
+  });
+  it('should call ngOnInit', () => {
+    spyOn(component.videoPlayerService, 'initialize').and.callThrough();
+    spyOn(component.viewerService, 'initialize').and.callThrough();
+    spyOn(component, 'setTelemetryObjectRollup').and.callThrough();
+    component.ngOnInit();
+    expect(component.viewerService.initialize).toHaveBeenCalledWith(component.playerConfig);
+    expect(component.videoPlayerService.initialize).toHaveBeenCalledWith(component.playerConfig);
+    expect(component.setTelemetryObjectRollup).toHaveBeenCalledWith(component.playerConfig.metadata.identifier);
+    expect(component.playerConfig).toBeDefined();
+    expect(component.QumlPlayerConfig).toBeDefined();
+    expect(component.QumlPlayerConfig.config).toBeDefined();
+    expect(component.QumlPlayerConfig.context).toBeDefined();
+    expect(component.traceId).toEqual(component.playerConfig.config.traceId);
   });
 });
