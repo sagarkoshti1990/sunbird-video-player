@@ -12,17 +12,16 @@ import { QuestionCursorImplementationService } from 'src/app/question-cursor-imp
 describe('SunbirdVideoPlayerComponent', () => {
   let component: SunbirdVideoPlayerComponent;
   let fixture: ComponentFixture<SunbirdVideoPlayerComponent>;
-  let timerCallback;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      declarations: [ SunbirdVideoPlayerComponent ],
+      declarations: [SunbirdVideoPlayerComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [ViewerService, SunbirdVideoPlayerService, ErrorService,
-         { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
+        { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -34,7 +33,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   });
 
   // tslint:disable-next-line:only-arrow-functions
-  afterEach(function() {
+  afterEach(function () {
     jasmine.clock().uninstall();
   });
   it('should create SunbirdVideoPlayerComponent', () => {
@@ -74,13 +73,13 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewerService.isEndEventRaised).toBeFalsy();
   });
   it('should call playContent and call raiseHeartBeatEvent ', () => {
-    const event = {type: 'PLAY'};
+    const event = { type: 'PLAY' };
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.playContent(event);
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('PLAY');
   });
   it('should call sideBarEvents and call download video', () => {
-    const event = {type: 'DOWNLOAD', event: new MouseEvent('')};
+    const event = { type: 'DOWNLOAD', event: new MouseEvent('') };
     spyOn(component, 'downloadVideo').and.callFake(() => 'true');
     spyOn(component.viewerService.sidebarMenuEvent, 'emit').and.callThrough();
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
@@ -90,7 +89,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewerService.sidebarMenuEvent.emit).not.toHaveBeenCalledWith('CLOSE_MENU');
   });
   it('should call sideBarEvents and call raiseHeartBeatEvent for event EXIT', () => {
-    const event = {type: 'EXIT', event: new MouseEvent('')};
+    const event = { type: 'EXIT', event: new MouseEvent('') };
     spyOn(component, 'downloadVideo').and.callFake(() => 'true');
     spyOn(component.viewerService.sidebarMenuEvent, 'emit').and.callThrough();
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
@@ -100,7 +99,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewerService.sidebarMenuEvent.emit).toHaveBeenCalledWith('CLOSE_MENU');
   });
   it('should call sideBarEvents and call raiseHeartBeatEvent for events share and etc', () => {
-    const event = {type: 'SHARE', event: new MouseEvent('')};
+    const event = { type: 'SHARE', event: new MouseEvent('') };
     spyOn(component, 'downloadVideo').and.callFake(() => 'true');
     spyOn(component.viewerService.sidebarMenuEvent, 'emit').and.callThrough();
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
@@ -116,7 +115,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   });
   it('should call onTelemetryEvent', () => {
     spyOn(component.telemetryEvent, 'emit').and.callThrough();
-    const event = {detail: 'asdf'};
+    const event = { detail: 'asdf' };
     component.onTelemetryEvent(event);
     expect(component.telemetryEvent.emit).toHaveBeenCalledWith(event.detail);
   });
