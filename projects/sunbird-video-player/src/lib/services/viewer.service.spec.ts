@@ -17,7 +17,7 @@ describe('ViewerService', () => {
     const service: ViewerService = TestBed.get(ViewerService);
     expect(service).toBeTruthy();
   });
-  it('should be created', () => {
+  it('should call raiseExceptionLog', () => {
     const service: ViewerService = TestBed.get(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
     spyOn(service['videoPlayerService'], 'error').and.callFake(() => { });
@@ -35,5 +35,15 @@ describe('ViewerService', () => {
     expect(service.playerEvent.emit).toHaveBeenCalledWith(exceptionLogEvent);
     expect(service['videoPlayerService']['error']).toHaveBeenCalledWith(exceptionLogEvent.edata.err,
       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
+  });
+  it('should call raiseHeartBeatEvent for REPLAY', () => {
+    const service: ViewerService = TestBed.get(ViewerService);
+    spyOn(service.playerEvent, 'emit').and.callThrough();
+    spyOn(service['videoPlayerService'], 'heartBeat').and.callFake(() => { });
+    spyOn(service['videoPlayerService'], 'interact').and.callFake(() => { });
+    service.raiseHeartBeatEvent('REPLAY');
+    expect(service.showScore).toBeFalsy();
+    expect(service.scoreObtained).toEqual(0);
+    expect(service.interceptionResponses).toEqual({});
   });
 });
