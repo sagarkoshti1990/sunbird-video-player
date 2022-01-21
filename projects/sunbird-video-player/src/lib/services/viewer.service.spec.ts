@@ -10,7 +10,7 @@ describe('ViewerService', () => {
     imports: [HttpClientModule],
     schemas: [NO_ERRORS_SCHEMA],
     providers: [ViewerService, SunbirdVideoPlayerService,
-       { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
+      { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
   }));
 
   it('should be created ViewerService', () => {
@@ -22,18 +22,18 @@ describe('ViewerService', () => {
     spyOn(service.playerEvent, 'emit').and.callThrough();
     spyOn(service['videoPlayerService'], 'error').and.callFake(() => { });
     const exceptionLogEvent = {
-    eid: 'ERROR',
-    edata: {
-      err: 'errorCode',
-      errtype: 'errorType',
-      requestid: 'traceId',
-      stacktrace: 'stacktrace' ,
-    }
-  };
+      eid: 'ERROR',
+      edata: {
+        err: 'errorCode',
+        errtype: 'errorType',
+        requestid: 'traceId',
+        stacktrace: 'stacktrace',
+      }
+    };
     service.raiseExceptionLog(exceptionLogEvent.edata.err,
-       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace, exceptionLogEvent.edata.requestid);
+      exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace, exceptionLogEvent.edata.requestid);
     expect(service.playerEvent.emit).toHaveBeenCalledWith(exceptionLogEvent);
     expect(service['videoPlayerService']['error']).toHaveBeenCalledWith(exceptionLogEvent.edata.err,
-       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
+      exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
   });
 });
