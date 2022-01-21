@@ -33,7 +33,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   });
 
   // tslint:disable-next-line:only-arrow-functions
-  afterEach(function () {
+  afterEach(function() {
     jasmine.clock().uninstall();
   });
   it('should create SunbirdVideoPlayerComponent', () => {
