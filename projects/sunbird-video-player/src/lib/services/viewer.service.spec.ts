@@ -13,8 +13,27 @@ describe('ViewerService', () => {
        { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
   }));
 
-  it('should be created', () => {
+  it('should be created ViewerService', () => {
     const service: ViewerService = TestBed.get(ViewerService);
     expect(service).toBeTruthy();
+  });
+  it('should be created', () => {
+    const service: ViewerService = TestBed.get(ViewerService);
+    spyOn(service.playerEvent, 'emit').and.callThrough();
+    spyOn(service['videoPlayerService'], 'error').and.callFake(() => { });
+    const exceptionLogEvent = {
+    eid: 'ERROR',
+    edata: {
+      err: 'errorCode',
+      errtype: 'errorType',
+      requestid: 'traceId',
+      stacktrace: 'stacktrace' ,
+    }
+  };
+    service.raiseExceptionLog(exceptionLogEvent.edata.err,
+       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace, exceptionLogEvent.edata.requestid);
+    expect(service.playerEvent.emit).toHaveBeenCalledWith(exceptionLogEvent);
+    expect(service['videoPlayerService']['error']).toHaveBeenCalledWith(exceptionLogEvent.edata.err,
+       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
   });
 });
