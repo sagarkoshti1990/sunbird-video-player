@@ -54,16 +54,6 @@ describe('ViewerService', () => {
   });
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
-    const startEvent = {
-      eid: 'START',
-      ver: '1.0',
-      edata: {
-        type: 'START',
-        mode: 'play',
-        duration: 0
-      },
-      metaData: undefined
-    };
     spyOn(service.playerEvent, 'emit').and.callThrough();
     spyOn(service['videoPlayerService'], 'start').and.callFake(() => 'true');
     service.raiseStartEvent('');
