@@ -64,7 +64,7 @@ describe('VideoPlayerComponent', () => {
   });
   it('should call backward()', () => {
     spyOn(component, 'toggleForwardRewindButton').and.callFake(() => 'true');
-    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() =>  'true');
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.forward();
     expect(component.toggleForwardRewindButton).toHaveBeenCalled();
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('FORWARD');
@@ -73,12 +73,114 @@ describe('VideoPlayerComponent', () => {
     component.player = {
       currentTime: jasmine.createSpy('currentTime')
     };
-    spyOn(component, 'updatePlayerEventsMetadata').and.callFake(() =>  'true');
+    spyOn(component, 'updatePlayerEventsMetadata').and.callFake(() => 'true');
     component.totalSpentTime = 0;
     component.startTime = 0;
-    component.handleVideoControls({type: 'ended'});
+    component.handleVideoControls({ type: 'ended' });
     expect(component.totalSpentTime).toString();
     expect(component.viewerService.visitedLength).toEqual(component.totalSpentTime);
   });
+  it('should call handleVideoControls for playing and setPreMetaDataConfig', () => {
+    component.setMetaDataConfig = true;
+    spyOn(component, 'setPreMetaDataConfig').and.callThrough();
+    component.handleVideoControls({ type: 'playing' });
+    expect(component.showPlayButton).toBeFalsy();
+    expect(component.showPauseButton).toBeTruthy();
+    expect(component.setMetaDataConfig).toBeFalsy();
+    expect(component.setPreMetaDataConfig).toHaveBeenCalled();
+  });
+  it('should call handleVideoControls for playing and setPreMetaDataConfig is false', () => {
+    component.setMetaDataConfig = false;
+    spyOn(component, 'setPreMetaDataConfig').and.callThrough();
+    component.handleVideoControls({ type: 'playing' });
+    expect(component.showPlayButton).toBeFalsy();
+    expect(component.showPauseButton).toBeTruthy();
+    expect(component.setMetaDataConfig).not.toBeTruthy();
+    expect(component.setPreMetaDataConfig).not.toHaveBeenCalled();
+  });
+  it('should call handleVideoControls for play ', () => {
+    spyOn(component, 'updatePlayerEventsMetadata').and.callFake(() => 'true');
+    component.handleVideoControls({ type: 'play' });
+    expect(component.startTime).toBeDefined();
+    expect(component.updatePlayerEventsMetadata).toHaveBeenCalledWith({ type: 'play' });
+  });
+  it('should call handleVideoControls for play ', () => {
+    component.handleVideoControls({ type: 'loadstart' });
+    expect(component.startTime).toBeDefined();
+    expect(component.setMetaDataConfig).toBeTruthy();
+  });
+  it('should call handleVideoControls for timeupdate', () => {
+    component.currentTime = 16990999900;
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime')
+    };
+    spyOn(component, 'toggleForwardRewindButton').and.callThrough();
+    component.handleVideoControls({ type: 'timeupdate' });
+    expect(component.previousTime).toEqual(16990999900);
+    expect(component.toggleForwardRewindButton).toHaveBeenCalled();
+    expect(component.player.currentTime).toHaveBeenCalled();
+  });
+  it('should call handleVideoControls for seeking ', () => {
+    component.previousTime = 16990999900;
+    component.seekStart = null;
+    component.handleVideoControls({ type: 'seeking' });
+    expect(component.seekStart).toEqual(component.previousTime);
+  });
+  it('should call handleVideoControls for seeked for currentTime > seekStart', () => {
+    component.player = {
+      markers: jasmine.createSpy('markers')
+    };
+    component.currentTime = 1000;
+    component.seekStart = 900;
+    spyOn(component, 'updatePlayerEventsMetadata').and.callFake(() => 'true');
+    component.handleVideoControls({ type: 'seeked' });
+    expect(component.updatePlayerEventsMetadata).toHaveBeenCalledWith({ type: 'seeked' });
+    expect(component.totalSeekedLength).toBeDefined();
+    expect(component.viewerService.totalSeekedLength).toEqual(component.totalSeekedLength);
+  });
+  it('should call handleVideoControls for seeked  for currentTime < seekStart', () => {
+    component.player = {
+      markers: jasmine.createSpy('markers')
+    };
+    component.currentTime = 100;
+    component.seekStart = 900;
+    spyOn(component, 'updatePlayerEventsMetadata').and.callFake(() => 'true');
+    component.handleVideoControls({ type: 'seeked' });
+    expect(component.updatePlayerEventsMetadata).toHaveBeenCalledWith({ type: 'seeked' });
+    expect(component.totalSeekedLength).toBeDefined();
+    expect(component.viewerService.totalSeekedLength).toEqual(component.totalSeekedLength);
+  });
+  it('should call handleVideoControls for seeking ', () => {
+    component.viewerService.metaData = { actions: [] };
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime')
+    };
+    component.updatePlayerEventsMetadata({ type: 'seeking' });
+    expect(component.viewerService.metaData.actions).toBeDefined();
+  });
+  it('should call setPreMetaDataConfig for player.volume', () => {
+    component.config = { volume: { name: 'qwe' } };
+    component.player = {
+      volume: jasmine.createSpy('volume')
+    };
+    component.setPreMetaDataConfig();
+    expect(component.player.volume).toHaveBeenCalled();
+  });
+  it('should call setPreMetaDataConfig for player.currentTime', () => {
+    component.config = { currentDuration: 600000 };
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime')
+    };
+    component.setPreMetaDataConfig();
+    expect(component.player.currentTime).toHaveBeenCalled();
+  });
+  it('should call onLoadMetadata ', () => {
+    component.viewerService.metaData = { totalDuration: 10000 };
+    component.player = {
+      duration: jasmine.createSpy('duration').and.returnValue(1000)
+    };
+    component.onLoadMetadata('e');
+    expect(component.totalDuration).toBeDefined();
+    expect(component.viewerService.metaData.totalDuration).toBeDefined();
+  });
 });
-
