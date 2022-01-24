@@ -6,7 +6,7 @@ describe('SunbirdVideoPlayerService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SunbirdVideoPlayerService = TestBed.get(SunbirdVideoPlayerService);
+    const service = TestBed.inject(SunbirdVideoPlayerService);
     expect(service).toBeTruthy();
   });
 });
