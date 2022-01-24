@@ -9,14 +9,19 @@ describe('UtilService', () => {
     const service = TestBed.inject(UtilService);
     expect(service).toBeTruthy();
   });
-  it('should call getTimeSpentText', () => {
+  it('should call getTimeSpentText for 1 minute ', () => {
     const service = TestBed.inject(UtilService);
-    const timeFormat = service.getTimeSpentText(61);
-    expect(timeFormat).toEqual('0:00');
+    const timeFormat = service.getTimeSpentText(60000); // passing data in milli seconds
+    expect(timeFormat).toEqual('1:00');
+  });
+  it('should call getTimeSpentText for 10 minute', () => {
+    const service = TestBed.inject(UtilService);
+    const timeFormat = service.getTimeSpentText(600000); // passing data in milli seconds
+    expect(timeFormat).toEqual('10:00');
   });
   it('should call uniqueId', () => {
     const service = TestBed.inject(UtilService);
     const timeFormat = service.uniqueId(6);
-    expect(timeFormat).not.toEqual('qIocVf');
+    expect(timeFormat).toString();
   });
 });

@@ -69,5 +69,16 @@ describe('VideoPlayerComponent', () => {
     expect(component.toggleForwardRewindButton).toHaveBeenCalled();
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('FORWARD');
   });
+  it('should call handleVideoControls', () => {
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime')
+    };
+    spyOn(component, 'updatePlayerEventsMetadata').and.callFake(() =>  'true');
+    component.totalSpentTime = 0;
+    component.startTime = 0;
+    component.handleVideoControls({type: 'ended'});
+    expect(component.totalSpentTime).toString();
+    expect(component.viewerService.visitedLength).toEqual(component.totalSpentTime);
+  });
 });
 

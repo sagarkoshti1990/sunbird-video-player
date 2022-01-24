@@ -265,7 +265,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if (type === 'ended') {
       this.totalSpentTime += new Date().getTime() - this.startTime;
       this.viewerService.visitedLength = this.totalSpentTime;
-      this.viewerService.currentlength = this.player.currentTime();
+      if (this.player) {
+        this.viewerService.currentlength = this.player.currentTime();
+      }
       this.viewerService.totalLength = this.totalDuration;
       this.updatePlayerEventsMetadata({ type });
     }
@@ -286,7 +288,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     // Calculating total seeked length
     if (type === 'timeupdate') {
       this.previousTime = this.currentTime;
+      if (this.player) {
       this.currentTime = this.player.currentTime();
+      }
       this.toggleForwardRewindButton();
     }
     if (type === 'seeking') {

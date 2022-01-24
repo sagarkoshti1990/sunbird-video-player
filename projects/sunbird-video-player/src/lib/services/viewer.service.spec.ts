@@ -66,13 +66,14 @@ describe('ViewerService', () => {
     service.preFetchContent();
     expect(service.getQuestionSet).toHaveBeenCalledWith('1234');
   });
-  it('should call raiseEndEvent', () => {
+  it('should call raiseEndEvent for isEndEventRaised', () => {
     const service = TestBed.inject(ViewerService);
     service.isEndEventRaised = true;
+    service.visitedLength = 60000;
     spyOn(service, 'calculateScore').and.callThrough();
     spyOn(service['utilService'], 'getTimeSpentText').and.callFake(() => 'true');
     service.raiseEndEvent();
-    expect(service['utilService'].getTimeSpentText).not.toHaveBeenCalledWith(10);
+    expect(service['utilService'].getTimeSpentText).not.toHaveBeenCalledWith(service.visitedLength);
     expect(service.calculateScore).not.toHaveBeenCalled();
   });
 });
