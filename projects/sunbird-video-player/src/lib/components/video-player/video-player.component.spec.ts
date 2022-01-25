@@ -183,4 +183,44 @@ describe('VideoPlayerComponent', () => {
     expect(component.totalDuration).toBeDefined();
     expect(component.viewerService.metaData.totalDuration).toBeDefined();
   });
+  it('should call registerEvents ', () => {
+    component.player = {
+      play: jasmine.createSpy('play'),
+      on: jasmine.createSpy('on')
+    };
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    component.registerEvents();
+    expect(component.isAutoplayPrevented).toBeFalsy();
+    expect(component.player.play).toHaveBeenCalled();
+  });
+  it('should call toggleForwardRewindButton and totalDuration > currentTime', () => {
+    component.time = 0;
+    component.totalDuration = 600000;
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime').and.returnValue(60000),
+    };
+    component.toggleForwardRewindButton();
+    expect(component.showForwardButton).toBeTruthy();
+    expect(component.showBackwardButton).toBeTruthy();
+  });
+  it('should call toggleForwardRewindButton and totalDuration < currentTime', () => {
+    component.time = 0;
+    component.totalDuration = 10000;
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime').and.returnValue(60000),
+    };
+    component.toggleForwardRewindButton();
+    expect(component.showForwardButton).toBeFalsy();
+    expect(component.showBackwardButton).toBeTruthy();
+  });
+  it('should call toggleForwardRewindButton and totalDuration < currentTime for showBackwardButton', () => {
+    component.time = 20000;
+    component.totalDuration = 30000;
+    component.player = {
+      currentTime: jasmine.createSpy('currentTime').and.returnValue(10000),
+    };
+    component.toggleForwardRewindButton();
+    expect(component.showForwardButton).toBeTruthy();
+    expect(component.showBackwardButton).toBeFalsy();
+  });
 });
