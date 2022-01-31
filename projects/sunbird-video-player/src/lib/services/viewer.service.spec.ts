@@ -126,13 +126,13 @@ describe('ViewerService', () => {
     const returnValue = service.getPlayerOptions();
     expect(returnValue).toBeDefined();
   });
-  it('should call getPlayerOptions for interceptionPoints to be null value', () => {
+  it('should call getMarkers for interceptionPoints to be null value', () => {
     const service = TestBed.inject(ViewerService);
     service.interceptionPoints = null;
     const returnValue = service.getMarkers();
     expect(returnValue).toBeNull();
   });
-  it('should call getPlayerOptions', () => {
+  it('should call getMarkers for true showScore', () => {
     const service = TestBed.inject(ViewerService);
     service.interceptionPoints = { items: [{ identifier: '1234' }] };
     const returnValue = service.getMarkers();
