@@ -138,4 +138,15 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.QumlPlayerConfig.context).toBeDefined();
     expect(component.traceId).toEqual(component.playerConfig.config.traceId);
   });
+  it('should call raiseInternetDisconnectionError', () => {
+    component.videoPlayerService['context'] = {
+      channel: '12345'
+    };
+    component.traceId = '123';
+    spyOn(component.viewerService, 'raiseExceptionLog').and.callThrough();
+    component.raiseInternetDisconnectionError();
+    expect(component.viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNECT_01',
+      'content failed to load , No Internet Available',
+      'CPV2_INT_CONNECT_01: content failed to load , No Internet Available', component.traceId);
+  });
 });
