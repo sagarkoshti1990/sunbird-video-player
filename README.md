@@ -190,7 +190,38 @@ var playerConfig = {
 |--|--|--|------------------------------------------------------------------------------------------|---|--|
 | Video Player | Can be used to render videos | sunbird-video-player| *`<sunbird-video-player [playerConfig]="playerConfig"><sunbird-video-player>`*|playerConfig|playerEvent, telemetryEvent|
 
-## Use as web components	
+<br /><br />
+
+# Mobile app integration steps 
+For existing apps, follow these steps to begin using.
+
+## Step 1: Install the packages
+
+Click to see the steps - [InstallPackages](README.md#step-1-install-the-packages)
+
+## Step 2: Include the sb-styles and assets in angular.json
+Click to see the steps - [IncludeStyles](README.md#step-2-include-the-styles-scripts-and-assets-in-angularjson) , but use 
+`src/global.scss` instead of  `src/styles.css` in styles.
+
+## Step 3: Import the modules and components
+
+Click to see the steps - [Import](README.md#step-3-import-the-modules-and-components)
+
+
+## Step 4: Import in component       
+     <sunbird-video-player [playerConfig]="playerConfig" (playerEvent)="playerEvents($event)"
+      (telemetryEvent)="playerTelemetryEvents($event)"></sunbird-video-player> 
+
+## Step 5: Send input to render VIDEO player
+
+Click to see the input data - [playerConfig](README.md#step-4-send-input-to-render-video-player)
+
+
+## Sample code
+Click to see the sample code - [sampleCode](https://github.com/Sunbird-Ed/SunbirdEd-mobile-app)
+<br /><br />
+
+# Use as web components	
 
 Import this library in any web application and use the custom component.
 
