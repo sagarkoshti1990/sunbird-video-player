@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "vendorSourceMap": true,
             "outputPath": "dist/sunbird-video-player-app",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -27,17 +28,24 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "node_modules/@project-sunbird/sunbird-video-player/lib/assets/",
+                "input": "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
                 "output": "/assets/"
               }
             ],
             "styles": [
               "src/styles.scss",
+              "./quml-carousel.css",
               "node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
-              "node_modules/video.js/dist/video-js.min.css"
+              "node_modules/video.js/dist/video-js.min.css",
+              "dist/sunbird-video-player/lib/assets/videojs.markers.min.css",
+              "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
             ],
             "scripts": [
-              "node_modules/@project-sunbird/telemetry-sdk/index.js"
+              "node_modules/@project-sunbird/telemetry-sdk/index.js",
+              "node_modules/video.js/dist/video.js",
+              "dist/sunbird-video-player/lib/assets/videojs-markers.js",
+              "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+              "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
             ],
             "es5BrowserSupport": true,
             "preserveSymlinks": true
@@ -72,7 +80,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "sunbird-video-player-app:build"
+            "browserTarget": "sunbird-video-player-app:build",
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -176,6 +185,143 @@
             "exclude": [
               "**/node_modules/**"
             ]
+          }
+        }
+      }
+    },
+    "video-player-wc": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/video-player-wc",
+      "sourceRoot": "projects/video-player-wc/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/video-player-wc",
+            "index": "projects/video-player-wc/src/index.html",
+            "main": "projects/video-player-wc/src/main.ts",
+            "polyfills": "projects/video-player-wc/src/polyfills.ts",
+            "tsConfig": "projects/video-player-wc/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/video-player-wc/src/favicon.ico",
+              "projects/video-player-wc/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "projects/video-player-wc/src/styles.scss",
+              "./quml-carousel.css",
+              "node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+              "node_modules/video.js/dist/video-js.min.css",
+              "dist/sunbird-video-player/lib/assets/videojs.markers.min.css",
+              "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+            ],
+            "scripts": [
+              "node_modules/@project-sunbird/telemetry-sdk/index.js",
+              "node_modules/video.js/dist/video.js",
+              "dist/sunbird-video-player/lib/assets/videojs-markers.js",
+              "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+              "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/video-player-wc/src/environments/environment.ts",
+                  "with": "projects/video-player-wc/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "video-player-wc:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "video-player-wc:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "video-player-wc:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/video-player-wc/src/test.ts",
+            "polyfills": "projects/video-player-wc/src/polyfills.ts",
+            "tsConfig": "projects/video-player-wc/tsconfig.spec.json",
+            "karmaConfig": "projects/video-player-wc/karma.conf.js",
+            "assets": [
+              "projects/video-player-wc/src/favicon.ico",
+              "projects/video-player-wc/src/assets"
+            ],
+            "styles": [
+              "projects/video-player-wc/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/video-player-wc/tsconfig.app.json",
+              "projects/video-player-wc/tsconfig.spec.json",
+              "projects/video-player-wc/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/video-player-wc/e2e/protractor.conf.js",
+            "devServerTarget": "video-player-wc:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "video-player-wc:serve:production"
+            }
           }
         }
       }

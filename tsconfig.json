@@ -1,5 +1,8 @@
 {
   "compileOnSave": false,
+  "angularCompilerOptions": {
+    "enableIvy": false
+  },
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -10,6 +13,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "skipLibCheck": true,
     "target": "es5",
     "typeRoots": [
       "node_modules/@types"
@@ -23,6 +27,12 @@
         "dist/sunbird-video-player"
       ],
       "sunbird-video-player/*": [
+        "dist/sunbird-video-player/*"
+      ],
+      "@project-sunbird/sunbird-video-player-v9": [
+        "dist/sunbird-video-player"
+      ],
+      "@project-sunbird/sunbird-video-player-v9/*": [
         "dist/sunbird-video-player/*"
       ],
       "video.js":[

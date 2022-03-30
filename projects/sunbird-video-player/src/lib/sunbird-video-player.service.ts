@@ -29,7 +29,7 @@ export class SunbirdVideoPlayerService {
         {
           config: {
             pdata: context.pdata,
-            env: 'ContentPlayer',
+            env: 'contentplayer',
             channel: context.channel,
             did: context.did,
             authtoken: context.authToken || '',
@@ -41,7 +41,8 @@ export class SunbirdVideoPlayerService {
             endpoint: context.endpoint || '/data/v3/telemetry',
             tags: context.tags,
             cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
-            { id: this.playSessionId, type: 'PlaySession' }]
+            { id: this.playSessionId, type: 'PlaySession' },
+            {id: '2.0' , type: 'PlayerVersion'}]
           },
           userOrgDetails: {}
         }
@@ -67,7 +68,7 @@ export class SunbirdVideoPlayerService {
 
   }
 
-  public end(duration, totallength, currentlength, endpageseen, totalseekedlength, visitedlength) {
+  public end(duration, totallength, currentlength, endpageseen, totalseekedlength, visitedlength, score) {
     const durationSec = Number((duration / 1e3).toFixed(2));
     CsTelemetryModule.instance.telemetryService.raiseEndTelemetry({
       edata: {
@@ -92,6 +93,9 @@ export class SunbirdVideoPlayerService {
           },
           {
             endpageseen
+          },
+          {
+            score
           }
         ],
         duration: durationSec
@@ -119,12 +123,13 @@ export class SunbirdVideoPlayerService {
     });
   }
 
-  public error(error: Error, edata?: { err: string, errtype: string }) {
+  public error(errorCode: string , errorType: string ,  stacktrace?: Error) {
     CsTelemetryModule.instance.telemetryService.raiseErrorTelemetry({
+      options: this.getEventOptions(),
       edata: {
-        err: edata.err || 'LOAD',
-        errtype: edata.errtype || 'content',
-        stacktrace: (error && error.toString()) || ''
+        err: errorCode,
+        errtype: errorType,
+        stacktrace: (stacktrace && stacktrace.toString()) || ''
       }
     });
   }
@@ -135,11 +140,12 @@ export class SunbirdVideoPlayerService {
       context: {
         channel: this.context.channel,
         pdata: this.context.pdata,
-        env: 'ContentPlayer',
+        env: 'contentplayer',
         sid: this.context.sid,
         uid: this.context.uid,
         cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
-        { id: this.playSessionId, type: 'PlaySession' }],
+        { id: this.playSessionId, type: 'PlaySession' },
+        {id: '2.0' , type: 'PlayerVersion'}],
         rollup: this.context.contextRollup || {}
       }
     });
