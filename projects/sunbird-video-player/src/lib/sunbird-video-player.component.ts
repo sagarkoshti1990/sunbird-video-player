@@ -2,7 +2,7 @@ import {
   ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
-import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
+import { ErrorService, errorCode, errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
@@ -67,7 +67,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
-            code = errorCode.contentLoadFails,
+          code = errorCode.contentLoadFails,
             message = errorMessage.contentLoadFails;
         }
         if (code === errorCode.contentLoadFails) {
@@ -113,7 +113,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
     this.viewerService.initialize(this.playerConfig);
     this.videoPlayerService.initialize(this.playerConfig);
-    window.addEventListener('offline', this.raiseInternetDisconnectionError , true);
+    window.addEventListener('offline', this.raiseInternetDisconnectionError, true);
     this.QumlPlayerConfig.config = this.playerConfig.config;
     this.QumlPlayerConfig.config.sideMenu.enable = false;
     this.QumlPlayerConfig.context = this.playerConfig.context;
@@ -170,7 +170,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.QumlPlayerConfig.context.objectRollup = {};
       }
       const levels = Object.keys(this.QumlPlayerConfig.context.objectRollup);
-      this.QumlPlayerConfig.context.objectRollup[`l${levels.length +  1}`] = id;
+      this.QumlPlayerConfig.context.objectRollup[`l${levels.length + 1}`] = id;
     }
   }
 
@@ -205,20 +205,23 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   qumlPlayerEvents(event) {
     if (event.eid === 'QUML_SUMMARY') {
+      this.showQumlPlayer = false;
       const score = parseInt(event.edata.extra.find(p => p.id === 'score')['value'], 10);
       this.viewerService.interceptionResponses[this.currentInterceptionTime] = {
         score,
         isSkipped: false
       };
-      document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`)['style'].backgroundColor = 'green';
-      this.showQumlPlayer = false;
+      const interceptPointElement = document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`);
+      if (interceptPointElement) {
+        interceptPointElement['style'].background = 'green';
+      }
       this.videoInstance.play();
       this.videoInstance.controls(true);
     }
   }
 
 
-  questionSetData({response, time, identifier}) {
+  questionSetData({ response, time, identifier }) {
     this.QumlPlayerConfig.metadata = response;
     this.QumlPlayerConfig.metadata['showStartPage'] = 'No';
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
@@ -237,6 +240,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.unlistenTouchStart();
     this.unlistenMouseMove();
     this.viewerService.isEndEventRaised = false;
-    window.removeEventListener('offline', this.raiseInternetDisconnectionError , true);
+    window.removeEventListener('offline', this.raiseInternetDisconnectionError, true);
   }
 }
