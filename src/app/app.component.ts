@@ -25,14 +25,14 @@ export class AppComponent {
     let config;
     if (videoConfigMetadata) {
       videoConfigMetadata = JSON.parse(videoConfigMetadata);
-      config = { ...samplePlayerConfig.config, ...videoConfigMetadata }
+      config = { ...samplePlayerConfig.config, ...videoConfigMetadata };
     }
     this.playerConfig = {
       context: samplePlayerConfig.context,
       config: config ? config : samplePlayerConfig.config,
       metadata: metaData,
       data: {}
-    }
+    };
   }
 
   playerEvent(event) {
