@@ -231,7 +231,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   playerInstance(event) {
-    console.log(event, '>>>>>>>>>>>>>>>>>>');
     this.videoInstance = event;
   }
 
