@@ -143,7 +143,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
   onLoadMetadata(e) {
     this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
-    if (this.transcripts && this.transcripts.length) {
+    if (this.transcripts && this.transcripts.length && this.player.transcript) {
       this.player.transcript({
         showTitle: true,
         showTrackSelector: true,
