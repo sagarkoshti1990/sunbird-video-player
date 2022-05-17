@@ -5,6 +5,7 @@ import {
 import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
+import { Transcripts } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 @Component({
@@ -35,7 +36,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   showQumlPlayer = false;
   QumlPlayerConfig: any = {};
   videoInstance: any;
-  transcripts: any;
+  transcripts: Transcripts;
   currentInterceptionTime;
   currentInterceptionUIId;
 
@@ -230,6 +231,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   playerInstance(event) {
+    console.log(event, '>>>>>>>>>>>>>>>>>>');
     this.videoInstance = event;
   }
 
