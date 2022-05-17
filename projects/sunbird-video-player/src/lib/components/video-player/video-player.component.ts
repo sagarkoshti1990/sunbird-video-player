@@ -17,6 +17,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   @Input() config: any;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
+  @Input() transcripts = [];
   showBackwardButton = false;
   showForwardButton = false;
   showPlayButton = true;
@@ -53,7 +54,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
           children: ['playToggle', 'volumePanel', 'durationDisplay',
-            'progressControl', 'remainingTimeDisplay',
+            'progressControl', 'remainingTimeDisplay', 'CaptionsButton',
             'playbackRateMenuButton', 'fullscreenToggle']
         },
         plugins: {
@@ -142,6 +143,12 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
   onLoadMetadata(e) {
     this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+    if (this.transcripts && this.transcripts.length) {
+      this.player.transcript({
+        showTitle: true,
+        showTrackSelector: true,
+      });
+    }
   }
 
   registerEvents() {

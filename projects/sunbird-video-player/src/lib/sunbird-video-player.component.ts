@@ -35,6 +35,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   showQumlPlayer = false;
   QumlPlayerConfig: any = {};
   videoInstance: any;
+  transcripts: any;
   currentInterceptionTime;
   currentInterceptionUIId;
 
@@ -109,6 +110,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
     /* tslint:disable:no-string-literal */
     this.nextContent = this.playerConfig.config.nextContent;
+    this.transcripts = this.playerConfig.metadata.transcripts ? this.playerConfig.metadata.transcripts : [];
     this.traceId = this.playerConfig.config['traceId'];
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
     this.viewerService.initialize(this.playerConfig);

@@ -45,7 +45,30 @@ export class AppComponent {
     },
     config: this.config,
     // tslint:disable-next-line:max-line-length
-    metadata: { interceptionPoints: '{\'items\':[{\'type\':\'QuestionSet\',\'interceptionPoint\':50,\'identifier\':\'do_213272808198291456121\'},{\'type\':\'QuestionSet\',\'interceptionPoint\':90,\'identifier\':\'do_213272808198291456121\'},{\'type\':\'QuestionSet\',\'interceptionPoint\':120,\'identifier\':\'do_213272808198291456121\'}]}', interceptionType: 'Timestamp', compatibilityLevel: 2, copyright: 'NCERT', subject: ['CPD'], channel: '0125196274181898243', language: ['English'], mimeType: 'video/mp4', objectType: 'Content', gradeLevel: ['Others'], appIcon: 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/do_31309320735055872011111/artifact/nishtha_icon.thumb.jpg', primaryCategory: 'Explanation Content', artifactUrl: 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/assets/do_31309320735055872011111/engagement-with-language-.mp4', contentType: 'ExplanationResource', identifier: 'do_31309320735055872011111', audience: ['Student'], visibility: 'Default', mediaType: 'content', osId: 'org.ekstep.quiz.app', languageCode: ['en'], license: 'CC BY-SA 4.0', name: 'Engagement with Language', status: 'Live', code: '1c5bd8da-ad50-44ad-8b07-9c18ec06ce29', streamingUrl: 'https://ntppreprodmedia-inct.streaming.media.azure.net/409780ae-3fc2-4879-85f7-f1affcce55fa/mp4_14.ism/manifest(format=m3u8-aapl-v3)', medium: ['English'], createdOn: '2020-08-24T17:58:32.911+0000', copyrightYear: 2020, lastUpdatedOn: '2020-08-25T04:36:47.587+0000', creator: 'NCERT COURSE CREATOR 6', pkgVersion: 1, versionKey: '1598330207587', framework: 'ncert_k-12', createdBy: '68dc1f8e-922b-4fcd-b663-593573c75f22', resourceType: 'Learn', orgDetails: { email: 'director.ncert@nic.in', orgName: 'NCERT' }, licenseDetails: { name: 'CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode', description: 'For details see below:' } },
+    metadata: {
+      // tslint:disable-next-line:max-line-length
+      interceptionPoints: '{\'items\':[{\'type\':\'QuestionSet\',\'interceptionPoint\':50,\'identifier\':\'do_213272808198291456121\'},{\'type\':\'QuestionSet\',\'interceptionPoint\':90,\'identifier\':\'do_213272808198291456121\'},{\'type\':\'QuestionSet\',\'interceptionPoint\':120,\'identifier\':\'do_213272808198291456121\'}]}', interceptionType: 'Timestamp', compatibilityLevel: 2, copyright: 'NCERT', subject: ['CPD'], channel: '0125196274181898243', language: ['English'], mimeType: 'video/mp4', objectType: 'Content', gradeLevel: ['Others'], appIcon: 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/do_31309320735055872011111/artifact/nishtha_icon.thumb.jpg', primaryCategory: 'Explanation Content', artifactUrl: 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/content/assets/do_31309320735055872011111/engagement-with-language-.mp4', contentType: 'ExplanationResource', identifier: 'do_31309320735055872011111', audience: ['Student'], visibility: 'Default', mediaType: 'content', osId: 'org.ekstep.quiz.app', languageCode: ['en'], license: 'CC BY-SA 4.0', name: 'Engagement with Language', status: 'Live', code: '1c5bd8da-ad50-44ad-8b07-9c18ec06ce29', streamingUrl: 'https://ntppreprodmedia-inct.streaming.media.azure.net/409780ae-3fc2-4879-85f7-f1affcce55fa/mp4_14.ism/manifest(format=m3u8-aapl-v3)', medium: ['English'], createdOn: '2020-08-24T17:58:32.911+0000', copyrightYear: 2020, lastUpdatedOn: '2020-08-25T04:36:47.587+0000', creator: 'NCERT COURSE CREATOR 6', pkgVersion: 1, versionKey: '1598330207587', framework: 'ncert_k-12', createdBy: '68dc1f8e-922b-4fcd-b663-593573c75f22', resourceType: 'Learn', orgDetails: { email: 'director.ncert@nic.in', orgName: 'NCERT' }, licenseDetails: { name: 'CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode', description: 'For details see below:' },
+      transcripts: [
+        {
+          language: 'Bengali',
+          identifier: 'do_11353887890259968011412',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11353887890259968011412/titanic.1997.3d.720p.bluray.x264.-yts.mx-english.srt'
+        },
+        {
+          language: 'English',
+          identifier: 'do_11353887890285363211413',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11353887890285363211413/titanic.1997.3d.720p.bluray.x264.-yts.mx-english.srt'
+        },
+        {
+          language: 'Assamese',
+          identifier: 'do_11353887890287820811414',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11353887890287820811414/titanic.1997.3d.720p.bluray.x264.-yts.mx-english.srt'
+        }
+      ],
+    },
     data: {}
   };
 
