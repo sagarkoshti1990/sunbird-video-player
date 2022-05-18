@@ -17,7 +17,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   @Input() config: any;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
-  @Input() transcripts = [];
+  transcripts = [];
   showBackwardButton = false;
   showForwardButton = false;
   showPlayButton = true;
@@ -44,6 +44,8 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
               public questionCursor: QuestionCursor, private http: HttpClient ) { }
 
   ngAfterViewInit() {
+    this.transcripts =  this.viewerService.transcripts;
+    console.log(this.transcripts, 'this.transcripts')
     this.viewerService.getPlayerOptions().then(async (options) => {
       this.player = await videojs(this.target.nativeElement, {
         fluid: true,

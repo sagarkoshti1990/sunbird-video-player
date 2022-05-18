@@ -7,6 +7,7 @@ import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Transcripts } from '../playerInterfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class ViewerService {
   public playerInstance: any;
   public contentMap = {};
   public isEndEventRaised = false;
-
+  public transcripts: Transcripts;
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
               private utilService: UtilService,
               private http: HttpClient,
@@ -72,6 +73,7 @@ export class ViewerService {
       muted: undefined,
       currentDuration: undefined
     };
+    this.transcripts =  metadata.transcripts ? metadata.transcripts : [];
     this.showDownloadPopup = false;
     this.endPageSeen = false;
     if (this.isAvailableLocally) {

@@ -1,5 +1,5 @@
 <video #target class="video-js" controls (loadeddata)="onLoadMetadata($event)">
-  <track *ngFor="let trans of transcripts" kind="captions" src="{{trans.artifactUrl}}" srclang="{{trans.language}}" label="{{trans.language}}" >
+  <track *ngFor="let trans of transcripts" kind="captions" src="{{trans.artifactUrl}}" srclang="{{trans.languageCode}}" label="{{trans.language}}" >
 </video>
 <div #controlDiv>
   <div [ngClass]="{'player-for-back-ward-controls': currentPlayerState === 'pause' || showControls }">
