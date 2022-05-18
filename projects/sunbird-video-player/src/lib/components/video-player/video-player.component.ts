@@ -44,7 +44,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
               public questionCursor: QuestionCursor, private http: HttpClient ) { }
 
   ngAfterViewInit() {
-    this.transcripts =  this.viewerService.transcripts;
+    this.transcripts = this.viewerService.transcripts;
     this.viewerService.getPlayerOptions().then(async (options) => {
       this.player = await videojs(this.target.nativeElement, {
         fluid: true,
@@ -204,13 +204,55 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         this.viewerService.playerEvent.emit({ type: 'ended' });
       }
     });
+    this.player.on('subtitleChanged', (event, track) => {
+      this.handleEventsForTranscripts(track);
+    });
     events.forEach(event => {
       this.player.on(event, (data) => {
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
       });
     });
-
+    this.trackTranscriptEvent();
+  }
+  trackTranscriptEvent() {
+    let timeout;
+    const player = this.player;
+    this.player.textTracks().on('change', function action(event) {
+      clearTimeout(timeout);
+      let transcriptObject = {};
+      this.tracks_.filter((track) => {
+        if ((track.kind === 'captions' || track.kind === 'subtitles') && track.mode === 'showing') {
+          transcriptObject = { artifactUrl: track.src, languageCode: track.language };
+          return true;
+        }
+      });
+      timeout = setTimeout(() => {
+        player.trigger('subtitleChanged', transcriptObject);
+      }, 10);
+    });
+  }
+  handleEventsForTranscripts(track) {
+    let telemetryObject;
+    if (!_.isEmpty(track)) {
+      telemetryObject = {
+        type: 'transcript_language_selected',
+        extra: {
+          transcript: {
+            language: _.get(_.filter(this.transcripts, { artifactUrl: track.artifactUrl, languageCode: track.languageCode })[0], 'language')
+          },
+          videoTimeStamp: this.player.currentTime()
+        }
+      };
+    } else {
+      telemetryObject = {
+        type: 'transcript_language_off',
+        extra: {
+          videoTimeStamp: this.player.currentTime()
+        }
+      };
+    }
+    this.viewerService.raiseHeartBeatEvent(telemetryObject.type, telemetryObject.extra);
   }
 
   toggleForwardRewindButton() {

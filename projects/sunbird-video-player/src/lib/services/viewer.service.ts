@@ -203,7 +203,7 @@ export class ViewerService {
   }
 
 
-  raiseHeartBeatEvent(type: string) {
+  raiseHeartBeatEvent(type: string, extravalue?) {
     if (type === 'REPLAY') {
       this.interceptionResponses = {};
       this.showScore = false;
@@ -214,7 +214,8 @@ export class ViewerService {
       ver: this.version,
       edata: {
         type,
-        currentPage: 'videostage'
+        currentPage: 'videostage',
+        extra: extravalue
       },
       metaData: this.metaData
     };
@@ -223,10 +224,11 @@ export class ViewerService {
     const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
       'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU', 'DOWNLOAD_POPUP_CLOSE', 'DOWNLOAD_POPUP_CANCEL',
-     'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN' , 'NEXT_CONTENT_PLAY',
+     'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN' , 'NEXT_CONTENT_PLAY', 'transcript_language_selected',
+      'transcript_language_off'
     ];
     if (interactItems.includes(type)) {
-      this.videoPlayerService.interact(type.toLowerCase(), 'videostage');
+      this.videoPlayerService.interact(type.toLowerCase(), 'videostage', extravalue);
     }
 
   }
