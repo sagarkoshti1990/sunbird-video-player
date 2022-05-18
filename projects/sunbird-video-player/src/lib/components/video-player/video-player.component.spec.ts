@@ -189,6 +189,7 @@ describe('VideoPlayerComponent', () => {
       on: jasmine.createSpy('on')
     };
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    spyOn(component, 'trackTranscriptEvent').and.callFake(() => 'true');
     component.registerEvents();
     expect(component.isAutoplayPrevented).toBeFalsy();
     expect(component.player.play).toHaveBeenCalled();
