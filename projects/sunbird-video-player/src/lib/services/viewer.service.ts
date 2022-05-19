@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
-import { PlayerConfig } from '../playerInterfaces';
+import { PlayerConfig, Transcripts } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
 import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Transcripts } from '../playerInterfaces';
+import * as _ from 'lodash-es';
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +73,7 @@ export class ViewerService {
       muted: undefined,
       currentDuration: undefined
     };
-    this.transcripts =  metadata.transcripts ? metadata.transcripts : [];
+    this.transcripts = metadata.transcripts ? this.handleTranscriptsData(metadata.transcripts) : [];
     this.showDownloadPopup = false;
     this.endPageSeen = false;
     if (this.isAvailableLocally) {
@@ -82,7 +82,26 @@ export class ViewerService {
       this.mimeType = metadata.mimeType;
     }
   }
-
+  handleTranscriptsData(transcripts) {
+    if (_.isArray(transcripts)) {
+      _.forEach(transcripts, (value) => {
+        if (!(value.language && value.artifactUrl && value.languageCode && value.identifier)) {
+          setTimeout(() => {
+          // tslint:disable-next-line:max-line-length
+          this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT', new Error('Transcript object dose not have required fields'), this.traceId);
+          }, 10);
+          return transcripts = [];
+        }
+      });
+    } else {
+      setTimeout(() => {
+        // tslint:disable-next-line:max-line-length
+        this.raiseExceptionLog('INVALID_TRANSCRIPT_DATATYPE', 'TRANSCRIPT', new Error('Transcript data should be array'), this.traceId);
+        }, 10);
+      return transcripts = [];
+    }
+    return transcripts;
+  }
   async getPlayerOptions() {
     if (!this.streamingUrl) {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
@@ -224,7 +243,7 @@ export class ViewerService {
     const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
       'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU', 'DOWNLOAD_POPUP_CLOSE', 'DOWNLOAD_POPUP_CANCEL',
-     'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN' , 'NEXT_CONTENT_PLAY', 'transcript_language_selected',
+      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN', 'NEXT_CONTENT_PLAY', 'transcript_language_selected',
       'transcript_language_off'
     ];
     if (interactItems.includes(type)) {
