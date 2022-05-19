@@ -139,4 +139,33 @@ describe('ViewerService', () => {
     expect(returnValue).toEqual([({ time: undefined, text: '', identifier: '1234', duration: 3 })]);
     expect(service.showScore).toBeTruthy();
   });
+  it('should call handleTranscriptsData for transcript data should be array', () => {
+    const service = TestBed.inject(ViewerService);
+    service.traceId = '123';
+    spyOn(service, 'raiseExceptionLog').and.callThrough();
+    service.handleTranscriptsData({language: 'abc'});
+    setTimeout(() => {
+      expect(service.raiseExceptionLog).toHaveBeenCalledWith('INVALID_TRANSCRIPT_DATATYPE', 'TRANSCRIPT',
+      'Transcript data should be array', service.traceId);
+      }, 10);
+  });
+  it('should call handleTranscriptsData for transcript data should have required data', () => {
+    const service = TestBed.inject(ViewerService);
+    service.traceId = '123';
+    spyOn(service, 'raiseExceptionLog').and.callThrough();
+    service.handleTranscriptsData([{language: 'abc', identifier: '123'}]);
+    setTimeout(() => {
+      expect(service.raiseExceptionLog).toHaveBeenCalledWith('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
+      'Transcript object dose not have required fields', service.traceId);
+      }, 10);
+  });
+  it('should call handleTranscriptsData for transcript data should have required data', () => {
+    const service = TestBed.inject(ViewerService);
+    service.traceId = '123';
+    spyOn(service, 'raiseExceptionLog').and.callThrough();
+    const transcripts = [{language: 'abc', identifier: '123', artifactUrl: 'sdsdsds.com', languageCode: 'qw'}];
+    const returnValue = service.handleTranscriptsData(transcripts);
+    expect(service.raiseExceptionLog).not.toHaveBeenCalled();
+    expect(transcripts).toBe(returnValue);
+  });
 });

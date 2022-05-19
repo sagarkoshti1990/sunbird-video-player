@@ -6,6 +6,7 @@ import { ViewerService } from '../../services/viewer.service';
 import { SunbirdVideoPlayerService } from '../../sunbird-video-player.service';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import { QuestionCursorImplementationService } from 'src/app/question-cursor-implementation.service';
+import {mockData} from './video-player.component.data';
 describe('VideoPlayerComponent', () => {
   let component: VideoPlayerComponent;
   let fixture: ComponentFixture<VideoPlayerComponent>;
@@ -224,4 +225,40 @@ describe('VideoPlayerComponent', () => {
     expect(component.showForwardButton).toBeTruthy();
     expect(component.showBackwardButton).toBeFalsy();
   });
+  it('should call handleEventsForTranscripts for transcript language off', () => {
+   const telemetryObject = {
+      type: 'transcript_language_off',
+      extra: {
+        videoTimeStamp: 1.20
+      }
+    };
+   component.player = {
+      currentTime: jasmine.createSpy('currentTime').and.returnValue(1.20),
+    };
+   spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+   component.handleEventsForTranscripts({});
+   expect(component.player.currentTime).toHaveBeenCalled();
+   expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
+  });
+  it('should call handleEventsForTranscripts for transcript language selected', () => {
+    component.transcripts = mockData.transcripts;
+    const telemetryObject = {
+       type: 'transcript_language_selected',
+       extra: {
+         videoTimeStamp: 1.20,
+         transcript: {
+          language: 'Bengali'
+        },
+       }
+     };
+    component.player = {
+       currentTime: jasmine.createSpy('currentTime').and.returnValue(1.20),
+     };
+    const track =  { artifactUrl: 'https://cdn.jsdelivr.net/gh/tombyrer/videojs-transcript-click@1.0/demo/captions.sv.vtt',
+      languageCode: 'bn' };
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    component.handleEventsForTranscripts(track);
+    expect(component.player.currentTime).toHaveBeenCalled();
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
+   });
 });
