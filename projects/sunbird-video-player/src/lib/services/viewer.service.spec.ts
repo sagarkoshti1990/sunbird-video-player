@@ -159,7 +159,7 @@ describe('ViewerService', () => {
       'Transcript object dose not have required fields', service.traceId);
       }, 10);
   });
-  it('should call handleTranscriptsData for transcript data should have required data', () => {
+  it('should call handleTranscriptsData for transcript data should have passes to video player', () => {
     const service = TestBed.inject(ViewerService);
     service.traceId = '123';
     spyOn(service, 'raiseExceptionLog').and.callThrough();

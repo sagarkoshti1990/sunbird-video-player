@@ -245,14 +245,14 @@ describe('VideoPlayerComponent', () => {
     const telemetryObject = {
        type: 'transcript_language_selected',
        extra: {
-         videoTimeStamp: 1.20,
+         videoTimeStamp: 2.230,
          transcript: {
           language: 'Bengali'
         },
        }
      };
     component.player = {
-       currentTime: jasmine.createSpy('currentTime').and.returnValue(1.20),
+       currentTime: jasmine.createSpy('currentTime').and.returnValue(2.230),
      };
     const track =  { artifactUrl: 'https://cdn.jsdelivr.net/gh/tombyrer/videojs-transcript-click@1.0/demo/captions.sv.vtt',
       languageCode: 'bn' };
