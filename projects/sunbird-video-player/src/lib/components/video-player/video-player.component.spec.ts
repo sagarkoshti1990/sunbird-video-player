@@ -227,7 +227,7 @@ describe('VideoPlayerComponent', () => {
   });
   it('should call handleEventsForTranscripts for transcript language off', () => {
    const telemetryObject = {
-      type: 'transcript_language_off',
+      type: 'TRANSCRIPT_LANGUAGE_OFF',
       extra: {
         videoTimeStamp: 1.20
       }
@@ -243,7 +243,7 @@ describe('VideoPlayerComponent', () => {
   it('should call handleEventsForTranscripts for transcript language selected', () => {
     component.transcripts = mockData.transcripts;
     const telemetryObject = {
-       type: 'transcript_language_selected',
+       type: 'TRANSCRIPT_LANGUAGE_SELECTED',
        extra: {
          videoTimeStamp: 2.230,
          transcript: {

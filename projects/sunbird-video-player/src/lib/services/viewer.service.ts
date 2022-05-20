@@ -83,22 +83,17 @@ export class ViewerService {
     }
   }
   handleTranscriptsData(transcripts) {
-    if (_.isArray(transcripts)) {
-      _.forEach(transcripts, (value) => {
+    if (!_.isArray(transcripts)) {
+      this.raiseExceptionLog('INVALID_TRANSCRIPT_DATATYPE', 'TRANSCRIPT', new Error('Transcript data should be array'), this.traceId);
+      return [];
+    } else {
+           _.forEach(transcripts, (value) => {
         if (!(value.language && value.artifactUrl && value.languageCode && value.identifier)) {
-          setTimeout(() => {
-          // tslint:disable-next-line:max-line-length
-          this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT', new Error('Transcript object dose not have required fields'), this.traceId);
-          }, 10);
+          this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
+           new Error('Transcript object dose not have required fields'), this.traceId);
           return transcripts = [];
         }
       });
-    } else {
-      setTimeout(() => {
-        // tslint:disable-next-line:max-line-length
-        this.raiseExceptionLog('INVALID_TRANSCRIPT_DATATYPE', 'TRANSCRIPT', new Error('Transcript data should be array'), this.traceId);
-        }, 10);
-      return transcripts = [];
     }
     return transcripts;
   }
@@ -222,7 +217,7 @@ export class ViewerService {
   }
 
 
-  raiseHeartBeatEvent(type: string, extravalue?) {
+  raiseHeartBeatEvent(type: string, extraValues?) {
     if (type === 'REPLAY') {
       this.interceptionResponses = {};
       this.showScore = false;
@@ -234,7 +229,7 @@ export class ViewerService {
       edata: {
         type,
         currentPage: 'videostage',
-        extra: extravalue
+        extra: extraValues
       },
       metaData: this.metaData
     };
@@ -243,11 +238,11 @@ export class ViewerService {
     const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
       'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU', 'DOWNLOAD_POPUP_CLOSE', 'DOWNLOAD_POPUP_CANCEL',
-      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN', 'NEXT_CONTENT_PLAY', 'transcript_language_selected',
-      'transcript_language_off'
+      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN', 'NEXT_CONTENT_PLAY', 'TRANSCRIPT_LANGUAGE_OFF',
+      'TRANSCRIPT_LANGUAGE_SELECTED'
     ];
     if (interactItems.includes(type)) {
-      this.videoPlayerService.interact(type.toLowerCase(), 'videostage', extravalue);
+      this.videoPlayerService.interact(type.toLowerCase(), 'videostage', extraValues);
     }
 
   }

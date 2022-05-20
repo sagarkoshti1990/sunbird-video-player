@@ -236,7 +236,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     let telemetryObject;
     if (!_.isEmpty(track)) {
       telemetryObject = {
-        type: 'transcript_language_selected',
+        type: 'TRANSCRIPT_LANGUAGE_SELECTED',
         extra: {
           transcript: {
             language: _.get(_.filter(this.transcripts, { artifactUrl: track.artifactUrl, languageCode: track.languageCode })[0], 'language')
@@ -246,7 +246,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       };
     } else {
       telemetryObject = {
-        type: 'transcript_language_off',
+        type: 'TRANSCRIPT_LANGUAGE_OFF',
         extra: {
           videoTimeStamp: this.player.currentTime()
         }
