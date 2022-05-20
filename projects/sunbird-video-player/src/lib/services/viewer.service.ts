@@ -72,7 +72,7 @@ export class ViewerService {
       totalDuration: 0,
       muted: undefined,
       currentDuration: undefined,
-      selectedTranscript: _.get(metadata.selectedTranscript)
+      selectedTranscript: _.get(config.selectedTranscript)
     };
     this.transcripts = metadata.transcripts ? this.handleTranscriptsData(metadata.transcripts) : [];
     this.showDownloadPopup = false;
