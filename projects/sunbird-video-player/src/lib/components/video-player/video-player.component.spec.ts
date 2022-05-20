@@ -232,12 +232,14 @@ describe('VideoPlayerComponent', () => {
         videoTimeStamp: 1.20
       }
     };
+   component.viewerService.metaData = { selectedTranscript: 'Bengali' };
    component.player = {
       currentTime: jasmine.createSpy('currentTime').and.returnValue(1.20),
     };
    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
    component.handleEventsForTranscripts({});
    expect(component.player.currentTime).toHaveBeenCalled();
+   expect(component.viewerService.metaData.selectedTranscript).toBe('');
    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
   });
   it('should call handleEventsForTranscripts for transcript language selected', () => {
@@ -251,6 +253,7 @@ describe('VideoPlayerComponent', () => {
         },
        }
      };
+    component.viewerService.metaData = { selectedTranscript: 'English' };
     component.player = {
        currentTime: jasmine.createSpy('currentTime').and.returnValue(2.230),
      };
@@ -259,6 +262,7 @@ describe('VideoPlayerComponent', () => {
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.handleEventsForTranscripts(track);
     expect(component.player.currentTime).toHaveBeenCalled();
+    expect(component.viewerService.metaData.selectedTranscript).toBe('Bengali');
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
    });
 });

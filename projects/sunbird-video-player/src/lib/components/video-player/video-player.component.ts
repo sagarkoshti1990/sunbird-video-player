@@ -244,6 +244,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
           videoTimeStamp: this.player.currentTime()
         }
       };
+      this.viewerService.metaData.selectedTranscript = telemetryObject.extra.transcript.language;
     } else {
       telemetryObject = {
         type: 'TRANSCRIPT_LANGUAGE_OFF',
@@ -251,6 +252,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
           videoTimeStamp: this.player.currentTime()
         }
       };
+      this.viewerService.metaData.selectedTranscript = '';
     }
     this.viewerService.raiseHeartBeatEvent(telemetryObject.type, telemetryObject.extra);
   }
