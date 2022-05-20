@@ -88,7 +88,8 @@ export class ViewerService {
       return [];
     } else {
            _.forEach(transcripts, (value) => {
-        if (!(value.language && value.artifactUrl && value.languageCode && value.identifier)) {
+        if (!(_.some(transcripts, { language: value.language, artifactUrl: value.artifactUrl ,
+          languageCode: value.languageCode, identifier: value.identifier}))) {
           this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
            new Error('Transcript object dose not have required fields'), this.traceId);
           return transcripts = [];
