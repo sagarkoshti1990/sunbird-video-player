@@ -94,7 +94,7 @@ export class ViewerService {
           this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
            new Error('Transcript object dose not have required fields'), this.traceId);
           return transcripts = [];
-        } else if (this.metaData.transcripts.length &&
+        } else if (!_.isEmpty(this.metaData.transcripts) &&
           ( _.last(this.metaData.transcripts) !== 'off' &&  _.last(this.metaData.transcripts) === value.languageCode)) {
           value.default = true;
         }
