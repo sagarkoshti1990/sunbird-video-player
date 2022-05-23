@@ -111,8 +111,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.nextContent = this.playerConfig.config.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
-    this.viewerService.initialize(this.playerConfig);
     this.videoPlayerService.initialize(this.playerConfig);
+    this.viewerService.initialize(this.playerConfig);
     window.addEventListener('offline', this.raiseInternetDisconnectionError , true);
     this.QumlPlayerConfig.config = this.playerConfig.config;
     this.QumlPlayerConfig.config.sideMenu.enable = false;

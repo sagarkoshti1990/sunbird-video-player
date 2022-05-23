@@ -17,6 +17,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
   @Input() config: any;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
+  transcripts = [];
   showBackwardButton = false;
   showForwardButton = false;
   showPlayButton = true;
@@ -43,6 +44,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
               public questionCursor: QuestionCursor, private http: HttpClient ) { }
 
   ngAfterViewInit() {
+    this.transcripts = this.viewerService.transcripts;
     this.viewerService.getPlayerOptions().then(async (options) => {
       this.player = await videojs(this.target.nativeElement, {
         fluid: true,
@@ -53,7 +55,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
           children: ['playToggle', 'volumePanel', 'durationDisplay',
-            'progressControl', 'remainingTimeDisplay',
+            'progressControl', 'remainingTimeDisplay', 'CaptionsButton',
             'playbackRateMenuButton', 'fullscreenToggle']
         },
         plugins: {
@@ -142,6 +144,12 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
   onLoadMetadata(e) {
     this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+    if (this.transcripts && this.transcripts.length && this.player.transcript) {
+      this.player.transcript({
+        showTitle: true,
+        showTrackSelector: true,
+      });
+    }
   }
 
   registerEvents() {
@@ -196,13 +204,57 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         this.viewerService.playerEvent.emit({ type: 'ended' });
       }
     });
+    this.player.on('subtitleChanged', (event, track) => {
+      this.handleEventsForTranscripts(track);
+    });
     events.forEach(event => {
       this.player.on(event, (data) => {
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
       });
     });
-
+    this.trackTranscriptEvent();
+  }
+  trackTranscriptEvent() {
+    let timeout;
+    const player = this.player;
+    this.player.textTracks().on('change', function action(event) {
+      clearTimeout(timeout);
+      let transcriptObject = {};
+      this.tracks_.filter((track) => {
+        if ((track.kind === 'captions' || track.kind === 'subtitles') && track.mode === 'showing') {
+          transcriptObject = { artifactUrl: track.src, languageCode: track.language };
+          return true;
+        }
+      });
+      timeout = setTimeout(() => {
+        player.trigger('subtitleChanged', transcriptObject);
+      }, 10);
+    });
+  }
+  handleEventsForTranscripts(track) {
+    let telemetryObject;
+    if (!_.isEmpty(track)) {
+      telemetryObject = {
+        type: 'TRANSCRIPT_LANGUAGE_SELECTED',
+        extraValues: {
+          transcript: {
+            language: _.get(_.filter(this.transcripts, { artifactUrl: track.artifactUrl, languageCode: track.languageCode })[0], 'language')
+          },
+          videoTimeStamp: this.player.currentTime()
+        }
+      };
+      this.viewerService.metaData.selectedTranscript = telemetryObject.extraValues.transcript.language;
+    } else {
+      telemetryObject = {
+        type: 'TRANSCRIPT_LANGUAGE_OFF',
+        extraValues: {
+          videoTimeStamp: this.player.currentTime()
+        }
+      };
+      this.viewerService.metaData.selectedTranscript = '';
+    }
+    this.viewerService.raiseHeartBeatEvent(telemetryObject.type, telemetryObject.extraValues);
   }
 
   toggleForwardRewindButton() {
