@@ -105,10 +105,10 @@ export class SunbirdVideoPlayerService {
 
   }
 
-  public interact(id, currentPage, extravalue?) {
+  public interact(id, currentPage, extraValues?) {
     CsTelemetryModule.instance.telemetryService.raiseInteractTelemetry({
       options: this.getEventOptions(),
-      edata: { type: 'TOUCH', subtype: '', id, pageid: currentPage + '' , extra: extravalue }
+      edata: { type: 'TOUCH', subtype: '', id, pageid: currentPage + '' , extra: extraValues }
     });
   }
 

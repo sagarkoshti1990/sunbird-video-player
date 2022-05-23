@@ -237,24 +237,24 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     if (!_.isEmpty(track)) {
       telemetryObject = {
         type: 'TRANSCRIPT_LANGUAGE_SELECTED',
-        extra: {
+        extraValues: {
           transcript: {
             language: _.get(_.filter(this.transcripts, { artifactUrl: track.artifactUrl, languageCode: track.languageCode })[0], 'language')
           },
           videoTimeStamp: this.player.currentTime()
         }
       };
-      this.viewerService.metaData.selectedTranscript = telemetryObject.extra.transcript.language;
+      this.viewerService.metaData.selectedTranscript = telemetryObject.extraValues.transcript.language;
     } else {
       telemetryObject = {
         type: 'TRANSCRIPT_LANGUAGE_OFF',
-        extra: {
+        extraValues: {
           videoTimeStamp: this.player.currentTime()
         }
       };
       this.viewerService.metaData.selectedTranscript = '';
     }
-    this.viewerService.raiseHeartBeatEvent(telemetryObject.type, telemetryObject.extra);
+    this.viewerService.raiseHeartBeatEvent(telemetryObject.type, telemetryObject.extraValues);
   }
 
   toggleForwardRewindButton() {
