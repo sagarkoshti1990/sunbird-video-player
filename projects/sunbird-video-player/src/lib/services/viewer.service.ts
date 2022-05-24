@@ -72,7 +72,7 @@ export class ViewerService {
       totalDuration: 0,
       muted: undefined,
       currentDuration: undefined,
-      selectedTranscript: _.get(config, 'selectedTranscript')
+      transcripts: _.get(config, 'transcripts') || []
     };
     this.transcripts = metadata.transcripts ? this.handleTranscriptsData(metadata.transcripts) : [];
     this.showDownloadPopup = false;
@@ -94,7 +94,8 @@ export class ViewerService {
           this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
            new Error('Transcript object dose not have required fields'), this.traceId);
           return transcripts = [];
-        } else if (this.metaData.selectedTranscript && (this.metaData.selectedTranscript === value.language)) {
+        } else if (!_.isEmpty(this.metaData.transcripts) &&
+          ( _.last(this.metaData.transcripts) !== 'off' &&  _.last(this.metaData.transcripts) === value.languageCode)) {
           value.default = true;
         }
       });
