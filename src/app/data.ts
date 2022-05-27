@@ -78,28 +78,5 @@ export const playerConfig = {
       url: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode',
       description: 'For details see below:'
     },
-    transcripts: [
-      {
-          language: 'English',
-          identifier: 'do_11354391333675827211667',
-          languageCode: 'en',
-          // tslint:disable-next-line:max-line-length
-          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11354391333675827211667/poem-en.srt'
-      },
-      {
-          language: 'Kannada',
-          identifier: 'do_11354391333674188811666',
-          languageCode: 'ka',
-          // tslint:disable-next-line:max-line-length
-          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11354391333674188811666/poem-kn-4.srt'
-      },
-      {
-          language: 'Hindi',
-          identifier: 'do_11354391333677465611668',
-          languageCode: 'hi',
-          // tslint:disable-next-line:max-line-length
-          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11354391333677465611668/poem-hindi.srt'
-      }
-  ]
   }
 };
