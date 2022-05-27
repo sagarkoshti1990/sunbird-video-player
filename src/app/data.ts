@@ -77,6 +77,6 @@ export const playerConfig = {
       name: 'CC BY-SA 4.0',
       url: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode',
       description: 'For details see below:'
-    },
+    }
   }
 };
