@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output,
-   Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+   Renderer2, ViewChild, ViewEncapsulation, OnInit } from '@angular/core';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
@@ -13,7 +13,7 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./video-player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
+export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() config: any;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
@@ -42,9 +42,10 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2,
               public questionCursor: QuestionCursor, private http: HttpClient ) { }
-
-  ngAfterViewInit() {
+  ngOnInit() {
     this.transcripts = this.viewerService.transcripts;
+  }
+  ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(async (options) => {
       this.player = await videojs(this.target.nativeElement, {
         fluid: true,
