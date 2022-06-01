@@ -67,7 +67,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
-            code = errorCode.contentLoadFails
+            code = errorCode.contentLoadFails;
             message = errorMessage.contentLoadFails;
         }
         if (code === errorCode.contentLoadFails) {
