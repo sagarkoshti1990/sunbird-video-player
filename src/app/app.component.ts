@@ -37,11 +37,11 @@ export class AppComponent {
 
   playerEvent(event) {
     if (event.eid === 'END') {
-      let videoMetaDataConfig = event.metaData;
+      const videoMetaDataConfig = event.metaData;
       if (videoMetaDataConfig) {
         localStorage.setItem('config', JSON.stringify(videoMetaDataConfig));
       }
-      const config = videoMetaDataConfig ? { ...samplePlayerConfig.config, ...videoMetaDataConfig }: samplePlayerConfig.config;
+      const config = videoMetaDataConfig ? { ...samplePlayerConfig.config, ...videoMetaDataConfig } : samplePlayerConfig.config;
       this.playerConfig.config = config;
     }
   }
