@@ -21,7 +21,7 @@ export class AppComponent {
   }
 
   initializePlayer(metaData) {
-    let videoConfigMetadata: any = localStorage.getItem('config') || '{}';
+    let videoConfigMetadata: any = localStorage.getItem('config');
     let config;
     if (videoConfigMetadata) {
       videoConfigMetadata = JSON.parse(videoConfigMetadata);
@@ -38,9 +38,10 @@ export class AppComponent {
   playerEvent(event) {
     if (event.eid === 'END') {
       let videoMetaDataConfig = event.metaData;
-      localStorage.setItem('config', JSON.stringify(videoMetaDataConfig));
-      videoMetaDataConfig = JSON.parse(localStorage.getItem('config')) || {};
-      const config = { ...samplePlayerConfig.config, ...videoMetaDataConfig };
+      if (videoMetaDataConfig) {
+        localStorage.setItem('config', JSON.stringify(videoMetaDataConfig));
+      }
+      const config = videoMetaDataConfig ? { ...samplePlayerConfig.config, ...videoMetaDataConfig }: samplePlayerConfig.config;
       this.playerConfig.config = config;
     }
   }

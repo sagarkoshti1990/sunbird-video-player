@@ -2,7 +2,7 @@ import {
   ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
-import { ErrorService, errorCode, errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
+import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
@@ -67,7 +67,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
-          code = errorCode.contentLoadFails,
+            code = errorCode.contentLoadFails
             message = errorMessage.contentLoadFails;
         }
         if (code === errorCode.contentLoadFails) {
@@ -170,7 +170,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.QumlPlayerConfig.context.objectRollup = {};
       }
       const levels = Object.keys(this.QumlPlayerConfig.context.objectRollup);
-      this.QumlPlayerConfig.context.objectRollup[`l${levels.length + 1}`] = id;
+      this.QumlPlayerConfig.context.objectRollup[`l${levels.length +  1}`] = id;
     }
   }
 
@@ -221,7 +221,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
 
-  questionSetData({ response, time, identifier }) {
+  questionSetData({response, time, identifier}) {
     this.QumlPlayerConfig.metadata = response;
     this.QumlPlayerConfig.metadata['showStartPage'] = 'No';
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
@@ -240,6 +240,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.unlistenTouchStart();
     this.unlistenMouseMove();
     this.viewerService.isEndEventRaised = false;
-    window.removeEventListener('offline', this.raiseInternetDisconnectionError, true);
+    window.removeEventListener('offline', this.raiseInternetDisconnectionError , true);
   }
 }
