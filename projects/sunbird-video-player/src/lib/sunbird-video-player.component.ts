@@ -67,7 +67,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
-            code = errorCode.contentLoadFails,
+            code = errorCode.contentLoadFails;
             message = errorMessage.contentLoadFails;
         }
         if (code === errorCode.contentLoadFails) {
@@ -205,13 +205,16 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   qumlPlayerEvents(event) {
     if (event.eid === 'QUML_SUMMARY') {
+      this.showQumlPlayer = false;
       const score = parseInt(event.edata.extra.find(p => p.id === 'score')['value'], 10);
       this.viewerService.interceptionResponses[this.currentInterceptionTime] = {
         score,
         isSkipped: false
       };
-      document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`)['style'].backgroundColor = 'green';
-      this.showQumlPlayer = false;
+      const interceptPointElement = document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`);
+      if (interceptPointElement) {
+        interceptPointElement['style'].background = 'green';
+      }
       this.videoInstance.play();
       this.videoInstance.controls(true);
     }
