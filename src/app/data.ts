@@ -28,7 +28,9 @@ export const samplePlayerConfig = {
       showDownload: true,
       showReplay: true,
       showExit: true
-    }
+    },
+    // tslint:disable-next-line:max-line-length
+    transcripts: ['kn', 'en'] // for default selection we need this and last elemment in the array will be used for default selection and no need of default selection than no need send this in config or send empty array [] or ['off']
   },
   // tslint:disable-next-line:max-line-length
   metadata: {
@@ -115,7 +117,79 @@ export const samplePlayerConfig = {
       name: 'CC BY 4.0',
       url: 'https://creativecommons.org/licenses/by/4.0/legalcode',
       description: 'For details see below:'
-    }
+    },
+    transcripts: [
+      {
+          language: 'English',
+          languageCode: 'en',
+          identifier: 'do_11355096882872320012900',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355096882872320012900/caption.english.vtt'
+      },
+      {
+          language: 'Urdu',
+          languageCode: 'ur',
+          identifier: 'do_11355155567137587212904',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355155567137587212904/caption.urdu.vtt'
+      },
+      {
+          language: 'Bengali',
+          languageCode: 'bn',
+          identifier: 'do_11355160347001651212907',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355160347001651212907/caption.bengali.vtt'
+      },
+       {
+          language: 'Marathi',
+          languageCode: 'mr',
+          identifier: 'do_11355160521817292812908',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355160521817292812908/caption.marathi.vtt'
+      },
+      {
+          language: 'Odiya',
+          languageCode: 'or',
+          identifier: 'do_11355160685255065612910',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355160685255065612910/caption.odia.vtt'
+      },
+      {
+          language: 'Telugu',
+          languageCode: 'te',
+          identifier: 'do_11355160762735001612911',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355160762735001612911/caption.telugu.vtt'
+      },
+      {
+          language: 'Tamil',
+          languageCode: 'ta',
+          identifier: 'do_11355160835553689612912',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355160835553689612912/caption.tamil.vtt'
+      },
+      {
+          language: 'Punjabi',
+          languageCode: 'pa',
+          identifier: 'do_11355160955663155212913',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355160955663155212913/caption.punjabi.vtt'
+      },
+      {
+          language: 'Kannada',
+          languageCode: 'ka',
+          identifier: 'do_11355161075142656012914',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355161075142656012914/caption.kannada.vtt'
+      },
+      {
+          language: 'Hindi',
+          languageCode: 'hi',
+          identifier: 'do_11355161161894297612915',
+          // tslint:disable-next-line:max-line-length
+          artifactUrl: 'https://dockstorage.blob.core.windows.net/sunbird-content-dock/content/assets/do_11355161161894297612915/caption.hindi.vtt'
+      }
+  ]
   },
   data: {}
 };
