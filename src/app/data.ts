@@ -30,7 +30,7 @@ export const samplePlayerConfig = {
       showExit: true
     },
     // tslint:disable-next-line:max-line-length
-    transcripts: ['kn', 'en'] // for default selection we need this and last elemment in the array will be used for default selection and no need of default selection than no need send this in config or send empty array [] or ['off']
+    transcripts: [] // for default selection we need this ['kn', 'en'] and last elemment in the array will be used for default selection and no need of default selection than no need send this in config or send empty array [] or ['off']
   },
   // tslint:disable-next-line:max-line-length
   metadata: {
