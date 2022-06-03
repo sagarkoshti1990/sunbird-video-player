@@ -72,9 +72,9 @@ export class ViewerService {
       totalDuration: 0,
       muted: undefined,
       currentDuration: undefined,
-      transcripts: _.get(config, 'transcripts') || []
+      transcripts: []
     };
-    this.transcripts = metadata.transcripts ? this.handleTranscriptsData(metadata.transcripts) : [];
+    this.transcripts = metadata.transcripts ? metadata.transcripts : [];
     this.showDownloadPopup = false;
     this.endPageSeen = false;
     if (this.isAvailableLocally) {
@@ -83,24 +83,25 @@ export class ViewerService {
       this.mimeType = metadata.mimeType;
     }
   }
-  handleTranscriptsData(transcripts) {
-    if (!_.isArray(transcripts)) {
+  handleTranscriptsData(selectedTranscripts) {
+    this.metaData.transcripts = selectedTranscripts;
+    if (!_.isArray(this.transcripts)) {
       this.raiseExceptionLog('INVALID_TRANSCRIPT_DATATYPE', 'TRANSCRIPT', new Error('Transcript data should be array'), this.traceId);
       return [];
     } else {
-           _.forEach(transcripts, (value) => {
-        if (!(_.some(transcripts, { language: value.language, artifactUrl: value.artifactUrl ,
+           _.forEach(this.transcripts, (value) => {
+        if (!(_.some(this.transcripts, { language: value.language, artifactUrl: value.artifactUrl ,
           languageCode: value.languageCode, identifier: value.identifier}))) {
           this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
            new Error('Transcript object dose not have required fields'), this.traceId);
-          return transcripts = [];
-        } else if (!_.isEmpty(this.metaData.transcripts) &&
-          ( _.last(this.metaData.transcripts) !== 'off' &&  _.last(this.metaData.transcripts) === value.languageCode)) {
+          return [];
+        } else if (!_.isEmpty(selectedTranscripts) &&
+          ( _.last(selectedTranscripts) !== 'off' &&  _.last(selectedTranscripts) === value.languageCode)) {
           value.default = true;
         }
       });
     }
-    return transcripts;
+    return this.transcripts;
   }
   async getPlayerOptions() {
     if (!this.streamingUrl) {
