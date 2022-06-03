@@ -10,7 +10,8 @@ import { ApiService } from './services/api.service';
 })
 export class AppComponent {
   playerConfig: PlayerConfig;
-  contentId = 'do_21310353244132147214643';
+  contentId = 'do_21310353608830976014671';//'do_21310353244132147214643';
+  action = 'play';
   constructor(private apiService: ApiService) {
   }
 
@@ -48,5 +49,13 @@ export class AppComponent {
 
   telemetryEvent(event) {
     // console.log('in app: ', JSON.stringify(event));
+  }
+
+  play(){
+    this.action = 'play';
+  }
+
+  pause(){
+    this.action = 'pause';
   }
 }

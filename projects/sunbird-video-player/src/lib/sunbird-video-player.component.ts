@@ -15,6 +15,7 @@ import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() playerConfig: PlayerConfig;
+  @Input() action: string;
   @Output() playerEvent: EventEmitter<object>;
   @Output() telemetryEvent: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
@@ -37,6 +38,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   videoInstance: any;
   currentInterceptionTime;
   currentInterceptionUIId;
+  isFullScreen = false;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -217,6 +219,10 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
       this.videoInstance.play();
       this.videoInstance.controls(true);
+      if (!document.fullscreenElement && this.isFullScreen) { //if currently video is not in full screen and was previously full screen then set it back to full screen again 
+        document.getElementsByClassName('video-js')[0].requestFullscreen()
+        .catch((err) => console.error(err))
+      }
     }
   }
 
@@ -227,6 +233,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
     this.currentInterceptionTime = time;
     this.currentInterceptionUIId = identifier;
+    if (document.fullscreenElement) {
+      this.isFullScreen = true;
+      document.exitFullscreen()
+      .catch((err) => console.error(err))
+    }
+    else {
+      this.isFullScreen = false;
+    }
     this.showQumlPlayer = true;
   }
 
