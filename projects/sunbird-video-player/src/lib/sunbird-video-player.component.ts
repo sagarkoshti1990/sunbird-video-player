@@ -219,9 +219,10 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
       this.videoInstance.play();
       this.videoInstance.controls(true);
-      if (!document.fullscreenElement && this.isFullScreen) { //if currently video is not in full screen and was previously full screen then set it back to full screen again 
+      // if currently video is not in full screen and was previously full screen then set it back to full screen again
+      if (!document.fullscreenElement && this.isFullScreen) {
         document.getElementsByClassName('video-js')[0].requestFullscreen()
-        .catch((err) => console.error(err))
+        .catch((err) => console.error(err));
       }
     }
   }
@@ -236,9 +237,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     if (document.fullscreenElement) {
       this.isFullScreen = true;
       document.exitFullscreen()
-      .catch((err) => console.error(err))
-    }
-    else {
+      .catch((err) => console.error(err));
+    } else {
       this.isFullScreen = false;
     }
     this.showQumlPlayer = true;

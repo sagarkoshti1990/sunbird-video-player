@@ -13,7 +13,7 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./video-player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, OnChanges{
+export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, OnChanges {
   @Input() config: any;
   @Input() action: string;
   @Output() questionSetData = new EventEmitter();
@@ -145,12 +145,13 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes.action && this.player){
-      if(changes.action.currentValue !== changes.action.previousValue){
-        if(changes.action.currentValue === 'play')
+    if (changes.action && this.player) {
+      if (changes.action.currentValue !== changes.action.previousValue) {
+        if (changes.action.currentValue === 'play') {
           this.play();
-        else if(changes.action.currentValue === 'pause')
+        } else if (changes.action.currentValue === 'pause') {
           this.pause();
+        }
       }
     }
   }
