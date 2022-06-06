@@ -44,7 +44,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   constructor(public viewerService: ViewerService, private renderer2: Renderer2,
               public questionCursor: QuestionCursor, private http: HttpClient ) { }
   ngOnInit() {
-    this.transcripts = this.viewerService.transcripts;
+    this.transcripts = this.viewerService.handleTranscriptsData(_.get(this.config, 'transcripts') || []);
   }
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(async (options) => {
@@ -258,7 +258,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
           videoTimeStamp: this.player.currentTime()
         }
       };
-      this.viewerService.metaData.transcripts.push(track.languageCode);
+      if (_.last(this.viewerService.metaData.transcripts) !== track.languageCode) {
+        this.viewerService.metaData.transcripts.push(track.languageCode);
+      }
     } else {
       telemetryObject = {
         type: 'TRANSCRIPT_LANGUAGE_OFF',
