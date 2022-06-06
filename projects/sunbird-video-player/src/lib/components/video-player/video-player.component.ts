@@ -6,6 +6,7 @@ import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
 import { ViewerService } from '../../services/viewer.service';
+import { IAction } from '../../playerInterfaces';
 
 @Component({
   selector: 'video-player',
@@ -15,7 +16,7 @@ import { ViewerService } from '../../services/viewer.service';
 })
 export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, OnChanges {
   @Input() config: any;
-  @Input() action: string;
+  @Input() action?: IAction;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
   transcripts = [];
@@ -147,11 +148,15 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.action && this.player) {
       if (changes.action.currentValue !== changes.action.previousValue) {
-        if (changes.action.currentValue === 'play') {
-          this.play();
-        } else if (changes.action.currentValue === 'pause') {
-          this.pause();
-        }
+          switch (changes.action.currentValue.name) {
+            case 'play':
+                        this.play();
+                        break;
+            case 'pause':
+                        this.pause();
+                        break;
+            default: console.warn('Invalid Case!');
+          }
       }
     }
   }

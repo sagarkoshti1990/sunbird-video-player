@@ -11,7 +11,10 @@ import { ApiService } from './services/api.service';
 export class AppComponent {
   playerConfig: PlayerConfig;
   contentId = 'do_21310353608830976014671'; // 'do_21310353244132147214643';
-  action = 'play';
+  action =
+    {
+    name : 'play',
+  };
   constructor(private apiService: ApiService) {
   }
 
@@ -52,10 +55,14 @@ export class AppComponent {
   }
 
   play() {
-    this.action = 'play';
+    this.action = {
+      name : 'play'
+    };
   }
 
   pause() {
-    this.action = 'pause';
+   this.action = {
+      name : 'pause'
+    };
   }
 }

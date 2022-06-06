@@ -5,6 +5,7 @@ import {
 import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
+import { IAction } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 @Component({
@@ -15,7 +16,7 @@ import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() playerConfig: PlayerConfig;
-  @Input() action: string;
+  @Input() action?: IAction;
   @Output() playerEvent: EventEmitter<object>;
   @Output() telemetryEvent: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
