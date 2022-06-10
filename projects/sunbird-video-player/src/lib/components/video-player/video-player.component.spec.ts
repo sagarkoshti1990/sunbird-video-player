@@ -265,157 +265,157 @@ describe('VideoPlayerComponent', () => {
     expect(component.viewerService.metaData.transcripts).toEqual(['en', 'bn']);
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
    });
-   it('should pause the window on question set addition on add question set click', () => {
+  it('should pause the window on question set addition on add question set click', () => {
       const changes = {
-        "config": {
-            "currentValue": {
-                "traceId": "afhjgh",
-                "sideMenu": {
-                    "showShare": true,
-                    "showDownload": true,
-                    "showReplay": true,
-                    "showExit": true,
-                    "enable": false
+        config: {
+            currentValue: {
+                traceId: 'afhjgh',
+                sideMenu: {
+                    showShare: true,
+                    showDownload: true,
+                    showReplay: true,
+                    showExit: true,
+                    enable: false
                 },
-                "transcripts": [],
-                "actions": [
+                transcripts: [],
+                actions: [
                     {
-                        "play": 0
+                        play: 0
                     },
                     {
-                        "pause": 51.103101
+                        pause: 51.103101
                     }
                 ],
-                "volume": [],
-                "playBackSpeeds": [],
-                "totalDuration": 137.56,
-                "currentDuration": 51.103101
+                volume: [],
+                playBackSpeeds: [],
+                totalDuration: 137.56,
+                currentDuration: 51.103101
             },
-            "firstChange": true,
-            "previousValue": undefined,
+            firstChange: true,
+            previousValue: undefined,
             isFirstChange: () => {
               return true;
             }
         },
-        "action": {
-            "currentValue": {
-                "name": "play"
+        action: {
+            currentValue: {
+                name: 'play'
             },
-            "firstChange": true,
-            "previousValue": undefined,
+            firstChange: true,
+            previousValue: undefined,
             isFirstChange: () => {
               return true;
             }
         }
-    }
-    component.player = {
-      play: jasmine.createSpy('play')
     };
-    spyOn(component,'play');
-    component.ngOnChanges(changes);
-    expect(component.play).toHaveBeenCalled();
+      component.player = {
+        play: jasmine.createSpy('play')
+      };
+      spyOn(component, 'play');
+      component.ngOnChanges(changes);
+      expect(component.play).toHaveBeenCalled();
   });
   it('should play the video from point it was paused while adding question set on cancel click', () => {
     const changes = {
-      "config": {
-          "currentValue": {
-              "traceId": "afhjgh",
-              "sideMenu": {
-                  "showShare": true,
-                  "showDownload": true,
-                  "showReplay": true,
-                  "showExit": true,
-                  "enable": false
+      config: {
+          currentValue: {
+              traceId: 'afhjgh',
+              sideMenu: {
+                  showShare: true,
+                  showDownload: true,
+                  showReplay: true,
+                  showExit: true,
+                  enable: false
               },
-              "transcripts": [],
-              "actions": [
+              transcripts: [],
+              actions: [
                   {
-                      "play": 0
+                      play: 0
                   },
                   {
-                      "pause": 51.103101
+                      pause: 51.103101
                   }
               ],
-              "volume": [],
-              "playBackSpeeds": [],
-              "totalDuration": 137.56,
-              "currentDuration": 51.103101
+              volume: [],
+              playBackSpeeds: [],
+              totalDuration: 137.56,
+              currentDuration: 51.103101
           },
-          "firstChange": true,
-          "previousValue": undefined,
+          firstChange: true,
+          previousValue: undefined,
           isFirstChange: () => {
             return true;
           }
       },
-      "action": {
-          "currentValue": {
-              "name": "pause"
+      action: {
+          currentValue: {
+              name: 'pause'
           },
-          "firstChange": true,
-          "previousValue": undefined,
+          firstChange: true,
+          previousValue: undefined,
           isFirstChange: () => {
             return true;
           }
       }
-  }
-  component.player = {
-    pause: jasmine.createSpy('pause')
   };
-  spyOn(component,'pause');
-  component.ngOnChanges(changes);
-  expect(component.pause).toHaveBeenCalled();
+    component.player = {
+      pause: jasmine.createSpy('pause')
+    };
+    spyOn(component, 'pause');
+    component.ngOnChanges(changes);
+    expect(component.pause).toHaveBeenCalled();
   });
   it('should not take any action on blank name property ', () => {
     const changes = {
-      "config": {
-          "currentValue": {
-              "traceId": "afhjgh",
-              "sideMenu": {
-                  "showShare": true,
-                  "showDownload": true,
-                  "showReplay": true,
-                  "showExit": true,
-                  "enable": false
+      config: {
+          currentValue: {
+              traceId: 'afhjgh',
+              sideMenu: {
+                  showShare: true,
+                  showDownload: true,
+                  showReplay: true,
+                  showExit: true,
+                  enable: false
               },
-              "transcripts": [],
-              "actions": [
+              transcripts: [],
+              actions: [
                   {
-                      "play": 0
+                      play: 0
                   },
                   {
-                      "pause": 51.103101
+                      pause: 51.103101
                   }
               ],
-              "volume": [],
-              "playBackSpeeds": [],
-              "totalDuration": 137.56,
-              "currentDuration": 51.103101
+              volume: [],
+              playBackSpeeds: [],
+              totalDuration: 137.56,
+              currentDuration: 51.103101
           },
-          "firstChange": true,
-          "previousValue": undefined,
+          firstChange: true,
+          previousValue: undefined,
           isFirstChange: () => {
             return true;
           }
       },
-      "action": {
-          "currentValue": {
-              "name": ""
+      action: {
+          currentValue: {
+              name: ''
           },
-          "firstChange": true,
-          "previousValue": undefined,
+          firstChange: true,
+          previousValue: undefined,
           isFirstChange: () => {
             return true;
           }
       }
-  }
-  component.player = {
-    play: jasmine.createSpy('play'),
-    pause: jasmine.createSpy('pause')
   };
-  spyOn(component,'pause');
-  spyOn(component,'play');
-  component.ngOnChanges(changes);
-  expect(component.pause).not.toHaveBeenCalled();
-  expect(component.play).not.toHaveBeenCalled();
+    component.player = {
+      play: jasmine.createSpy('play'),
+      pause: jasmine.createSpy('pause')
+    };
+    spyOn(component, 'pause');
+    spyOn(component, 'play');
+    component.ngOnChanges(changes);
+    expect(component.pause).not.toHaveBeenCalled();
+    expect(component.play).not.toHaveBeenCalled();
   });
 });
