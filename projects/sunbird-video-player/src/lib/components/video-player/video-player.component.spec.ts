@@ -33,9 +33,8 @@ describe('VideoPlayerComponent', () => {
   it('should call pause()', () => {
     spyOn(component, 'toggleForwardRewindButton').and.callFake(() => 'true');
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
-    // the first parameter is the name of the object and the second parameter is the name of the method to be spied upon
     component.player = {
-      pause: jasmine.createSpy('pause') //?function
+      pause: jasmine.createSpy('pause')
     };
     component.pause();
     expect(component.showPauseButton).toBeFalsy();
