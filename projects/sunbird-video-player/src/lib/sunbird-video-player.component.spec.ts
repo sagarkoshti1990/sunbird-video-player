@@ -150,49 +150,8 @@ describe('SunbirdVideoPlayerComponent', () => {
       'CPV2_INT_CONNECT_01: content failed to load , No Internet Available', component.traceId);
   });
 
+
   it('should keep the video paused on QumlPlayer load till it is shown', () => {
-    const changes = {
-      config: {
-          currentValue: {
-              traceId: 'afhjgh',
-              sideMenu: {
-                  showShare: true,
-                  showDownload: true,
-                  showReplay: true,
-                  showExit: true,
-                  enable: false
-              },
-              transcripts: [],
-              actions: [
-                  {
-                      play: 0
-                  },
-                  {
-                      pause: 51.103101
-                  }
-              ],
-              volume: [],
-              playBackSpeeds: [],
-              totalDuration: 137.56,
-              currentDuration: 51.103101
-          },
-          firstChange: true,
-          previousValue: undefined,
-          isFirstChange: () => {
-            return true;
-          }
-      },
-      action: {
-          currentValue: {
-              name: 'pause'
-          },
-          firstChange: true,
-          previousValue: undefined,
-          isFirstChange: () => {
-            return true;
-          }
-      }
-  };
     component.action = {
       name: 'pause'
     };
@@ -201,55 +160,13 @@ describe('SunbirdVideoPlayerComponent', () => {
     };
     component.showQumlPlayer = true;
     spyOn(component, 'ngOnChanges').and.callThrough();
-    component.ngOnChanges(changes);
+    component.ngOnChanges(mockData.mockChangesForPlay);
     expect(component.ngOnChanges).toHaveBeenCalled();
     expect(component.showQumlPlayer).toBeTruthy();
     expect(component.playerAction.name).toEqual('play');
   });
 
   it('#ngOnChange() should update play/pause when QumlPlayer is off', () => {
-    const changes = {
-      config: {
-          currentValue: {
-              traceId: 'afhjgh',
-              sideMenu: {
-                  showShare: true,
-                  showDownload: true,
-                  showReplay: true,
-                  showExit: true,
-                  enable: false
-              },
-              transcripts: [],
-              actions: [
-                  {
-                      play: 0
-                  },
-                  {
-                      pause: 51.103101
-                  }
-              ],
-              volume: [],
-              playBackSpeeds: [],
-              totalDuration: 137.56,
-              currentDuration: 51.103101
-          },
-          firstChange: true,
-          previousValue: undefined,
-          isFirstChange: () => {
-            return true;
-          }
-      },
-      action: {
-          currentValue: {
-              name: 'pause'
-          },
-          firstChange: true,
-          previousValue: undefined,
-          isFirstChange: () => {
-            return true;
-          }
-      }
-  };
     component.action = {
       name: 'pause'
     };
@@ -258,62 +175,19 @@ describe('SunbirdVideoPlayerComponent', () => {
     };
     component.showQumlPlayer = false;
     spyOn(component, 'ngOnChanges').and.callThrough();
-    component.ngOnChanges(changes);
+    component.ngOnChanges(mockData.mockChangesForPause);
     expect(component.ngOnChanges).toHaveBeenCalled();
     expect(component.showQumlPlayer).toBeFalsy();
     expect(component.playerAction.name).toEqual('pause');
   });
 
   it('#ngOnChange() should not set action.name value', () => {
-    const changes = {
-        config: {
-            currentValue: {
-                traceId: 'afhjgh',
-                sideMenu: {
-                    showShare: true,
-                    showDownload: true,
-                    showReplay: true,
-                    showExit: true,
-                    enable: false
-                },
-                transcripts: [],
-                actions: [
-                    {
-                        play: 0
-                    },
-                    {
-                        pause: 51.103101
-                    }
-                ],
-                volume: [],
-                playBackSpeeds: [],
-                totalDuration: 137.56,
-                currentDuration: 51.103101
-            },
-            firstChange: true,
-            previousValue: undefined,
-            isFirstChange: () => {
-              return true;
-            }
-        },
-        action: {
-            currentValue: {
-                name: 'pause'
-            },
-            firstChange: true,
-            previousValue: undefined,
-            isFirstChange: () => {
-              return true;
-            }
-        }
-    };
-    changes.action = undefined;
     component.action = {
       name : ''
     };
     component.showQumlPlayer = true;
     spyOn(component, 'ngOnChanges').and.callThrough();
-    component.ngOnChanges(changes);
+    component.ngOnChanges(mockData.mockChangesForDefault);
     expect(component.ngOnChanges).toHaveBeenCalled();
     expect(component.showQumlPlayer).toBeTruthy();
     expect(component.action.name).toEqual('');
