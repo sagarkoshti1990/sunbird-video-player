@@ -1,5 +1,6 @@
+import { ThrowStmt } from '@angular/compiler';
 import {
-  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
+  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
 import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
@@ -13,7 +14,7 @@ import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
   templateUrl: './sunbird-video-player.component.html',
   styleUrls: ['./sunbird-video-player.component.scss']
 })
-export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   @Input() playerConfig: PlayerConfig;
   @Input() action?: IAction;
@@ -40,6 +41,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   currentInterceptionTime;
   currentInterceptionUIId;
   isFullScreen = false;
+  playerAction: IAction;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -121,6 +123,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.config.sideMenu.enable = false;
     this.QumlPlayerConfig.context = this.playerConfig.context;
     this.setTelemetryObjectRollup(this.playerConfig.metadata.identifier);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.action) {
+      if (!this.showQumlPlayer) {
+        this.playerAction = this.action;
+      }
+    }
   }
 
   raiseInternetDisconnectionError = () => {
@@ -222,8 +232,10 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       this.videoInstance.controls(true);
       // if currently video is not in full screen and was previously full screen then set it back to full screen again
       if (!document.fullscreenElement && this.isFullScreen) {
-        document.getElementsByClassName('video-js')[0].requestFullscreen()
-        .catch((err) => console.error(err));
+        if (document.getElementsByClassName('video-js')[0]) {
+          document.getElementsByClassName('video-js')[0].requestFullscreen()
+          .catch((err) => console.error(err));
+        }
       }
     }
   }

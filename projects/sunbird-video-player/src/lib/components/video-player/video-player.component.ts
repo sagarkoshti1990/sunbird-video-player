@@ -85,7 +85,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
         });
         this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
           (response) => {
-            this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+            if (!_.isEmpty(response)) {
+              this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+            }
           }
         );
       }
@@ -148,7 +150,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.action && this.player) {
       if (changes.action.currentValue !== changes.action.previousValue) {
-          switch (changes.action.currentValue.name) {
+        switch (changes.action.currentValue.name) {
             case 'play':
                         this.play();
                         break;
@@ -156,7 +158,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
                         this.pause();
                         break;
             default: console.warn('Invalid Case!');
-          }
+        }
       }
     }
   }

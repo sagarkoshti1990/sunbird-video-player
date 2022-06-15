@@ -265,7 +265,7 @@ describe('VideoPlayerComponent', () => {
     expect(component.viewerService.metaData.transcripts).toEqual(['en', 'bn']);
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
    });
-  it('should pause the window on question set addition on add question set click', () => {
+  it('should play the video from point it was paused while adding question set on cancel click', () => {
       const changes = {
         config: {
             currentValue: {
@@ -315,7 +315,7 @@ describe('VideoPlayerComponent', () => {
       component.ngOnChanges(changes);
       expect(component.play).toHaveBeenCalled();
   });
-  it('should play the video from point it was paused while adding question set on cancel click', () => {
+  it('should pause the video on question set addition on add question set click', () => {
     const changes = {
       config: {
           currentValue: {

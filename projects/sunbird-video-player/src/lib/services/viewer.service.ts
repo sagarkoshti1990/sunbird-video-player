@@ -38,7 +38,7 @@ export class ViewerService {
   public interceptionResponses: any = {};
   public showScore = false;
   public scoreObtained: any = 0;
-  public maxScore: any = 0;
+  public maxScore: number;
   public playerInstance: any;
   public contentMap = {};
   public isEndEventRaised = false;
