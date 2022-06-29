@@ -83,7 +83,8 @@ For existing apps, follow these steps to begin using .
          "node_modules/video.js/dist/video.js",
          "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
          "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
-         "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+         "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js",
+         "dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js"
          ]
 	    ...
 	    ...
@@ -155,11 +156,14 @@ var playerConfig = {
       "showDownload": true, // show/hide download button in side menu. default value is true
       "showReplay": true, // show/hide replay button in side menu. default value is true
       "showExit": true,   // show/hide exit button in side menu. default value is true
-    }
+    },
+       // tslint:disable-next-line:max-line-length
+    "transcripts": [] // for default selection we need this , ex: ['kn', 'en'] the last elemment in the array will be used for default selection and no need of default selection than no need send this in config or send empty array [] or ['off'] 
   },
-  "metadata": {}, // Content metadata json object (from API response take -> response.result.content)
-} 
-
+  "metadata": { // Content metadata json object (from API response take -> response.result.content)
+  "transcripts": [] // Defines the details of the transcripts data array and each object in array conatins details of language,languageCode, identifier, artifactUrl of each transcript
+  }, 
+}        
 ```
 ## Telemetry property description
 |Property Name| Description| Default Value
@@ -188,7 +192,9 @@ var playerConfig = {
 | `config.sideMenu.showDownload` | It is  `boolean` to show/hide download button in side menu| ```true```|
 | `config.sideMenu.showReplay` | It is  `boolean` to show/hide replay button in side menu| ```true```|
 | `config.sideMenu.showExit` | It is  `boolean` to show/hide exit button in side menu| ```true```|
+| `config.transcripts` | It is  `Array` which defines the transcripts default selection details| ```[]```|
 | `metadata` | It is an `object` which defines content metadata json object (from API response take -> response.result.content) | ```{}```|
+| `metadata.transcripts` | It is  `Array` which is having the details of the transcripts data | ```[]```|
 
 ## Available components
 |Feature| Notes| Selector|Code|Input|Output
