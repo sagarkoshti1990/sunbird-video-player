@@ -158,7 +158,7 @@ var playerConfig = {
       "showExit": true,   // show/hide exit button in side menu. default value is true
     },
        // tslint:disable-next-line:max-line-length
-    "transcripts": [] // for default selection we need this , ex: ['kn', 'en'] the last elemment in the array will be used for default selection and no need of default selection than no need send this in config or send empty array [] or ['off'] 
+    "transcripts": [] // for default selection we need this , ex: ['kn', 'en'] the last element in the array will be used for default selection and no need of default selection than no need send this in config or send empty array [] or ['off'] 
   },
   "metadata": { // Content metadata json object (from API response take -> response.result.content)
   "transcripts": [] // Defines the details of the transcripts data array and each object in array conatins details of language,languageCode, identifier, artifactUrl of each transcript
