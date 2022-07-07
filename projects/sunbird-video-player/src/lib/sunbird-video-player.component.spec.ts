@@ -33,7 +33,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   });
 
   // tslint:disable-next-line:only-arrow-functions
-  afterEach(function() {
+  afterEach(function () {
     jasmine.clock().uninstall();
   });
   it('should create SunbirdVideoPlayerComponent', () => {
@@ -148,5 +148,26 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNECT_01',
       'content failed to load , No Internet Available',
       'CPV2_INT_CONNECT_01: content failed to load , No Internet Available', component.traceId);
+  });
+
+  it('should show the quml player and send required telemetry', () => {
+    const options = {
+      response: mockData.questionSet, time: 80, identifier: mockData.questionSet.identifier
+    }
+    component.QumlPlayerConfig = mockData.playerConfig;
+    const viewerService = TestBed.get(ViewerService);
+    const spy = spyOn(viewerService, 'raiseImpressionEvent');
+    const spy1 = spyOn(viewerService, 'raiseHeartBeatEvent');
+    component.questionSetData(options);
+    expect(spy).toHaveBeenCalledWith('interactive-question-set');
+    expect(spy1).toHaveBeenCalled();
+  });
+
+  it('should raise Impression when question set ends', () => {
+    const viewerService = TestBed.get(ViewerService);
+    const spy = spyOn(viewerService, 'raiseImpressionEvent');
+    component.videoInstance = jasmine.createSpyObj('videoInstance', ['controls','play']);
+    component.qumlPlayerEvents({ eid: 'QUML_SUMMARY', edata: { extra: [{ id: 'score', value: '100' }] } });
+    expect(spy).toHaveBeenCalledWith('video');
   });
 });

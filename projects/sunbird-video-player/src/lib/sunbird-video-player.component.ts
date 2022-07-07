@@ -201,8 +201,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseHeartBeatEvent('DOWNLOAD');
   }
 
-
-
   qumlPlayerEvents(event) {
     if (event.eid === 'QUML_SUMMARY') {
       this.showQumlPlayer = false;
@@ -217,9 +215,9 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
       this.videoInstance.play();
       this.videoInstance.controls(true);
+      this.viewerService.raiseImpressionEvent('video');
     }
   }
-
 
   questionSetData({response, time, identifier}) {
     this.QumlPlayerConfig.metadata = response;
@@ -228,6 +226,12 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.currentInterceptionTime = time;
     this.currentInterceptionUIId = identifier;
     this.showQumlPlayer = true;
+    this.viewerService.raiseImpressionEvent('interactive-question-set');
+    this.viewerService.raiseHeartBeatEvent('VIDEO_MARKER_SELECTED', {
+      "questionSetId": identifier, // Question set id,
+      "type": "interactive-video", // Type of interaction
+      "interceptedAt": time // Time when the interception happened
+    });
   }
 
   playerInstance(event) {
