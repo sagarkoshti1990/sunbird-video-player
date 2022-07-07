@@ -76,3 +76,10 @@ export interface Transcript {
     languageCode: string;
   }
 export interface Transcripts extends Array <Transcript> {}
+
+export interface IAction {
+    name: string;
+    props?: {
+        [propName: string]: any;
+    };
+}

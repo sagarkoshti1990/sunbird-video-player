@@ -1,10 +1,12 @@
+import { ThrowStmt } from '@angular/compiler';
 import {
-  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
+  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
 import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
+import { IAction } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 @Component({
@@ -12,9 +14,10 @@ import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
   templateUrl: './sunbird-video-player.component.html',
   styleUrls: ['./sunbird-video-player.component.scss']
 })
-export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   @Input() playerConfig: PlayerConfig;
+  @Input() action?: IAction;
   @Output() playerEvent: EventEmitter<object>;
   @Output() telemetryEvent: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
@@ -37,6 +40,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   videoInstance: any;
   currentInterceptionTime;
   currentInterceptionUIId;
+  isFullScreen = false;
+  playerAction: IAction;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -118,6 +123,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.config.sideMenu.enable = false;
     this.QumlPlayerConfig.context = this.playerConfig.context;
     this.setTelemetryObjectRollup(this.playerConfig.metadata.identifier);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.action) {
+      if (!this.showQumlPlayer) {
+        this.playerAction = this.action;
+      }
+    }
   }
 
   raiseInternetDisconnectionError = () => {
@@ -217,6 +230,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
       this.videoInstance.play();
       this.videoInstance.controls(true);
+      // if currently video is not in full screen and was previously full screen then set it back to full screen again
+      if (!document.fullscreenElement && this.isFullScreen) {
+        if (document.getElementsByClassName('video-js')[0]) {
+          document.getElementsByClassName('video-js')[0].requestFullscreen()
+          .catch((err) => console.error(err));
+        }
+      }
     }
   }
 
@@ -227,6 +247,13 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
     this.currentInterceptionTime = time;
     this.currentInterceptionUIId = identifier;
+    if (document.fullscreenElement) {
+      this.isFullScreen = true;
+      document.exitFullscreen()
+      .catch((err) => console.error(err));
+    } else {
+      this.isFullScreen = false;
+    }
     this.showQumlPlayer = true;
   }
 
