@@ -21,5 +21,131 @@ export const mockData = {
           // tslint:disable-next-line:max-line-length
           artifactUrl: 'https://cdn.jsdelivr.net/gh/tombyrer/videojs-transcript-click@1.0/demo/captions.ar.vtt'
         }
-      ]
+      ],
+    changesForPlay: {
+      config: {
+        currentValue: {
+            traceId: 'afhjgh',
+            sideMenu: {
+                showShare: true,
+                showDownload: true,
+                showReplay: true,
+                showExit: true,
+                enable: false
+            },
+            transcripts: [],
+            actions: [
+                {
+                    play: 0
+                },
+                {
+                    pause: 51.103101
+                }
+            ],
+            volume: [],
+            playBackSpeeds: [],
+            totalDuration: 137.56,
+            currentDuration: 51.103101
+        },
+        firstChange: true,
+        previousValue: undefined,
+        isFirstChange: () => {
+          return true;
+        }
+    },
+    action: {
+        currentValue: {
+            name: 'play'
+        },
+        firstChange: true,
+        previousValue: undefined,
+        isFirstChange: () => {
+          return true;
+        }
+    }
+    },
+    changesForPause: {
+      config: {
+        currentValue: {
+            traceId: 'afhjgh',
+            sideMenu: {
+                showShare: true,
+                showDownload: true,
+                showReplay: true,
+                showExit: true,
+                enable: false
+            },
+            transcripts: [],
+            actions: [
+                {
+                    play: 0
+                },
+                {
+                    pause: 51.103101
+                }
+            ],
+            volume: [],
+            playBackSpeeds: [],
+            totalDuration: 137.56,
+            currentDuration: 51.103101
+        },
+        firstChange: true,
+        previousValue: undefined,
+        isFirstChange: () => {
+          return true;
+        }
+    },
+    action: {
+        currentValue: {
+            name: 'pause'
+        },
+        firstChange: true,
+        previousValue: undefined,
+        isFirstChange: () => {
+          return true;
+        }
+    }
+    },
+    changesForBlank: {
+            config: {
+          currentValue: {
+              traceId: 'afhjgh',
+              sideMenu: {
+                  showShare: true,
+                  showDownload: true,
+                  showReplay: true,
+                  showExit: true,
+                  enable: false
+              },
+              transcripts: [],
+              actions: [
+                  {
+                      play: 0
+                  },
+                  {
+                      pause: 51.103101
+                  }
+              ],
+              volume: [],
+              playBackSpeeds: [],
+              totalDuration: 137.56,
+              currentDuration: 51.103101
+          },
+          firstChange: true,
+          previousValue: undefined,
+          isFirstChange: () => {
+            return true;
+          }
+      },
+      action: {
+          currentValue: {
+              name: ''
+          },
+          firstChange: true,
+          previousValue: undefined,
+          isFirstChange: () => {
+            return true;
+          }
+      }
+    }
 };

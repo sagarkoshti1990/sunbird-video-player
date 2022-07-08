@@ -199,7 +199,7 @@ var playerConfig = {
 ## Available components
 |Feature| Notes| Selector|Code|Input|Output
 |--|--|--|------------------------------------------------------------------------------------------|---|--|
-| Video Player | Can be used to render videos | sunbird-video-player| *`<sunbird-video-player [playerConfig]="playerConfig"><sunbird-video-player>`*|playerConfig|playerEvent, telemetryEvent|
+| Video Player | Can be used to render videos | sunbird-video-player| *`<sunbird-video-player [playerConfig]="playerConfig"><sunbird-video-player>`*|playerConfig,action|playerEvent, telemetryEvent|
 
 <br /><br />
 
@@ -223,6 +223,7 @@ Click to see the steps - [Import](README.md#step-3-import-the-modules-and-compon
      <sunbird-video-player [playerConfig]="playerConfig" (playerEvent)="playerEvents($event)"
       (telemetryEvent)="playerTelemetryEvents($event)"></sunbird-video-player> 
 
+> Note : An additional property named `action` can be added to the above statement to implement pause and play functionality for the video player.
 ## Step 5: Send input to render VIDEO player
 
 Click to see the input data - [playerConfig](README.md#step-4-send-input-to-render-video-player)

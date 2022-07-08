@@ -39,5 +39,132 @@ export const mockData = {
     questionSet: {
         identifier: 'do_123456789',
         name: 'sample questionset',
+    },
+    mockChangesForPlay: {
+        config: {
+            currentValue: {
+                traceId: 'afhjgh',
+                sideMenu: {
+                    showShare: true,
+                    showDownload: true,
+                    showReplay: true,
+                    showExit: true,
+                    enable: false
+                },
+                transcripts: [],
+                actions: [
+                    {
+                        play: 0
+                    },
+                    {
+                        pause: 51.103101
+                    }
+                ],
+                volume: [],
+                playBackSpeeds: [],
+                totalDuration: 137.56,
+                currentDuration: 51.103101
+            },
+            firstChange: true,
+            previousValue: undefined,
+            isFirstChange: () => {
+                return true;
+            }
+        },
+        action: {
+            currentValue: {
+                name: 'pause'
+            },
+            firstChange: true,
+            previousValue: undefined,
+            isFirstChange: () => {
+                return true;
+            }
+        }
+
+    },
+    mockChangesForPause: {
+        config: {
+            currentValue: {
+                traceId: 'afhjgh',
+                sideMenu: {
+                    showShare: true,
+                    showDownload: true,
+                    showReplay: true,
+                    showExit: true,
+                    enable: false
+                },
+                transcripts: [],
+                actions: [
+                    {
+                        play: 0
+                    },
+                    {
+                        pause: 51.103101
+                    }
+                ],
+                volume: [],
+                playBackSpeeds: [],
+                totalDuration: 137.56,
+                currentDuration: 51.103101
+            },
+            firstChange: true,
+            previousValue: undefined,
+            isFirstChange: () => {
+                return true;
+            }
+        },
+        action: {
+            currentValue: {
+                name: 'pause'
+            },
+            firstChange: true,
+            previousValue: undefined,
+            isFirstChange: () => {
+                return true;
+            }
+        }
+    },
+    mockChangesForDefault: {
+        config: {
+            currentValue: {
+                traceId: 'afhjgh',
+                sideMenu: {
+                    showShare: true,
+                    showDownload: true,
+                    showReplay: true,
+                    showExit: true,
+                    enable: false
+                },
+                transcripts: [],
+                actions: [
+                    {
+                        play: 0
+                    },
+                    {
+                        pause: 51.103101
+                    }
+                ],
+                volume: [],
+                playBackSpeeds: [],
+                totalDuration: 137.56,
+                currentDuration: 51.103101
+            },
+            firstChange: true,
+            previousValue: undefined,
+            isFirstChange: () => {
+                return true;
+            }
+        },
+        action: {
+            currentValue: {
+                name: 'pause'
+            },
+            firstChange: true,
+            previousValue: undefined,
+            isFirstChange: () => {
+                return true;
+            }
+        }
     }
 };
