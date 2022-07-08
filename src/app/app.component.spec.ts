@@ -28,4 +28,19 @@ describe('AppComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h1').textContent).toContain('Welcome to sunbird-video-player-app!');
   });
+
+  it(`should play the video`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    spyOn(app, 'play').and.callFake(() => 'true');
+    expect(app.action.name).toEqual('play');
+  });
+
+  it(`should pause the video`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    spyOn(app, 'pause').and.callFake(() => 'true');
+    expect(app.action.name).toEqual('pause');
+  });
+
 });

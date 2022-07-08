@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output,
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, OnChanges, SimpleChanges,
    Renderer2, ViewChild, ViewEncapsulation, OnInit } from '@angular/core';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
 import { ViewerService } from '../../services/viewer.service';
+import { IAction } from '../../playerInterfaces';
 
 @Component({
   selector: 'video-player',
@@ -13,8 +14,9 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./video-player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy {
+export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, OnChanges {
   @Input() config: any;
+  @Input() action?: IAction;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
   transcripts = [];
@@ -83,7 +85,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy {
         });
         this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
           (response) => {
-            this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+            if (!_.isEmpty(response)) {
+              this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+            }
           }
         );
       }
@@ -141,6 +145,22 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy {
       if (event === 'OPEN_MENU') { this.pause(); }
       if (event === 'CLOSE_MENU') { this.play(); }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.action && this.player) {
+      if (changes.action.currentValue !== changes.action.previousValue) {
+        switch (changes.action.currentValue.name) {
+            case 'play':
+                        this.play();
+                        break;
+            case 'pause':
+                        this.pause();
+                        break;
+            default: console.warn('Invalid Case!');
+        }
+      }
+    }
   }
 
   onLoadMetadata(e) {
@@ -294,7 +314,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy {
 
   backward() {
     if (this.player) {
-      this.player.currentTime(this.player.currentTime() + this.time);
+      this.player.currentTime(this.player.currentTime() - this.time);
     }
     this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('BACKWARD');

@@ -265,4 +265,31 @@ describe('VideoPlayerComponent', () => {
     expect(component.viewerService.metaData.transcripts).toEqual(['en', 'bn']);
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
    });
+  it('should play the video from point it was paused while adding question set on cancel click', () => {
+      component.player = {
+        play: jasmine.createSpy('play')
+      };
+      spyOn(component, 'play');
+      component.ngOnChanges(mockData.changesForPlay);
+      expect(component.play).toHaveBeenCalled();
+  });
+  it('should pause the video on question set addition on add question set click', () => {
+    component.player = {
+      pause: jasmine.createSpy('pause')
+    };
+    spyOn(component, 'pause');
+    component.ngOnChanges(mockData.changesForPause);
+    expect(component.pause).toHaveBeenCalled();
+  });
+  it('should not take any action on blank name property ', () => {
+    component.player = {
+      play: jasmine.createSpy('play'),
+      pause: jasmine.createSpy('pause')
+    };
+    spyOn(component, 'pause');
+    spyOn(component, 'play');
+    component.ngOnChanges(mockData.changesForBlank);
+    expect(component.pause).not.toHaveBeenCalled();
+    expect(component.play).not.toHaveBeenCalled();
+  });
 });
