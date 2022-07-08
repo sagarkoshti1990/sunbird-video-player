@@ -255,9 +255,9 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.showQumlPlayer = true;
     this.viewerService.raiseImpressionEvent('interactive-question-set');
     this.viewerService.raiseHeartBeatEvent('VIDEO_MARKER_SELECTED', {
-      "questionSetId": identifier, // Question set id,
-      "type": "interactive-video", // Type of interaction
-      "interceptedAt": time // Time when the interception happened
+      questionSetId: identifier, // Question set id,
+      type: 'interactive-video', // Type of interaction
+      interceptedAt: time // Time when the interception happened
     });
   }
 

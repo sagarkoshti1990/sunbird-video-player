@@ -33,7 +33,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   });
 
   // tslint:disable-next-line:only-arrow-functions
-  afterEach(function () {
+  afterEach(function() {
     jasmine.clock().uninstall();
   });
   it('should create SunbirdVideoPlayerComponent', () => {
@@ -153,7 +153,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   it('should show the quml player and send required telemetry', () => {
     const options = {
       response: mockData.questionSet, time: 80, identifier: mockData.questionSet.identifier
-    }
+    };
     component.QumlPlayerConfig = mockData.playerConfig;
     const viewerService = TestBed.get(ViewerService);
     const spy = spyOn(viewerService, 'raiseImpressionEvent');
