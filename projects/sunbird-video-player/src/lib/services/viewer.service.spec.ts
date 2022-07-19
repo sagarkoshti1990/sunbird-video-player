@@ -143,7 +143,7 @@ describe('ViewerService', () => {
     const service = TestBed.inject(ViewerService);
     const videoPlayerService = TestBed.inject(SunbirdVideoPlayerService);
     spyOn(videoPlayerService, 'impression');
-    service.raiseImpressionEvent('interactive-question-set');
-    expect(videoPlayerService.impression).toHaveBeenCalledWith('interactive-question-set');
+    service.raiseImpressionEvent('interactive-question-set', 'do_1221');
+    expect(videoPlayerService.impression).toHaveBeenCalledWith('interactive-question-set', 'do_1221');
   });
 });

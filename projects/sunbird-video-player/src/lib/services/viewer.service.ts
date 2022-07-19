@@ -252,8 +252,8 @@ export class ViewerService {
     }
   }
 
-  raiseImpressionEvent(pageId: string) {
-    this.videoPlayerService.impression(pageId);
+  raiseImpressionEvent(pageId: string, questionSetId?: string) {
+    this.videoPlayerService.impression(pageId, questionSetId);
   }
 
   // tslint:disable-next-line:no-shadowed-variable

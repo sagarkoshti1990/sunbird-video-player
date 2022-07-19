@@ -116,11 +116,15 @@ export class SunbirdVideoPlayerService {
     CsTelemetryModule.instance.playerTelemetryService.onHeartBeatEvent(data, {});
   }
 
-  public impression(currentPage) {
-    CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry({
+  public impression(currentPage, questionSetId?: string) {
+    const impressionEvent = {
       options: this.getEventOptions(),
       edata: { type: 'workflow', subtype: '', pageid: currentPage + '', uri: '' }
-    });
+    };
+    if (questionSetId) {
+      impressionEvent.options.context.cdata.push({ id: questionSetId, type: 'QuestionSet' });
+    }
+    CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry(impressionEvent);
   }
 
   public error(errorCode: string , errorType: string ,  stacktrace?: Error) {
