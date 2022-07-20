@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as _ from 'lodash-es';
 import { PlayerConfig } from './playerInterfaces';
 import { UtilService } from './services/util.service';
 import { CsTelemetryModule } from '@project-sunbird/client-services/telemetry';
@@ -116,13 +117,13 @@ export class SunbirdVideoPlayerService {
     CsTelemetryModule.instance.playerTelemetryService.onHeartBeatEvent(data, {});
   }
 
-  public impression(currentPage, questionSetId?: string) {
+  public impression(currentPage, cdata: any = {}) {
     const impressionEvent = {
       options: this.getEventOptions(),
       edata: { type: 'workflow', subtype: '', pageid: currentPage + '', uri: '' }
     };
-    if (questionSetId) {
-      impressionEvent.options.context.cdata.push({ id: questionSetId, type: 'QuestionSet' });
+    if (!_.isEmpty(cdata)) {
+      impressionEvent.options.context.cdata.push(cdata);
     }
     CsTelemetryModule.instance.telemetryService.raiseImpressionTelemetry(impressionEvent);
   }

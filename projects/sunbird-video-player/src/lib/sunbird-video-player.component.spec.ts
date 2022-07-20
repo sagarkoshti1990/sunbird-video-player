@@ -159,7 +159,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     const spy = spyOn(viewerService, 'raiseImpressionEvent');
     const spy1 = spyOn(viewerService, 'raiseHeartBeatEvent');
     component.questionSetData(options);
-    expect(spy).toHaveBeenCalledWith('interactive-question-set', 'do_123456789');
+    expect(spy).toHaveBeenCalledWith('interactive-question-set', { id: 'do_123456789', type: 'QuestionSet' });
     expect(spy1).toHaveBeenCalled();
   });
 
