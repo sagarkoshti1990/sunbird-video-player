@@ -136,7 +136,7 @@ describe('ViewerService', () => {
     const service = TestBed.inject(ViewerService);
     service.interceptionPoints = { items: [{ identifier: '1234' }] };
     const returnValue = service.getMarkers();
-    expect(returnValue).toEqual([({ time: undefined, text: '', identifier: '1234', duration: 3 })]);
+    expect(returnValue).toEqual([({ time: undefined, type: undefined, identifier: '1234', duration: 3 })]);
     expect(service.showScore).toBeTruthy();
   });
   it('should call raiseImpressionEvent', () => {

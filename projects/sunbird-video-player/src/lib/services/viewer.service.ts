@@ -124,8 +124,8 @@ export class ViewerService {
       try {
         const interceptionPoints = this.interceptionPoints;
         this.showScore = true;
-        return interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
-          return { time: interceptionPoint, text: '', identifier, duration: 3 };
+        return interceptionPoints.items.map(({interceptionPoint, identifier, type}) => {
+        return { time: interceptionPoint, type, identifier, duration: 3 };
         });
       } catch (error) {
         console.log(error);
