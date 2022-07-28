@@ -195,6 +195,43 @@ describe('VideoPlayerComponent', () => {
     expect(component.isAutoplayPrevented).toBeFalsy();
     expect(component.player.play).toHaveBeenCalled();
   });
+  it('should call duration change event ', () => {
+    const viewerService = TestBed.inject(ViewerService);
+    viewerService.metaData = {
+      actions: [],
+      volume: [],
+      playBackSpeeds: [],
+      totalDuration: 0,
+      muted: undefined,
+      currentDuration: undefined,
+      transcripts: []
+    };
+    component.player = {
+      play: jasmine.createSpy('play'),
+      playbackRate: jasmine.createSpy('playbackRate'),
+      volume: jasmine.createSpy('volume'),
+      muted: jasmine.createSpy('muted'),
+      currentTime: jasmine.createSpy('currentTime'),
+      isFullscreen: jasmine.createSpy('isFullscreen'),
+      duration: jasmine.createSpy('duration').and.returnValue(1290),
+      on: jasmine.createSpy('on').and.callFake((event, callback) => {
+        expect(typeof callback).toBe('function');
+        callback('pause', 'successResponse');
+      })
+    };
+    spyOn(component, 'trackTranscriptEvent');
+    spyOn(component, 'pause');
+    spyOn(viewerService, 'raiseHeartBeatEvent');
+    spyOn(viewerService.playerEvent, 'emit');
+    component.registerEvents();
+    expect(component.trackTranscriptEvent).toHaveBeenCalled();
+    expect(component.player.on).toHaveBeenCalled();
+    expect(component.pause).toHaveBeenCalled();
+    expect(viewerService.raiseHeartBeatEvent).toHaveBeenCalled();
+    expect(component.totalDuration).toBe(1290);
+    expect(viewerService.metaData.totalDuration).toBe(1290);
+    expect(viewerService.playerEvent.emit).toHaveBeenCalled();
+  });
   it('should call toggleForwardRewindButton and totalDuration > currentTime', () => {
     component.time = 0;
     component.totalDuration = 600000;

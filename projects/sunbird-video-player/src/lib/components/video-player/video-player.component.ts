@@ -181,7 +181,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
       });
     }
 
-    const events = ['loadstart', 'play', 'pause', 'durationchange',
+    const events = ['loadstart', 'play', 'pause',
       'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
       'ratechange'];
 
@@ -228,6 +228,14 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
     this.player.on('subtitleChanged', (event, track) => {
       this.handleEventsForTranscripts(track);
     });
+
+    this.player.on('durationchange', (data) => {
+      if (this.totalDuration === 0) {
+        this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+        this.viewerService.playerEvent.emit({ ...data, duration: this.totalDuration });
+      }
+    });
+
     events.forEach(event => {
       this.player.on(event, (data) => {
         this.handleVideoControls(data);
