@@ -120,7 +120,7 @@ export class ViewerService {
   }
 
   getMarkers()  {
-    if (this.interceptionPoints) {
+    if (this?.interceptionPoints?.items) {
       try {
         const interceptionPoints = this.interceptionPoints;
         this.showScore = true;
