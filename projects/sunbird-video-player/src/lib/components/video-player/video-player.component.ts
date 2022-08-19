@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output,
-   Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, OnChanges, SimpleChanges,
+   Renderer2, ViewChild, ViewEncapsulation, OnInit } from '@angular/core';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
 import { ViewerService } from '../../services/viewer.service';
+import { IAction } from '../../playerInterfaces';
 
 @Component({
   selector: 'video-player',
@@ -13,10 +14,12 @@ import { ViewerService } from '../../services/viewer.service';
   styleUrls: ['./video-player.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
+export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, OnChanges {
   @Input() config: any;
+  @Input() action?: IAction;
   @Output() questionSetData = new EventEmitter();
   @Output() playerInstance = new EventEmitter();
+  transcripts = [];
   showBackwardButton = false;
   showForwardButton = false;
   showPlayButton = true;
@@ -41,7 +44,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2,
               public questionCursor: QuestionCursor, private http: HttpClient ) { }
-
+  ngOnInit() {
+    this.transcripts = this.viewerService.handleTranscriptsData(_.get(this.config, 'transcripts') || []);
+  }
   ngAfterViewInit() {
     this.viewerService.getPlayerOptions().then(async (options) => {
       this.player = await videojs(this.target.nativeElement, {
@@ -53,7 +58,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         playbackRates: [0.5, 1, 1.5, 2],
         controlBar: {
           children: ['playToggle', 'volumePanel', 'durationDisplay',
-            'progressControl', 'remainingTimeDisplay',
+            'progressControl', 'remainingTimeDisplay', 'CaptionsButton',
             'playbackRateMenuButton', 'fullscreenToggle']
         },
         plugins: {
@@ -80,7 +85,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         });
         this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
           (response) => {
-            this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+            if (!_.isEmpty(response)) {
+              this.viewerService.maxScore = response.reduce((a, b) => a + b, 0);
+            }
           }
         );
       }
@@ -140,8 +147,30 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.action && this.player) {
+      if (changes.action.currentValue !== changes.action.previousValue) {
+        switch (changes.action.currentValue.name) {
+            case 'play':
+                        this.play();
+                        break;
+            case 'pause':
+                        this.pause();
+                        break;
+            default: console.warn('Invalid Case!');
+        }
+      }
+    }
+  }
+
   onLoadMetadata(e) {
     this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+    if (this.transcripts && this.transcripts.length && this.player.transcript) {
+      this.player.transcript({
+        showTitle: true,
+        showTrackSelector: true,
+      });
+    }
   }
 
   registerEvents() {
@@ -152,7 +181,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
       });
     }
 
-    const events = ['loadstart', 'play', 'pause', 'durationchange',
+    const events = ['loadstart', 'play', 'pause',
       'error', 'playing', 'progress', 'seeked', 'seeking', 'volumechange',
       'ratechange'];
 
@@ -196,13 +225,67 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
         this.viewerService.playerEvent.emit({ type: 'ended' });
       }
     });
+    this.player.on('subtitleChanged', (event, track) => {
+      this.handleEventsForTranscripts(track);
+    });
+
+    this.player.on('durationchange', (data) => {
+      if (this.totalDuration === 0) {
+        this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+        this.viewerService.playerEvent.emit({ ...data, duration: this.totalDuration });
+      }
+    });
+
     events.forEach(event => {
       this.player.on(event, (data) => {
         this.handleVideoControls(data);
         this.viewerService.playerEvent.emit(data);
       });
     });
-
+    this.trackTranscriptEvent();
+  }
+  trackTranscriptEvent() {
+    let timeout;
+    const player = this.player;
+    this.player.textTracks().on('change', function action(event) {
+      clearTimeout(timeout);
+      let transcriptObject = {};
+      this.tracks_.filter((track) => {
+        if ((track.kind === 'captions' || track.kind === 'subtitles') && track.mode === 'showing') {
+          transcriptObject = { artifactUrl: track.src, languageCode: track.language };
+          return true;
+        }
+      });
+      timeout = setTimeout(() => {
+        player.trigger('subtitleChanged', transcriptObject);
+      }, 10);
+    });
+  }
+  handleEventsForTranscripts(track) {
+    let telemetryObject;
+    if (!_.isEmpty(track)) {
+      telemetryObject = {
+        type: 'TRANSCRIPT_LANGUAGE_SELECTED',
+        extraValues: {
+          transcript: {
+            language: _.get(_.filter(this.transcripts, { artifactUrl: track.artifactUrl, languageCode: track.languageCode })[0], 'language')
+          },
+          videoTimeStamp: this.player.currentTime()
+        }
+      };
+      if (_.last(this.viewerService.metaData.transcripts) !== track.languageCode) {
+        this.viewerService.metaData.transcripts.push(track.languageCode);
+      }
+    } else {
+      telemetryObject = {
+        type: 'TRANSCRIPT_LANGUAGE_OFF',
+        extraValues: {
+          videoTimeStamp: this.player.currentTime()
+        }
+      };
+      this.viewerService.metaData.transcripts.push('off');
+    }
+    this.viewerService.raiseHeartBeatEvent(telemetryObject.type, telemetryObject.extraValues);
   }
 
   toggleForwardRewindButton() {
@@ -239,7 +322,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnDestroy {
 
   backward() {
     if (this.player) {
-      this.player.currentTime(this.player.currentTime() + this.time);
+      this.player.currentTime(this.player.currentTime() - this.time);
     }
     this.toggleForwardRewindButton();
     this.viewerService.raiseHeartBeatEvent('BACKWARD');

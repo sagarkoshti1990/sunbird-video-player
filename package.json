@@ -32,7 +32,7 @@
     "@angular/router": "9.1.12",
     "@project-sunbird/client-services": "^4.0.1",
     "@project-sunbird/sb-styles": "0.0.7",
-    "@project-sunbird/sunbird-quml-player-v9": "4.5.0",
+    "@project-sunbird/sunbird-quml-player-v9": "4.9.7",
     "@project-sunbird/telemetry-sdk": "0.0.26",
     "core-js": "^2.5.4",
     "document-register-element": "^1.7.2",
@@ -42,7 +42,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
-    "video.js": "7.4.1",
+    "video.js": "7.18.1",
     "videojs-contrib-quality-levels": "2.1.0",
     "videojs-http-source-selector": "1.1.6",
     "zone.js": "~0.10.3"

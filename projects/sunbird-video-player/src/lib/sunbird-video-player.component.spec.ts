@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { SunbirdVideoPlayerComponent } from './sunbird-video-player.component';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -148,5 +148,176 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNECT_01',
       'content failed to load , No Internet Available',
       'CPV2_INT_CONNECT_01: content failed to load , No Internet Available', component.traceId);
+  });
+
+  it('should show the quml player and send required telemetry', () => {
+    const options = {
+      response: mockData.questionSet, time: 80, identifier: mockData.questionSet.identifier
+    };
+    component.QumlPlayerConfig = mockData.playerConfig;
+    const viewerService = TestBed.get(ViewerService);
+    const spy = spyOn(viewerService, 'raiseImpressionEvent');
+    const spy1 = spyOn(viewerService, 'raiseHeartBeatEvent');
+    component.questionSetData(options);
+    expect(spy).toHaveBeenCalledWith('interactive-question-set', { id: 'do_123456789', type: 'QuestionSet' });
+    expect(spy1).toHaveBeenCalled();
+  });
+
+  it('should raise Impression when question set ends', () => {
+    const viewerService = TestBed.get(ViewerService);
+    const spy = spyOn(viewerService, 'raiseImpressionEvent');
+    component.videoInstance = jasmine.createSpyObj('videoInstance', ['controls', 'play']);
+    component.qumlPlayerEvents({ eid: 'QUML_SUMMARY', edata: { extra: [{ id: 'score', value: '100' }] } });
+    expect(spy).toHaveBeenCalledWith('video');
+  });
+
+  it('should keep the video paused on QumlPlayer load till it is shown', () => {
+    component.action = {
+      name: 'pause'
+    };
+    component.playerAction = {
+      name: 'play'
+    };
+    component.showQumlPlayer = true;
+    spyOn(component, 'ngOnChanges').and.callThrough();
+    component.ngOnChanges(mockData.mockChangesForPlay);
+    expect(component.ngOnChanges).toHaveBeenCalled();
+    expect(component.showQumlPlayer).toBeTruthy();
+    expect(component.playerAction.name).toEqual('play');
+  });
+
+  it('#ngOnChange() should update play/pause when QumlPlayer is off', () => {
+    component.action = {
+      name: 'pause'
+    };
+    component.playerAction = {
+      name: 'play'
+    };
+    component.showQumlPlayer = false;
+    spyOn(component, 'ngOnChanges').and.callThrough();
+    component.ngOnChanges(mockData.mockChangesForPause);
+    expect(component.ngOnChanges).toHaveBeenCalled();
+    expect(component.showQumlPlayer).toBeFalsy();
+    expect(component.playerAction.name).toEqual('pause');
+  });
+
+  it('#ngOnChange() should not set action.name value', () => {
+    component.action = {
+      name: ''
+    };
+    component.showQumlPlayer = true;
+    spyOn(component, 'ngOnChanges').and.callThrough();
+    component.ngOnChanges(mockData.mockChangesForDefault);
+    expect(component.ngOnChanges).toHaveBeenCalled();
+    expect(component.showQumlPlayer).toBeTruthy();
+    expect(component.action.name).toEqual('');
+  });
+
+  it('#qumlPlayerEvents() should not call videoInstance.play and videoInstance.controls', () => {
+    component.videoInstance = {
+      play() { return; },
+      controls(event) { return; }
+    };
+    spyOn(component.videoInstance, 'play').and.callFake(() => { });
+    spyOn(component.videoInstance, 'controls').and.callFake(() => { });
+    spyOn(component, 'qumlPlayerEvents').and.callThrough();
+    component.qumlPlayerEvents({ eid: 'Start' });
+    expect(component.qumlPlayerEvents).toHaveBeenCalled();
+    expect(component.videoInstance.play).not.toHaveBeenCalled();
+    expect(component.videoInstance.controls).not.toHaveBeenCalled();
+  });
+
+  it('#qumlPlayerEvents() should call videoInstance.play and videoInstance.controls', () => {
+    const qumlEventSummary = {
+      eid: 'QUML_SUMMARY',
+      ver: '1.0',
+      edata: {
+        type: 'QUML_SUMMARY',
+        currentIndex: 0,
+        duration: 16,
+        extra: [{ id: 'score', value: 1 }]
+      }
+    };
+    component.videoInstance = {
+      play() { },
+      controls(event) { }
+    };
+    component.isFullScreen = false;
+    component.currentInterceptionTime = '5e242d8c-b6dd-4b6b-b147-ca63d449c975';
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `<div class="vjs-marker" data-marker-key="5e242d8c-b6dd-4b6b-b147-ca63d449c975"
+     data-marker-time="50" style="width: 7px; border-radius: 30%; background-color: orange; height: 7px;
+     bottom: 39%; margin-left: -3.5px; left: 36.3478%;"></div>`;
+    spyOn(document, 'querySelector').and.returnValue(wrapper);
+    spyOn(document, 'fullscreenElement').and.returnValue(true);
+    spyOn(component.videoInstance, 'play');
+    spyOn(component.videoInstance, 'controls');
+    const viewerService = TestBed.get(ViewerService);
+    spyOn(viewerService, 'raiseImpressionEvent');
+    component.qumlPlayerEvents(qumlEventSummary);
+    expect(component.videoInstance.play).toHaveBeenCalled();
+    expect(component.videoInstance.controls).toHaveBeenCalled();
+    expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
+  });
+
+  it('#qumlPlayerEvents() should set player to full screen', () => {
+    const qumlEventSummary = {
+      eid: 'QUML_SUMMARY',
+      ver: '1.0',
+      edata: {
+        type: 'QUML_SUMMARY',
+        currentIndex: 0,
+        duration: 16,
+        extra: [{ id: 'score', value: 1 }]
+      }
+    };
+    component.videoInstance = {
+      play() { return; },
+      controls(event) { return; }
+    };
+    component.isFullScreen = false;
+    component.currentInterceptionTime = '5e242d8c-b6dd-4b6b-b147-ca63d449c975';
+    spyOn(console, 'error');
+    spyOn(document, 'getElementsByClassName').and.returnValue([{
+      requestFullscreen() { }
+    }]);
+    spyOn(document, 'querySelector').and.returnValue(undefined);
+    spyOn(document, 'fullscreenElement').and.returnValue(true);
+    spyOn(component.videoInstance, 'play');
+    spyOn(component.videoInstance, 'controls');
+    const viewerService = TestBed.get(ViewerService);
+    spyOn(viewerService, 'raiseImpressionEvent');
+    component.qumlPlayerEvents(qumlEventSummary);
+    expect(component.videoInstance.play).toHaveBeenCalled();
+    expect(component.videoInstance.controls).toHaveBeenCalled();
+    expect(document.getElementsByClassName('video-js')[0]).toBeDefined();
+    expect(console.error).not.toHaveBeenCalled();
+    expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
+  });
+
+  it('#questionSetData() should not call document.exitFullscreen()', () => {
+    component.isFullScreen = false;
+    component.currentInterceptionTime = undefined;
+    component.currentInterceptionUIId = undefined;
+    component.QumlPlayerConfig = { metadata: { showStartPage: '', showEndPage: '' } };
+    spyOn(document, 'exitFullscreen');
+    const parameter = {
+      response: { name: 'Video' },
+      time: 100,
+      identifier: 'do_123'
+    };
+    const viewerService = TestBed.get(ViewerService);
+    spyOn(viewerService, 'raiseImpressionEvent');
+    spyOn(viewerService, 'raiseHeartBeatEvent');
+    component.questionSetData(parameter);
+    expect(component.QumlPlayerConfig.metadata).toBeDefined();
+    expect(component.QumlPlayerConfig.metadata.showStartPage).toEqual('No');
+    expect(component.QumlPlayerConfig.metadata.showEndPage).toEqual('No');
+    expect(component.currentInterceptionTime).toEqual(100);
+    expect(component.currentInterceptionUIId).toEqual('do_123');
+    expect(component.isFullScreen).toBeFalsy();
+    expect(document.exitFullscreen).not.toHaveBeenCalled();
+    expect(viewerService.raiseHeartBeatEvent).toHaveBeenCalled();
+    expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
   });
 });
