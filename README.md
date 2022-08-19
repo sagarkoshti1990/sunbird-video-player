@@ -3,7 +3,7 @@ Contains Video player library components powered by angular. These components ar
 
 # Getting Started
 For help getting started with a new Angular app, check out the [Angular CLI](https://angular.io/cli).
-If you have an Angular ≥ 9 CLI project, you could simply use our schematics to add sunbird-pdf-player library to it.
+If you have an Angular ≥ 9 CLI project, you could simply use our schematics to add sunbird-video-player library to it.
 
 ## Step 1: Installation
 
@@ -66,10 +66,10 @@ If you prefer not to use schematics or want to add `sunbird-video-player-v9` to 
   Import the NgModule where you want to use:
 
   ```diff
-+  import { SunbirdPdfPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
++  import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
   @NgModule({
     ...
-+    imports: [SunbirdPdfPlayerModule],
++    imports: [SunbirdVideoPlayerModule],
     ...
   })
   export class YourAppModule { }
@@ -81,7 +81,7 @@ If you prefer not to use schematics or want to add `sunbird-video-player-v9` to 
 ## Step 2: Send input to render VIDEO player
 
 Use the mock config in your component to send input to VIDEO player
-Click to see the mock - [playerConfig](https://github.com/project-sunbird/sunbird-pdf-player/blob/release-4.5.0/src/app/data.ts)
+Click to see the mock - [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.1.0/src/app/data.ts)
 
 ## Player config
 ```js
