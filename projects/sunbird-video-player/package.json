@@ -28,6 +28,6 @@
   "license": "MIT",
   "schematics": "./schematics/collection.json",
   "ng-add": {
-    "save": "devDependencies"
+    "save": true
   }
 }

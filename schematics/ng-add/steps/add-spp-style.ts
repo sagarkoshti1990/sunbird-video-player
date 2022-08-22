@@ -5,7 +5,21 @@ import * as messages from '../messages';
 import {getProjectTargetOptions} from '../../utils/project';
 import {getWorkspace, updateWorkspace} from '@schematics/angular/utility/workspace';
 import {workspaces, JsonArray} from '@angular-devkit/core';
-const SB_STYLE_CSS_FILEPATH = 'node_modules/@project-sunbird/sb-styles/assets/_styles.scss';
+const SB_STYLE_CSS_FILEPATH = [
+  './node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css',
+  './node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css',
+  './node_modules/video.js/dist/video-js.min.css',
+  './node_modules/@project-sunbird/sb-styles/assets/_styles.scss',
+];
+
+const SB_SCRIPT_FILEPATH = [
+  'node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js',
+  'node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js',
+  'node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js',
+  'node_modules/video.js/dist/video.js',
+  'node_modules/jquery/dist/jquery.min.js',
+
+];
 const SB_STYLE_ASSETS = {
   glob: '**/*.*',
   input: './node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/',
@@ -35,17 +49,36 @@ function addStyleToAngularJson(
     workspace: any, project: workspaces.ProjectDefinition, host: Tree): Rule {
   const targetOptions = getProjectTargetOptions(project, 'build');
   const styles = (targetOptions.styles as JsonArray | undefined);
-  if (!styles) {
-    targetOptions.styles = [SB_STYLE_CSS_FILEPATH];
-  } else {
-    const existingStyles: any = styles.map((s: any) => typeof s === 'string' ? s : s.input);
-    for (const[, stylePath] of existingStyles.entries()) {
-      // If the given asset is already specified in the styles, we don't need to do anything.
-      if (stylePath === SB_STYLE_CSS_FILEPATH) {
-        return () => host;
+  for (const PATH of SB_STYLE_CSS_FILEPATH) {
+    if (!styles) {
+      targetOptions.styles = [PATH];
+    } else {
+      const existingStyles: any = styles.map((s: any) => typeof s === 'string' ? s : s.input);
+      for (const[, stylePath] of existingStyles.entries()) {
+        // If the given asset is already specified in the styles, we don't need to do anything.
+        if (stylePath === PATH) {
+          return () => host;
+        }
       }
+      styles.unshift(PATH);
     }
-    styles.unshift(SB_STYLE_CSS_FILEPATH);
+  }
+
+  const scripts = (targetOptions.scripts as JsonArray | undefined);
+
+  for (const PATH of SB_SCRIPT_FILEPATH) {
+    if (!scripts) {
+      targetOptions.scripts = [PATH];
+    } else {
+      const existingSripts: any = scripts.map((s: any) => typeof s === 'string' ? s : s.input);
+      for (const[, scriptPath] of existingSripts.entries()) {
+        // If the given asset is already specified in the scripts, we don't need to do anything.
+        if (scriptPath === PATH) {
+          return () => host;
+        }
+      }
+      scripts.unshift(PATH);
+    }
   }
 
   const assets = (targetOptions.assets as JsonArray | undefined);
