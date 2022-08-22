@@ -26,44 +26,97 @@ If you prefer not to use schematics or want to add `sunbird-video-player-v9` to 
   #### 1. Install the packages:
 
   ```bash
-  npm install @project-sunbird/sunbird-video-player-v9 --save
-  npm install @project-sunbird/sb-styles --save
-  npm install @project-sunbird/client-services --save
+    npm install @project-sunbird/sunbird-video-player-v9 --save
+    npm install @project-sunbird/sunbird-quml-player-v9 --save
+    npm install @project-sunbird/sb-styles --save
+    npm install @project-sunbird/client-services --save
+    npm install lodash-es --save
+    npm install ngx-bootstrap --save
+    npm install jquery --save
+    npm install video.js --save
+    npm install videojs-contrib-quality-levels --save
+    npm install videojs-http-source-selector --save
   ```
 
-  #### 2. Include the sb-styles and assets in angular.json configuration:
-    
-  Add following under architect.build.assets and styles
-  
-  ```diff
-  {
+  ### 2: Include the styles, scripts and assets in angular.json
+    "styles": [
     ...
-    "build": {
-    "builder": "@angular-devkit/build-angular:browser",
-    "options": {
-      ...
-      "assets": [
-      ...
-  +   {
-  +    "glob": "**/*.*",
-  +    "input": "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
-  +    "output": "/assets/"
-  +   }	
-      ...    
-      ],
-      "styles": [
-      ...
-  +   "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss"    
-      ...
-      ],
-      ...
-    }
-  ```
-  
+    ...
+    "src/styles.css",
+    "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+    "./node_modules/video.js/dist/video-js.min.css",
+    "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
+    "./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+    ],
+    "scripts": [
+    ...
+    ...
+    "node_modules/jquery/dist/jquery.min.js",
+    "node_modules/video.js/dist/video.js",
+    "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
+    "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+    "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
+    ]
 
-  ## Step 3: Import the modules and components
+  Add following under architect.build.assets
+
+     {
+	    ...
+	    "build": {
+	    
+	    "builder": "@angular-devkit/build-angular:browser",
+	    
+	    "options": {
+		    ...
+		    ...
+    
+		    "assets": [
+		    
+			   ...
+			   ...
+			    
+			    {
+				    "glob": "**/*.*",
+				    "input": "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
+				    "output": "/assets/"
+			    },
+          {
+                "glob": "**/*",
+                "input": "node_modules/@project-sunbird/sunbird-quml-player-v9/lib/assets/",
+                "output": "/assets/"
+          }
+		    
+		    ],
+    
+	    "styles": [
+	    
+	    ...
+	    
+	    "./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
+	    "./node_modules/video.js/dist/video-js.min.css",
+        "./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
+        "./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
+	    ],
+	    "scripts": [
+         ...
+         "node_modules/jquery/dist/jquery.min.js",
+         "node_modules/video.js/dist/video.js",
+         "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
+         "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
+         "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js",
+         "dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js"
+         ]
+	    ...
+	    ...
+    
+    },
+
+</details>
+
+## Step 2: Import the modules and components
+
 Import the NgModule where you want to use. Also create a [question-cursor-implementation.service](../../src/app/question-cursor-implementation.service.ts)
-       
+```  
     import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
     import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
     import { QuestionCursorImplementationService } from './question-cursor-implementation.service';
@@ -82,11 +135,9 @@ Import the NgModule where you want to use. Also create a [question-cursor-implem
     export class TestAppModule { }
 
   
-  ```
+```
 
-</details>
-
-## Step 2: Send input to render VIDEO player
+## Step 3: Send input to render VIDEO player
 
 Use the mock config in your component to send input to VIDEO player
 Click to see the mock - [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.1.0/src/app/data.ts)
