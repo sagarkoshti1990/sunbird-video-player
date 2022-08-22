@@ -62,24 +62,24 @@ If you prefer not to use schematics or want to add `sunbird-video-player-v9` to 
   
 
   ## Step 3: Import the modules and components
-  Import the NgModule where you want to use. Also create a [question-cursor-implementation.service](../../src/app/question-cursor-implementation.service.ts)
-      
-  import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
-  import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
-  import { QuestionCursorImplementationService } from './question-cursor-implementation.service';
+Import the NgModule where you want to use. Also create a [question-cursor-implementation.service](../../src/app/question-cursor-implementation.service.ts)
+       
+    import { SunbirdVideoPlayerModule } from '@project-sunbird/sunbird-video-player-v9';
+    import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+    import { QuestionCursorImplementationService } from './question-cursor-implementation.service';
 
-
-  @NgModule({
-    ...
     
-    imports: [SunbirdVideoPlayerModule],
-    providers: [{ provide: QuestionCursor, useClass: QuestionCursorImplementationService }],
-    
-    ...
-  })
+    @NgModule({
+	    ...
+	    
+	    imports: [SunbirdVideoPlayerModule],
+	    providers: [{ provide: QuestionCursor, useClass: QuestionCursorImplementationService }],
+	    
+	    ...
+    })
 
-
-  export class TestAppModule { }
+  
+    export class TestAppModule { }
 
   
   ```
