@@ -83,6 +83,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
         const identifiers = markers.map(item => {
           return item.identifier;
         });
+        if (this.viewerService.questionCursor) {
         this.viewerService.questionCursor.getAllQuestionSet(identifiers).subscribe(
           (response) => {
             if (!_.isEmpty(response)) {
@@ -91,6 +92,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
           }
         );
       }
+    }
 
       if (markers) {
         this.player.markers({

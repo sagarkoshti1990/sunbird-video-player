@@ -159,4 +159,13 @@ describe('ViewerService', () => {
     service.raiseImpressionEvent('interactive-question-set', 'do_1221');
     expect(videoPlayerService.impression).toHaveBeenCalledWith('interactive-question-set', 'do_1221');
   });
+  it('should call getQuestionSet and return null ', () => {
+    const service = TestBed.inject(ViewerService);
+    service.contentMap = {};
+    service.questionCursor = null;
+    const questionCursor = TestBed.inject(QuestionCursor);
+    spyOn(questionCursor, 'getQuestionSet');
+    const data =  service.getQuestionSet('do_1221');
+    expect(data).toEqual(null);
+  });
 });

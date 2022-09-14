@@ -140,11 +140,15 @@ export class ViewerService {
   getQuestionSet(identifier) {
     const content = this.contentMap[identifier];
     if (!content) {
+      if (!this.questionCursor) {
+        return null;
+      } else {
      return this.questionCursor.getQuestionSet(identifier)
      .pipe(map((response) => {
         this.contentMap[identifier] = response.questionSet;
         return this.contentMap[identifier];
        }));
+      }
     } else {
       return of(content);
     }
