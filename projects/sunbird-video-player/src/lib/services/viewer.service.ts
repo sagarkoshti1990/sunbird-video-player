@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Optional } from '@angular/core';
 import { PlayerConfig, Transcripts } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
@@ -46,7 +46,7 @@ export class ViewerService {
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
               private utilService: UtilService,
               private http: HttpClient,
-              public questionCursor: QuestionCursor) {
+              @Optional() public questionCursor: QuestionCursor) {
     this.PlayerLoadStartedAt = new Date().getTime();
   }
 
@@ -140,11 +140,15 @@ export class ViewerService {
   getQuestionSet(identifier) {
     const content = this.contentMap[identifier];
     if (!content) {
+      if (!this.questionCursor) {
+        return null;
+      } else {
      return this.questionCursor.getQuestionSet(identifier)
      .pipe(map((response) => {
         this.contentMap[identifier] = response.questionSet;
         return this.contentMap[identifier];
        }));
+      }
     } else {
       return of(content);
     }
