@@ -15,9 +15,13 @@ describe('SunbirdVideoPlayerService', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
     service.initialize(mockData.playerConfig);
     expect(CsTelemetryModule.instance.isInitialised).toBeTruthy();
+    // tslint:disable-next-line:no-string-literal
     expect(service['telemetryObject']).toBeDefined();
+    // tslint:disable-next-line:no-string-literal
     expect(service['context']).toBeDefined();
+    // tslint:disable-next-line:no-string-literal
     expect(service['config']).toBeDefined();
+    // tslint:disable-next-line:no-string-literal
     expect(service['playSessionId']).toBeDefined();
   });
   it('should raise start telemetry event', () => {

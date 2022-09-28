@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { SunbirdVideoPlayerComponent } from './sunbird-video-player.component';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -13,7 +13,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   let component: SunbirdVideoPlayerComponent;
   let fixture: ComponentFixture<SunbirdVideoPlayerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       declarations: [SunbirdVideoPlayerComponent],
