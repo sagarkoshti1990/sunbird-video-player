@@ -27,6 +27,7 @@ describe('SunbirdVideoPlayerService', () => {
   it('should raise start telemetry event', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
     spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry').and.callFake(() => 'true');
+    // tslint:disable-next-line:no-string-literal
     service['context'] = {
       channel: '12345'
        };
