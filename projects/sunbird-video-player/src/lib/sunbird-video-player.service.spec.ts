@@ -25,8 +25,8 @@ describe('SunbirdVideoPlayerService', () => {
     spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry').and.callFake(() => 'true');
     service['context'] = {
       channel: '12345'
-    },
-      service.start(1234);
+       };
+    service.start(1234);
     expect(CsTelemetryModule.instance.telemetryService.raiseStartTelemetry).toHaveBeenCalled();
   });
   it('should raise end telemetry event', () => {

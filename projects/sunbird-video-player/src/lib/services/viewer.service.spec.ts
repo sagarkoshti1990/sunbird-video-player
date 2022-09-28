@@ -22,6 +22,7 @@ describe('ViewerService', () => {
   it('should call raiseExceptionLog', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'error').and.callFake(() => 'true');
     const exceptionLogEvent = {
       eid: 'ERROR',
@@ -35,13 +36,16 @@ describe('ViewerService', () => {
     service.raiseExceptionLog(exceptionLogEvent.edata.err,
       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace, exceptionLogEvent.edata.requestid);
     expect(service.playerEvent.emit).toHaveBeenCalledWith(exceptionLogEvent);
+    // tslint:disable-next-line:no-string-literal
     expect(service['videoPlayerService']['error']).toHaveBeenCalledWith(exceptionLogEvent.edata.err,
       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
   });
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'heartBeat').and.callFake(() => 'true');
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'interact').and.callFake(() => 'true');
     service.raiseHeartBeatEvent('REPLAY');
     expect(service.showScore).toBeFalsy();
@@ -57,6 +61,7 @@ describe('ViewerService', () => {
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'start').and.callFake(() => 'true');
     service.raiseStartEvent('');
     expect(service.PlayerLoadStartedAt).toBeDefined();
@@ -73,8 +78,10 @@ describe('ViewerService', () => {
     service.isEndEventRaised = true;
     service.visitedLength = 60000;
     spyOn(service, 'calculateScore').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['utilService'], 'getTimeSpentText').and.callFake(() => 'true');
     service.raiseEndEvent();
+    // tslint:disable-next-line:no-string-literal
     expect(service['utilService'].getTimeSpentText).not.toHaveBeenCalledWith(service.visitedLength);
     expect(service.calculateScore).not.toHaveBeenCalled();
   });
@@ -118,6 +125,7 @@ describe('ViewerService', () => {
   it('should call getPlayerOptions for null streamingUrl', () => {
     const service = TestBed.inject(ViewerService);
     service.streamingUrl = null;
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['http'], 'head').and.returnValue(of(false));
     spyOn(service, 'raiseExceptionLog').and.callThrough();
     // tslint:disable-next-line:max-line-length
