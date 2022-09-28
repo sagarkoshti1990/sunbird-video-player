@@ -13,7 +13,8 @@
     "videojs-contrib-quality-levels": ">= 2.1.0"
   },
   "dependencies": {
-    "@project-sunbird/sunbird-player-sdk-v9": "5.1.0"
+    "@project-sunbird/sunbird-player-sdk-v9": "5.1.0",
+    "tslib": "^2.0.0"
   },
   "homepage": "https://github.com/project-sunbird/sunbird-video-player/blob/release-5.0.0/README.md",
   "repository": {

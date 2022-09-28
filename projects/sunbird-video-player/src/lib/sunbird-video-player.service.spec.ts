@@ -22,7 +22,7 @@ describe('SunbirdVideoPlayerService', () => {
   });
   it('should raise start telemetry event', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
-    spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry');
+    spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry').and.callFake(() => 'true');
     service['context'] = {
       channel: '12345'
     },
