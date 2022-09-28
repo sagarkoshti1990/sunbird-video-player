@@ -24,7 +24,7 @@ describe('SunbirdVideoPlayerService', () => {
     // tslint:disable-next-line:no-string-literal
     expect(service['playSessionId']).toBeDefined();
   });
-  xit('should raise start telemetry event', () => {
+  it('should raise start telemetry event', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
     spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry').and.callFake(() => 'true');
     // tslint:disable-next-line:no-string-literal
