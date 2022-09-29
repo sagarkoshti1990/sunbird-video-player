@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { SunbirdVideoPlayerComponent } from './sunbird-video-player.component';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -13,7 +13,7 @@ describe('SunbirdVideoPlayerComponent', () => {
   let component: SunbirdVideoPlayerComponent;
   let fixture: ComponentFixture<SunbirdVideoPlayerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       declarations: [SunbirdVideoPlayerComponent],
@@ -139,11 +139,12 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.traceId).toEqual(component.playerConfig.config.traceId);
   });
   it('should call raiseInternetDisconnectionError', () => {
+    // tslint:disable-next-line:no-string-literal
     component.videoPlayerService['context'] = {
       channel: '12345'
     };
     component.traceId = '123';
-    spyOn(component.viewerService, 'raiseExceptionLog').and.callThrough();
+    spyOn(component.viewerService, 'raiseExceptionLog').and.callFake(() => 'true');
     component.raiseInternetDisconnectionError();
     expect(component.viewerService.raiseExceptionLog).toHaveBeenCalledWith('CPV2_INT_CONNECT_01',
       'content failed to load , No Internet Available',
@@ -155,17 +156,17 @@ describe('SunbirdVideoPlayerComponent', () => {
       response: mockData.questionSet, time: 80, identifier: mockData.questionSet.identifier
     };
     component.QumlPlayerConfig = mockData.playerConfig;
-    const viewerService = TestBed.get(ViewerService);
-    const spy = spyOn(viewerService, 'raiseImpressionEvent');
-    const spy1 = spyOn(viewerService, 'raiseHeartBeatEvent');
+    const viewerService = TestBed.inject(ViewerService);
+    const spy = spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
+    const spy1 = spyOn(viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.questionSetData(options);
     expect(spy).toHaveBeenCalledWith('interactive-question-set', { id: 'do_123456789', type: 'QuestionSet' });
     expect(spy1).toHaveBeenCalled();
   });
 
   it('should raise Impression when question set ends', () => {
-    const viewerService = TestBed.get(ViewerService);
-    const spy = spyOn(viewerService, 'raiseImpressionEvent');
+    const viewerService = TestBed.inject(ViewerService);
+    const spy = spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
     component.videoInstance = jasmine.createSpyObj('videoInstance', ['controls', 'play']);
     component.qumlPlayerEvents({ eid: 'QUML_SUMMARY', edata: { extra: [{ id: 'score', value: '100' }] } });
     expect(spy).toHaveBeenCalledWith('video');
@@ -252,8 +253,8 @@ describe('SunbirdVideoPlayerComponent', () => {
     spyOn(document, 'fullscreenElement').and.returnValue(true);
     spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
-    const viewerService = TestBed.get(ViewerService);
-    spyOn(viewerService, 'raiseImpressionEvent');
+    const viewerService = TestBed.inject(ViewerService);
+    spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
     component.qumlPlayerEvents(qumlEventSummary);
     expect(component.videoInstance.play).toHaveBeenCalled();
     expect(component.videoInstance.controls).toHaveBeenCalled();
@@ -285,8 +286,8 @@ describe('SunbirdVideoPlayerComponent', () => {
     spyOn(document, 'fullscreenElement').and.returnValue(true);
     spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
-    const viewerService = TestBed.get(ViewerService);
-    spyOn(viewerService, 'raiseImpressionEvent');
+    const viewerService = TestBed.inject(ViewerService);
+    spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
     component.qumlPlayerEvents(qumlEventSummary);
     expect(component.videoInstance.play).toHaveBeenCalled();
     expect(component.videoInstance.controls).toHaveBeenCalled();
@@ -306,9 +307,9 @@ describe('SunbirdVideoPlayerComponent', () => {
       time: 100,
       identifier: 'do_123'
     };
-    const viewerService = TestBed.get(ViewerService);
-    spyOn(viewerService, 'raiseImpressionEvent');
-    spyOn(viewerService, 'raiseHeartBeatEvent');
+    const viewerService = TestBed.inject(ViewerService);
+    spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
+    spyOn(viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
     component.questionSetData(parameter);
     expect(component.QumlPlayerConfig.metadata).toBeDefined();
     expect(component.QumlPlayerConfig.metadata.showStartPage).toEqual('No');
