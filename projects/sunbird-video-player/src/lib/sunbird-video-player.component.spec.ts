@@ -250,13 +250,13 @@ describe('SunbirdVideoPlayerComponent', () => {
      data-marker-time="50" style="width: 7px; border-radius: 30%; background-color: orange; height: 7px;
      bottom: 39%; margin-left: -3.5px; left: 36.3478%;"></div>`;
     spyOn(document, 'querySelector').and.returnValue(wrapper);
-    // spyOn(component.videoInstance, 'play');
+    spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
     const viewerService = TestBed.inject(ViewerService);
     spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
     component.qumlPlayerEvents(qumlEventSummary);
-    // expect(component.videoInstance.play).toHaveBeenCalled();
-    // expect(component.videoInstance.controls).toHaveBeenCalled();
+    expect(component.videoInstance.play).toHaveBeenCalled();
+    expect(component.videoInstance.controls).toHaveBeenCalled();
     expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
   });
 
@@ -279,14 +279,14 @@ describe('SunbirdVideoPlayerComponent', () => {
     component.currentInterceptionTime = '5e242d8c-b6dd-4b6b-b147-ca63d449c975';
     spyOn(console, 'error');
     spyOn(document, 'querySelector').and.returnValue(undefined);
-    // spyOn(component.videoInstance, 'play');
+    spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
     const viewerService = TestBed.inject(ViewerService);
     spyOn(viewerService, 'raiseImpressionEvent').and.callFake(() => 'true');
     component.qumlPlayerEvents(qumlEventSummary);
-    // expect(component.videoInstance.play).toHaveBeenCalled();
-    // expect(component.videoInstance.controls).toHaveBeenCalled();
-    // expect(document.getElementsByClassName('video-js')[0]).toBeDefined();
+    expect(component.videoInstance.play).toHaveBeenCalled();
+    expect(component.videoInstance.controls).toHaveBeenCalled();
+    expect(document.getElementsByClassName('video-js')[0]).not.toBeDefined();
     expect(console.error).not.toHaveBeenCalled();
     expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
   });
