@@ -21,7 +21,6 @@ describe('ViewerService', () => {
   });
   it('should call raiseExceptionLog', () => {
     const service = TestBed.inject(ViewerService);
-    // service['videoPlayerService']['context']['channel'] = '1234';
     spyOn(service.playerEvent, 'emit').and.callThrough();
     // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'error').and.callFake(() => 'true');

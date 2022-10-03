@@ -279,6 +279,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     component.currentInterceptionTime = '5e242d8c-b6dd-4b6b-b147-ca63d449c975';
     spyOn(console, 'error');
     spyOn(document, 'querySelector').and.returnValue(undefined);
+    spyOn(document, 'getElementsByClassName').and.callThrough();
     spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
     const viewerService = TestBed.inject(ViewerService);
