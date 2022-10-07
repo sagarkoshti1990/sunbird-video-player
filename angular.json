@@ -56,7 +56,13 @@
               "styles": true,
               "scripts": true,
               "vendor": true
-            }
+            },
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -82,7 +88,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -215,7 +222,6 @@
             "main": "projects/video-player-wc/src/main.ts",
             "polyfills": "projects/video-player-wc/src/polyfills.ts",
             "tsConfig": "projects/video-player-wc/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/video-player-wc/src/favicon.ico",
               "projects/video-player-wc/src/assets",
@@ -240,7 +246,13 @@
               "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
               "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js",
               "dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js" 
-            ]
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -270,7 +282,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
