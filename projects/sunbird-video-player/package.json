@@ -1,9 +1,9 @@
 {
   "name": "@project-sunbird/sunbird-video-player-v9",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "peerDependencies": {
-    "@angular/common": ">= 8.0.0",
-    "@angular/core": ">= 8.0.0",
+    "@angular/common": ">= 11.2.14",
+    "@angular/core": ">= 11.2.14",
     "@types/video.js": "7.5.5",
     "video.js": "7.18.1",
     "@project-sunbird/client-services": "^3.4.11",

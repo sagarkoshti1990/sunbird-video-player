@@ -250,7 +250,6 @@ describe('SunbirdVideoPlayerComponent', () => {
      data-marker-time="50" style="width: 7px; border-radius: 30%; background-color: orange; height: 7px;
      bottom: 39%; margin-left: -3.5px; left: 36.3478%;"></div>`;
     spyOn(document, 'querySelector').and.returnValue(wrapper);
-    spyOn(document, 'fullscreenElement').and.returnValue(true);
     spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
     const viewerService = TestBed.inject(ViewerService);
@@ -279,11 +278,8 @@ describe('SunbirdVideoPlayerComponent', () => {
     component.isFullScreen = false;
     component.currentInterceptionTime = '5e242d8c-b6dd-4b6b-b147-ca63d449c975';
     spyOn(console, 'error');
-    spyOn(document, 'getElementsByClassName').and.returnValue([{
-      requestFullscreen() { }
-    }]);
     spyOn(document, 'querySelector').and.returnValue(undefined);
-    spyOn(document, 'fullscreenElement').and.returnValue(true);
+    spyOn(document, 'getElementsByClassName').and.callThrough();
     spyOn(component.videoInstance, 'play');
     spyOn(component.videoInstance, 'controls');
     const viewerService = TestBed.inject(ViewerService);
@@ -291,7 +287,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     component.qumlPlayerEvents(qumlEventSummary);
     expect(component.videoInstance.play).toHaveBeenCalled();
     expect(component.videoInstance.controls).toHaveBeenCalled();
-    expect(document.getElementsByClassName('video-js')[0]).toBeDefined();
+    expect(document.getElementsByClassName('video-js')[0]).not.toBeDefined();
     expect(console.error).not.toHaveBeenCalled();
     expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
   });
