@@ -42,6 +42,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   currentInterceptionUIId;
   isFullScreen = false;
   playerAction: IAction;
+  public isInitialized = false;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -98,6 +99,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    this.isInitialized = true;
+    if (this.playerConfig) {
     if (typeof this.playerConfig === 'string') {
       try {
         this.playerConfig = JSON.parse(this.playerConfig);
@@ -105,7 +108,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         console.error('Invalid playerConfig: ', error);
       }
     }
-
+  }
     setInterval(() => {
       if (!this.isPaused) {
         this.showControls = false;
@@ -130,6 +133,10 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       if (!this.showQumlPlayer) {
         this.playerAction = this.action;
       }
+    }
+    if (changes?.playerConfig?.firstChange && this.isInitialized) {
+      // Calling for web component explicitly and life cycle works in different order
+      this.ngOnInit();
     }
   }
 
