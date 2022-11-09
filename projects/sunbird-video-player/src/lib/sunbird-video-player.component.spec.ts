@@ -1,7 +1,7 @@
 import { waitForAsync, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { SunbirdVideoPlayerComponent } from './sunbird-video-player.component';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, SimpleChange, SimpleChanges } from '@angular/core';
 import { ViewerService } from './services/viewer.service';
 import { HttpClientModule } from '@angular/common/http';
 import { mockData } from './sunbird-video-player.component.spec.data';
@@ -316,5 +316,27 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(document.exitFullscreen).not.toHaveBeenCalled();
     expect(viewerService.raiseHeartBeatEvent).toHaveBeenCalled();
     expect(viewerService.raiseImpressionEvent).toHaveBeenCalled();
+  });
+  it('should call ngOnChanges and call ngOnInit when isInitialized is true', () => {
+    spyOn(component.videoPlayerService, 'initialize').and.callThrough();
+    component.isInitialized = true;
+    const changes: SimpleChanges = {
+      action: new SimpleChange('play', 'view', true),
+      playerConfig: new SimpleChange('play', 'view', true)
+    };
+    spyOn(component, 'ngOnInit');
+    component.ngOnChanges(changes);
+    expect(component.ngOnInit).toHaveBeenCalled();
+  });
+  it('should call ngOnChanges and should not call ngOnInit when isInitialized is false', () => {
+    spyOn(component.videoPlayerService, 'initialize').and.callThrough();
+    component.isInitialized = false;
+    const changes: SimpleChanges = {
+      action: new SimpleChange('play', 'view', true),
+      playerConfig: new SimpleChange('play', 'view', true)
+    };
+    spyOn(component, 'ngOnInit');
+    component.ngOnChanges(changes);
+    expect(component.ngOnInit).not.toHaveBeenCalled();
   });
 });
