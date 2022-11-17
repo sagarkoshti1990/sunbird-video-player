@@ -66,10 +66,12 @@ describe('SunbirdVideoPlayerComponent', () => {
     const event = {};
     spyOn(component.playerEvent, 'emit').and.callThrough();
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    spyOn(component.cdr, 'detectChanges');
     component.replayContent(event);
     expect(component.playerEvent.emit).toHaveBeenCalledWith({});
     expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith('REPLAY');
     expect(component.viewState).toEqual('player');
+    expect(component.cdr.detectChanges).toHaveBeenCalled();
     expect(component.viewerService.isEndEventRaised).toBeFalsy();
   });
   it('should call playContent and call raiseHeartBeatEvent ', () => {
