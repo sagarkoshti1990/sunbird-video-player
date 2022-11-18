@@ -78,6 +78,9 @@
   .video-js .vjs-tech {
     pointer-events: none;
   }  
+  .hide-in-desktop {
+    visibility: hidden !important;
+  }
 }
 
 @media (hover: hover) {

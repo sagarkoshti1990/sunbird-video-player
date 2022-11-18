@@ -67,6 +67,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewerService.endPageSeen = true;
         this.viewerService.raiseEndEvent();
         this.viewState = 'end';
+        this.cdr.detectChanges();
       }
       if (event.type === 'error') {
         // tslint:disable-next-line:one-variable-per-declaration
@@ -203,6 +204,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewState = 'player';
     this.viewerService.isEndEventRaised = false;
     this.viewerService.raiseHeartBeatEvent('REPLAY');
+    this.cdr.detectChanges();
   }
 
   exitContent(event) {

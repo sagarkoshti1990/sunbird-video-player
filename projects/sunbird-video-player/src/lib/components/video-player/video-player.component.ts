@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, OnChanges, SimpleChanges,
-   Renderer2, ViewChild, ViewEncapsulation, OnInit, Optional } from '@angular/core';
+   Renderer2, ViewChild, ViewEncapsulation, OnInit, Optional, ChangeDetectorRef } from '@angular/core';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
@@ -43,7 +43,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   totalDuration = 0;
 
   constructor(public viewerService: ViewerService, private renderer2: Renderer2,
-              @Optional()public questionCursor: QuestionCursor, private http: HttpClient ) { }
+              @Optional()public questionCursor: QuestionCursor, private http: HttpClient, public cdr: ChangeDetectorRef ) { }
   ngOnInit() {
     this.transcripts = this.viewerService.handleTranscriptsData(_.get(this.config, 'transcripts') || []);
   }
@@ -293,11 +293,14 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   toggleForwardRewindButton() {
     this.showForwardButton = true;
     this.showBackwardButton = true;
+    this.cdr.detectChanges();
     if ((this.player.currentTime() + this.time) > this.totalDuration) {
       this.showForwardButton = false;
+      this.cdr.detectChanges();
     }
     if ((this.player.currentTime() - this.time) < 0) {
       this.showBackwardButton = false;
+      this.cdr.detectChanges();
     }
   }
 
