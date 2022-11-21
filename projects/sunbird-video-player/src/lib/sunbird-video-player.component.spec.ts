@@ -32,7 +32,6 @@ describe('SunbirdVideoPlayerComponent', () => {
     jasmine.clock().install();
   });
 
-  // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
   afterEach(function() {
     jasmine.clock().uninstall();
   });
