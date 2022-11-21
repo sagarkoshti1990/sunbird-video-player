@@ -69,7 +69,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.cdr.detectChanges();
       }
       if (event.type === 'error') {
-        // tslint:disable-next-line:one-variable-per-declaration
+        // eslint-disable-next-line one-var
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
@@ -82,7 +82,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewerService.raiseExceptionLog(code, message, event, this.traceId);
 
       }
-      // tslint:disable-next-line:max-line-length
+      // eslint-disable-next-line max-len
       const events = [{ type: 'volumechange', telemetryEvent: 'VOLUME_CHANGE' }, { type: 'seeking', telemetryEvent: 'DRAG' }, { type: 'fullscreen', telemetryEvent: 'FULLSCREEN' },
       { type: 'ratechange', telemetryEvent: 'RATE_CHANGE' }];
       events.forEach(data => {
@@ -115,7 +115,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
     }, 5000);
 
-    /* tslint:disable:no-string-literal */
+    /* eslint-disable @typescript-eslint/dot-notation */
     this.nextContent = this.playerConfig.config.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
@@ -161,7 +161,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     if (contentCompabilityLevel) {
       const checkContentCompatible = this.errorService.checkContentCompatibility(contentCompabilityLevel);
       if (!checkContentCompatible['isCompitable']) {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.viewerService.raiseExceptionLog(errorCode.contentCompatibility, errorMessage.contentCompatibility, checkContentCompatible['error']['message'], this.traceId);
       }
     }

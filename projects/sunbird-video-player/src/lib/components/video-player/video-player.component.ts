@@ -401,7 +401,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
               score: 0,
               isSkipped: false
             };
-            // tslint:disable-next-line:no-string-literal
+            // eslint-disable-next-line @typescript-eslint/dot-notation
             document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = 'red';
           }
         });

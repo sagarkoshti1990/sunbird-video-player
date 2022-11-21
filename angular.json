@@ -167,6 +167,15 @@
             "tsConfig": "projects/sunbird-video-player/tsconfig.spec.json",
             "karmaConfig": "projects/sunbird-video-player/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/sunbird-video-player/**/*.ts",
+              "projects/sunbird-video-player/**/*.html"
+            ]
+          }
         }
       }
     },
@@ -212,7 +221,7 @@
               "dist/sunbird-video-player/lib/assets/videojs-markers.js",
               "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
               "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js",
-              "dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js" 
+              "dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -297,12 +306,22 @@
               "devServerTarget": "video-player-wc:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/video-player-wc/**/*.ts",
+              "projects/video-player-wc/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "defaultProject": "sunbird-video-player-app",
   "cli": {
-    "analytics": "931de5e9-e583-4631-b69f-cd0c4f7c2030"
+    "analytics": "931de5e9-e583-4631-b69f-cd0c4f7c2030",
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }
