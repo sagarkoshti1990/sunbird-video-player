@@ -125,18 +125,6 @@
               "src/assets"
             ]
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     },
@@ -155,15 +143,6 @@
             "production": {
               "devServerTarget": "sunbird-video-player-app:serve:production"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         }
       }
@@ -187,18 +166,6 @@
             "main": "projects/sunbird-video-player/src/test.ts",
             "tsConfig": "projects/sunbird-video-player/tsconfig.spec.json",
             "karmaConfig": "projects/sunbird-video-player/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/sunbird-video-player/tsconfig.lib.json",
-              "projects/sunbird-video-player/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         }
       }
@@ -317,19 +284,6 @@
               "projects/video-player-wc/src/styles.scss"
             ],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/video-player-wc/tsconfig.app.json",
-              "projects/video-player-wc/tsconfig.spec.json",
-              "projects/video-player-wc/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         },
         "e2e": {
