@@ -69,6 +69,18 @@ Follow below-mentioned steps to use it in plain javascript project:
       crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	```
 
+- Import  jquery in package json file(in dependencies) and do npm i
+
+	```javascript
+    "jquery": "^3.6.1",
+	```
+  
+- Import  jquery in angular.json file inside scripts array
+
+	```javascript
+  "node_modules/jquery/dist/jquery.min.js"
+	```
+
 - Import  CUSTOM_ELEMENTS_SCHEMA in app module
 
 	```javascript
