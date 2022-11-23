@@ -1,10 +1,105 @@
 # Video player library for Sunbird platform!
 Contains Video player library components powered by angular. These components are designed to be used in sunbird consumption platforms *(mobile app, web portal, offline desktop app)* to drive reusability, maintainability hence reducing the redundant development effort significantly.
 
-# Getting Started
-For help getting started with a new Angular app, check out the [Angular CLI](https://angular.io/cli).
-If you have an Angular ≥ 9 CLI project, you could simply use our schematics to add sunbird-video-player library to it.
 
+# Getting Started with different integrations steps
+ The Video player can be integrated as web component in plain javascript projects and as web component in angular apps and also as angular library in angular and mobile applications.
+
+# Use as web components	
+Any web application can use this library as a web component. It accepts couple of inputs and triggers some events back to the application.
+
+Import this library in any web application and use the custom component.
+
+Follow below-mentioned steps to use it in plain javascript project:
+
+- Insert [library](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/sunbird-video-player.js) as below:
+	```javascript
+	<script type="text/javascript" src="sunbird-video-player.js"></script>
+	```
+- Create a asset folder and copy all the files from [here](https://github.com/project-sunbird/sunbird-video-player/tree/release-4.3.0/web-component/assets), library requires these assets internally to work well.
+- Get sample playerConfig from here: [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/src/app/data.ts)
+
+- Pass the QuestionListAPI baseUrl for eg. 
+	```javascript
+    window.questionListUrl = 'https://staging.sunbirded.org/api/question/v1/list';
+    window.questionSetBaseUrl = 'https://staging.sunbirded.org/api/questionset';
+    ```
+  
+- Create a custom html element: `sunbird-video-player`
+	```javascript
+    const  videoElement = document.createElement('sunbird-video-player');
+   ```
+
+- Pass data using `player-config`
+	```javascript
+	videoElement.setAttribute('player-config', JSON.stringify(playerConfig));
+	```
+
+	**Note:** Attribute should be in **string** type
+
+- Listen for the output events: **playerEvent** and **telemetryEvent**
+
+	```javascript
+	videoElement.addEventListener('playerEvent', (event) => {
+		console.log("On playerEvent", event);
+	});
+	videoElement.addEventListener('telemetryEvent', (event) => {
+		console.log("On telemetryEvent", event);
+	});
+	```
+
+- Append this element to existing element
+	```javascript
+	const  myPlayer = document.getElementById("my-player");
+	myPlayer.appendChild(qumlPlayerElement);
+	```
+- Refer demo [example](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/index.html)
+
+# Use as Web component  in the Angular app
+
+- Copy the assets files from web component folder
+  [assets](https://github.com/project-sunbird/sunbird-video-player/tree/release-5.3.0/web-component/assets) to assets folder
+
+- Create libs/sunbird-video-player folder inside assets folder, and copy [sunbird-video-player.js](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.3.0/web-component/sunbird-video-player.js) and  [styles.css](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.3.0/web-component/styles.css). and Add/import these entries in angular json file inside scripts and styles respectively.
+
+- Add the reflect-metadata script to index.html file
+	```javascript
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/reflect-metadata/0.1.13/Reflect.min.js"
+      integrity="sha512-jvbPH2TH5BSZumEfOJZn9IV+5bSwwN+qG4dvthYe3KCGC3/9HmxZ4phADbt9Pfcp+XSyyfc2vGZ/RMsSUZ9tbQ=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	```
+
+- Import  jquery in package json file(in dependencies) and do npm i
+
+	```javascript
+    "jquery": "^3.6.1",
+	```
+  
+- Import  jquery in angular.json file inside scripts array
+
+	```javascript
+  "node_modules/jquery/dist/jquery.min.js"
+	```
+
+- Import  CUSTOM_ELEMENTS_SCHEMA in app module
+
+	```javascript
+  import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+	```
+
+- Import  sunbird-video-player in component
+    ```bash
+    <sunbird-video-player  [playerConfig]="playerConfig" (playerEvent)="playerEvents($event)"
+    (telemetryEvent)="playerTelemetryEvents($event)"></sunbird-video-player>
+    ```
+
+- Provide input to render VIDEO player
+
+Use the mock config in your component to send input to VIDEO player
+Click to see the mock - [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.3.0/src/app/data.ts)
+**Note:** : Send input config as string 
+
+# Use as Angular library in angular app
 ## Step 1: Installation
 
 Just run the following:
@@ -227,7 +322,10 @@ var playerConfig = {
 
 <br /><br />
 
-# Mobile app integration steps 
+# Use as Web component in Mobile app 
+For existing apps, follow these steps [steps](README.md#use-as-web-component--in-the-angular-app) to begin using.
+
+# Use as Angular library in Mobile app
 For existing apps, follow these steps to begin using.
 
 ## Step 1: Install the packages
@@ -257,50 +355,4 @@ Click to see the input data - [playerConfig](README.md#step-4-send-input-to-rend
 Click to see the sample code - [sampleCode](https://github.com/Sunbird-Ed/SunbirdEd-mobile-app/blob/release-4.8.0/src/app/player/player.page.html)
 <br /><br />
 
-# Use as web components	
 
-Import this library in any web application and use the custom component.
-
-Follow below-mentioned steps to use it in plain javascript project:
-
-- Insert [library](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/sunbird-video-player.js) as below:
-	```javascript
-	<script type="text/javascript" src="sunbird-video-player.js"></script>
-	```
-- Create a asset folder and copy all the files from [here](https://github.com/project-sunbird/sunbird-video-player/tree/release-4.3.0/web-component/assets), library requires these assets internally to work well.
-- Get sample playerConfig from here: [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/src/app/data.ts)
-
-- Pass the QuestionListAPI baseUrl for eg. 
-	```javascript
-    window.questionListUrl = 'https://staging.sunbirded.org/api/question/v1/list';
-    window.questionSetBaseUrl = 'https://staging.sunbirded.org/api/questionset';
-    ```
-  
-- Create a custom html element: `sunbird-video-player`
-	```javascript
-    const  videoElement = document.createElement('sunbird-video-player');
-   ```
-
-- Pass data using `player-config`
-	```javascript
-	videoElement.setAttribute('player-config', JSON.stringify(playerConfig));
-	```
-
-	**Note:** Attribute should be in **string** type
-
-- Listen for the output events: **playerEvent** and **telemetryEvent**
-
-	```javascript
-	videoElement.addEventListener('playerEvent', (event) => {
-		console.log("On playerEvent", event);
-	});
-	videoElement.addEventListener('telemetryEvent', (event) => {
-		console.log("On telemetryEvent", event);
-	});
-	```
-- Append this element to existing element
-	```javascript
-	const  myPlayer = document.getElementById("my-player");
-	myPlayer.appendChild(qumlPlayerElement);
-	```
-- Refer demo [example](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/index.html)

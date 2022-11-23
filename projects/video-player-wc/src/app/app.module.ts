@@ -11,22 +11,21 @@ import { SunbirdVideoPlayerComponent } from '../../../sunbird-video-player/src/l
 import { QCImplementationService } from './QCImplementationService';
 
 @NgModule({
-  declarations: [
-    SunbirdVideoPlayerComponent,
-    VideoPlayerComponent
-  ],
-  imports: [
-    BrowserModule,
-    CommonModule,
-    FormsModule,
-    HttpClientModule,
-    SunbirdPlayerSdkModule,
-    QumlLibraryModule,
-  ],
-  providers: [ErrorService,
-    { provide: QuestionCursor, useClass: QCImplementationService }
-  ],
-  entryComponents: [SunbirdVideoPlayerComponent]
+    declarations: [
+        SunbirdVideoPlayerComponent,
+        VideoPlayerComponent
+    ],
+    imports: [
+        BrowserModule,
+        CommonModule,
+        FormsModule,
+        HttpClientModule,
+        SunbirdPlayerSdkModule,
+        QumlLibraryModule,
+    ],
+    providers: [ErrorService,
+        { provide: QuestionCursor, useClass: QCImplementationService }
+    ]
 })
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector) { }

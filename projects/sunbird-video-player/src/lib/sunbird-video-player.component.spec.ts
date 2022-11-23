@@ -32,7 +32,6 @@ describe('SunbirdVideoPlayerComponent', () => {
     jasmine.clock().install();
   });
 
-  // tslint:disable-next-line:only-arrow-functions
   afterEach(function() {
     jasmine.clock().uninstall();
   });
@@ -141,7 +140,7 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.traceId).toEqual(component.playerConfig.config.traceId);
   });
   it('should call raiseInternetDisconnectionError', () => {
-    // tslint:disable-next-line:no-string-literal
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     component.videoPlayerService['context'] = {
       channel: '12345'
     };

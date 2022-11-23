@@ -108,7 +108,7 @@ export class ViewerService {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
     } else {
       const data = await this.http.head(this.streamingUrl, { responseType: 'blob' }).toPromise().catch(error => {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         this.raiseExceptionLog(errorCode.streamingUrlSupport , errorMessage.streamingUrlSupport , new Error(`Streaming Url Not Supported  ${this.streamingUrl}`), this.traceId);
       });
       if (data) {
@@ -192,7 +192,7 @@ export class ViewerService {
 
   calculateScore() {
     this.scoreObtained =  Object.values(this.interceptionResponses).reduce(
-      // tslint:disable-next-line:no-string-literal
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       (acc, response) => acc + response['score'] , 0);
   }
 
@@ -260,7 +260,7 @@ export class ViewerService {
     this.videoPlayerService.impression(pageId, cdata);
   }
 
-  // tslint:disable-next-line:no-shadowed-variable
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
     const exceptionLogEvent = {
       eid: 'ERROR',
