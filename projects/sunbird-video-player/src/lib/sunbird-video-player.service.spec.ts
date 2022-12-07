@@ -15,18 +15,23 @@ describe('SunbirdVideoPlayerService', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
     service.initialize(mockData.playerConfig);
     expect(CsTelemetryModule.instance.isInitialised).toBeTruthy();
+    // tslint:disable-next-line:no-string-literal
     expect(service['telemetryObject']).toBeDefined();
+    // tslint:disable-next-line:no-string-literal
     expect(service['context']).toBeDefined();
+    // tslint:disable-next-line:no-string-literal
     expect(service['config']).toBeDefined();
+    // tslint:disable-next-line:no-string-literal
     expect(service['playSessionId']).toBeDefined();
   });
   it('should raise start telemetry event', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
-    spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry');
+    spyOn(CsTelemetryModule.instance.telemetryService, 'raiseStartTelemetry').and.callFake(() => 'true');
+    // tslint:disable-next-line:no-string-literal
     service['context'] = {
       channel: '12345'
-    },
-      service.start(1234);
+       };
+    service.start(1234);
     expect(CsTelemetryModule.instance.telemetryService.raiseStartTelemetry).toHaveBeenCalled();
   });
   it('should raise end telemetry event', () => {

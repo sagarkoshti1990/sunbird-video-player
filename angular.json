@@ -17,7 +17,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "vendorSourceMap": true,
             "outputPath": "dist/sunbird-video-player-app",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -29,6 +28,11 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@project-sunbird/sunbird-quml-player-v9/lib/assets/",
                 "output": "/assets/"
               }
             ],
@@ -47,8 +51,18 @@
               "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
               "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
             ],
-            "es5BrowserSupport": true,
-            "preserveSymlinks": true
+            "preserveSymlinks": true,
+            "sourceMap": {
+              "styles": true,
+              "scripts": true,
+              "vendor": true
+            },
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "optimization": true,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -61,7 +75,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -75,7 +88,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -161,7 +175,7 @@
       "prefix": "",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/sunbird-video-player/tsconfig.lib.json",
             "project": "projects/sunbird-video-player/ng-package.json"
@@ -208,7 +222,6 @@
             "main": "projects/video-player-wc/src/main.ts",
             "polyfills": "projects/video-player-wc/src/polyfills.ts",
             "tsConfig": "projects/video-player-wc/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/video-player-wc/src/favicon.ico",
               "projects/video-player-wc/src/assets",
@@ -231,8 +244,15 @@
               "node_modules/video.js/dist/video.js",
               "dist/sunbird-video-player/lib/assets/videojs-markers.js",
               "node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
-              "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
-            ]
+              "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js",
+              "dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js" 
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": true,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -245,7 +265,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -263,7 +282,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

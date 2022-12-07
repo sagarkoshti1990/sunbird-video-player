@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { VideoPlayerComponent } from './video-player.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -6,11 +6,12 @@ import { ViewerService } from '../../services/viewer.service';
 import { SunbirdVideoPlayerService } from '../../sunbird-video-player.service';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import { QuestionCursorImplementationService } from 'src/app/question-cursor-implementation.service';
+import {mockData} from './video-player.component.data';
 describe('VideoPlayerComponent', () => {
   let component: VideoPlayerComponent;
   let fixture: ComponentFixture<VideoPlayerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
       declarations: [VideoPlayerComponent],
@@ -189,38 +190,149 @@ describe('VideoPlayerComponent', () => {
       on: jasmine.createSpy('on')
     };
     spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    spyOn(component, 'trackTranscriptEvent').and.callFake(() => 'true');
     component.registerEvents();
     expect(component.isAutoplayPrevented).toBeFalsy();
     expect(component.player.play).toHaveBeenCalled();
   });
+  it('should call duration change event ', () => {
+    const viewerService = TestBed.inject(ViewerService);
+    viewerService.metaData = {
+      actions: [],
+      volume: [],
+      playBackSpeeds: [],
+      totalDuration: 0,
+      muted: undefined,
+      currentDuration: undefined,
+      transcripts: []
+    };
+    component.player = {
+      play: jasmine.createSpy('play'),
+      playbackRate: jasmine.createSpy('playbackRate'),
+      volume: jasmine.createSpy('volume'),
+      muted: jasmine.createSpy('muted'),
+      currentTime: jasmine.createSpy('currentTime'),
+      isFullscreen: jasmine.createSpy('isFullscreen'),
+      duration: jasmine.createSpy('duration').and.returnValue(1290),
+      on: jasmine.createSpy('on').and.callFake((event, callback) => {
+        expect(typeof callback).toBe('function');
+        callback('pause', 'successResponse');
+      })
+    };
+    spyOn(component, 'trackTranscriptEvent');
+    spyOn(component, 'pause');
+    spyOn(viewerService, 'raiseHeartBeatEvent');
+    spyOn(viewerService.playerEvent, 'emit');
+    component.registerEvents();
+    expect(component.trackTranscriptEvent).toHaveBeenCalled();
+    expect(component.player.on).toHaveBeenCalled();
+    expect(component.pause).toHaveBeenCalled();
+    expect(viewerService.raiseHeartBeatEvent).toHaveBeenCalled();
+    expect(component.totalDuration).toBe(1290);
+    expect(viewerService.metaData.totalDuration).toBe(1290);
+    expect(viewerService.playerEvent.emit).toHaveBeenCalled();
+  });
   it('should call toggleForwardRewindButton and totalDuration > currentTime', () => {
     component.time = 0;
     component.totalDuration = 600000;
+    spyOn(component.cdr, 'detectChanges');
     component.player = {
       currentTime: jasmine.createSpy('currentTime').and.returnValue(60000),
     };
     component.toggleForwardRewindButton();
     expect(component.showForwardButton).toBeTruthy();
+    expect(component.cdr.detectChanges).toHaveBeenCalled();
     expect(component.showBackwardButton).toBeTruthy();
   });
   it('should call toggleForwardRewindButton and totalDuration < currentTime', () => {
     component.time = 0;
     component.totalDuration = 10000;
+    spyOn(component.cdr, 'detectChanges');
     component.player = {
       currentTime: jasmine.createSpy('currentTime').and.returnValue(60000),
     };
     component.toggleForwardRewindButton();
     expect(component.showForwardButton).toBeFalsy();
+    expect(component.cdr.detectChanges).toHaveBeenCalled();
     expect(component.showBackwardButton).toBeTruthy();
   });
   it('should call toggleForwardRewindButton and totalDuration < currentTime for showBackwardButton', () => {
     component.time = 20000;
     component.totalDuration = 30000;
+    spyOn(component.cdr, 'detectChanges');
     component.player = {
       currentTime: jasmine.createSpy('currentTime').and.returnValue(10000),
     };
     component.toggleForwardRewindButton();
     expect(component.showForwardButton).toBeTruthy();
+    expect(component.cdr.detectChanges).toHaveBeenCalled();
     expect(component.showBackwardButton).toBeFalsy();
+  });
+  it('should call handleEventsForTranscripts for transcript language off', () => {
+   const telemetryObject = {
+      type: 'TRANSCRIPT_LANGUAGE_OFF',
+      extra: {
+        videoTimeStamp: 1.20
+      }
+    };
+   component.viewerService.metaData = { transcripts: ['en'] };
+   component.player = {
+      currentTime: jasmine.createSpy('currentTime').and.returnValue(1.20),
+    };
+   spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+   component.handleEventsForTranscripts({});
+   expect(component.player.currentTime).toHaveBeenCalled();
+   expect(component.viewerService.metaData.transcripts).toEqual(['en', 'off']);
+   expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
+  });
+  it('should call handleEventsForTranscripts for transcript language selected', () => {
+    component.transcripts = mockData.transcripts;
+    const telemetryObject = {
+       type: 'TRANSCRIPT_LANGUAGE_SELECTED',
+       extra: {
+         videoTimeStamp: 2.230,
+         transcript: {
+          language: 'Bengali'
+        },
+       }
+     };
+    component.viewerService.metaData = { transcripts: ['en'] };
+    component.player = {
+       currentTime: jasmine.createSpy('currentTime').and.returnValue(2.230),
+     };
+    const track =  { artifactUrl: 'https://cdn.jsdelivr.net/gh/tombyrer/videojs-transcript-click@1.0/demo/captions.sv.vtt',
+      languageCode: 'bn' };
+    spyOn(component.viewerService, 'raiseHeartBeatEvent').and.callFake(() => 'true');
+    component.handleEventsForTranscripts(track);
+    expect(component.player.currentTime).toHaveBeenCalled();
+    expect(component.viewerService.metaData.transcripts).toEqual(['en', 'bn']);
+    expect(component.viewerService.raiseHeartBeatEvent).toHaveBeenCalledWith(telemetryObject.type, telemetryObject.extra);
+   });
+  it('should play the video from point it was paused while adding question set on cancel click', () => {
+      component.player = {
+        play: jasmine.createSpy('play')
+      };
+      spyOn(component, 'play');
+      component.ngOnChanges(mockData.changesForPlay);
+      expect(component.play).toHaveBeenCalled();
+  });
+  it('should pause the video on question set addition on add question set click', () => {
+    component.player = {
+      pause: jasmine.createSpy('pause')
+    };
+    spyOn(component, 'pause');
+    component.ngOnChanges(mockData.changesForPause);
+    expect(component.pause).toHaveBeenCalled();
+  });
+  it('should not take any action on blank name property ', () => {
+    component.player = {
+      play: jasmine.createSpy('play'),
+      pause: jasmine.createSpy('pause')
+    };
+    spyOn(component, 'pause');
+    spyOn(component, 'play');
+    component.ngOnChanges(mockData.changesForBlank);
+    expect(component.pause).not.toHaveBeenCalled();
+    expect(component.play).not.toHaveBeenCalled();
   });
 });

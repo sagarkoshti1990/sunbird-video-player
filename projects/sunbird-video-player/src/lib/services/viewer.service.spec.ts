@@ -22,6 +22,7 @@ describe('ViewerService', () => {
   it('should call raiseExceptionLog', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'error').and.callFake(() => 'true');
     const exceptionLogEvent = {
       eid: 'ERROR',
@@ -29,19 +30,21 @@ describe('ViewerService', () => {
         err: 'errorCode',
         errtype: 'errorType',
         requestid: 'traceId',
-        stacktrace: 'stacktrace',
+        stacktrace:  'stacktrace'
       }
     };
     service.raiseExceptionLog(exceptionLogEvent.edata.err,
       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace, exceptionLogEvent.edata.requestid);
     expect(service.playerEvent.emit).toHaveBeenCalledWith(exceptionLogEvent);
-    expect(service['videoPlayerService']['error']).toHaveBeenCalledWith(exceptionLogEvent.edata.err,
-      exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace);
+    // tslint:disable-next-line:no-string-literal
+    expect(service['videoPlayerService']['error']).toHaveBeenCalled();
   });
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'heartBeat').and.callFake(() => 'true');
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'interact').and.callFake(() => 'true');
     service.raiseHeartBeatEvent('REPLAY');
     expect(service.showScore).toBeFalsy();
@@ -57,6 +60,7 @@ describe('ViewerService', () => {
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['videoPlayerService'], 'start').and.callFake(() => 'true');
     service.raiseStartEvent('');
     expect(service.PlayerLoadStartedAt).toBeDefined();
@@ -64,7 +68,7 @@ describe('ViewerService', () => {
   it('should call preFetchContent', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service, 'getNextMarker').and.returnValue({ identifier: '1234' });
-    spyOn(service, 'getQuestionSet').and.callFake(() => 'true');
+    spyOn(service, 'getQuestionSet').and.callThrough();
     service.preFetchContent();
     expect(service.getQuestionSet).toHaveBeenCalledWith('1234');
   });
@@ -73,8 +77,10 @@ describe('ViewerService', () => {
     service.isEndEventRaised = true;
     service.visitedLength = 60000;
     spyOn(service, 'calculateScore').and.callThrough();
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['utilService'], 'getTimeSpentText').and.callFake(() => 'true');
     service.raiseEndEvent();
+    // tslint:disable-next-line:no-string-literal
     expect(service['utilService'].getTimeSpentText).not.toHaveBeenCalledWith(service.visitedLength);
     expect(service.calculateScore).not.toHaveBeenCalled();
   });
@@ -118,6 +124,7 @@ describe('ViewerService', () => {
   it('should call getPlayerOptions for null streamingUrl', () => {
     const service = TestBed.inject(ViewerService);
     service.streamingUrl = null;
+    // tslint:disable-next-line:no-string-literal
     spyOn(service['http'], 'head').and.returnValue(of(false));
     spyOn(service, 'raiseExceptionLog').and.callThrough();
     // tslint:disable-next-line:max-line-length
@@ -136,7 +143,36 @@ describe('ViewerService', () => {
     const service = TestBed.inject(ViewerService);
     service.interceptionPoints = { items: [{ identifier: '1234' }] };
     const returnValue = service.getMarkers();
-    expect(returnValue).toEqual([({ time: undefined, text: '', identifier: '1234', duration: 3 })]);
+    expect(returnValue).toEqual([({ time: undefined, type: undefined, identifier: '1234', duration: 3 })]);
     expect(service.showScore).toBeTruthy();
+  });
+  it('should call getMarkers for interceptionPoints to be an empty object', () => {
+    const service = TestBed.inject(ViewerService);
+    service.interceptionPoints = {};
+    const returnValue = service.getMarkers();
+    expect(returnValue).toBeNull();
+  });
+  it('should call getMarkers for interceptionPoints to contain items', () => {
+    const service = TestBed.inject(ViewerService);
+    service.interceptionPoints = { items: [{interceptionPoint: 20, identifier: '1234', type: 'QuestionSet'}] };
+    const returnValue = service.getMarkers();
+    expect(returnValue).toEqual([({ time: 20, type: 'QuestionSet', identifier: '1234', duration: 3 })]);
+    expect(service.showScore).toBeTruthy();
+  });
+  it('should call raiseImpressionEvent', () => {
+    const service = TestBed.inject(ViewerService);
+    const videoPlayerService = TestBed.inject(SunbirdVideoPlayerService);
+    spyOn(videoPlayerService, 'impression');
+    service.raiseImpressionEvent('interactive-question-set', 'do_1221');
+    expect(videoPlayerService.impression).toHaveBeenCalledWith('interactive-question-set', 'do_1221');
+  });
+  it('should call getQuestionSet and return null ', () => {
+    const service = TestBed.inject(ViewerService);
+    service.contentMap = {};
+    service.questionCursor = null;
+    const questionCursor = TestBed.inject(QuestionCursor);
+    spyOn(questionCursor, 'getQuestionSet');
+    const data =  service.getQuestionSet('do_1221');
+    expect(data).toEqual(null);
   });
 });

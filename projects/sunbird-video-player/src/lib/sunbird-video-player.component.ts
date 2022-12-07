@@ -1,10 +1,12 @@
+import { ThrowStmt } from '@angular/compiler';
 import {
-  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output,
+  ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges,
   HostListener, ElementRef, ViewChild, AfterViewInit, Renderer2, OnDestroy
 } from '@angular/core';
 import { ErrorService , errorCode , errorMessage, ISideBarEvent } from '@project-sunbird/sunbird-player-sdk-v9';
 
 import { PlayerConfig } from './playerInterfaces';
+import { IAction } from './playerInterfaces';
 import { ViewerService } from './services/viewer.service';
 import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
 @Component({
@@ -12,9 +14,10 @@ import { SunbirdVideoPlayerService } from './sunbird-video-player.service';
   templateUrl: './sunbird-video-player.component.html',
   styleUrls: ['./sunbird-video-player.component.scss']
 })
-export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   @Input() playerConfig: PlayerConfig;
+  @Input() action?: IAction;
   @Output() playerEvent: EventEmitter<object>;
   @Output() telemetryEvent: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('videoPlayer', { static: true }) videoPlayerRef: ElementRef;
@@ -37,6 +40,9 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   videoInstance: any;
   currentInterceptionTime;
   currentInterceptionUIId;
+  isFullScreen = false;
+  playerAction: IAction;
+  public isInitialized = false;
 
   constructor(
     public videoPlayerService: SunbirdVideoPlayerService,
@@ -61,13 +67,14 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         this.viewerService.endPageSeen = true;
         this.viewerService.raiseEndEvent();
         this.viewState = 'end';
+        this.cdr.detectChanges();
       }
       if (event.type === 'error') {
         // tslint:disable-next-line:one-variable-per-declaration
         let code = errorCode.contentLoadFails,
           message = errorMessage.contentLoadFails;
         if (this.viewerService.isAvailableLocally) {
-            code = errorCode.contentLoadFails,
+            code = errorCode.contentLoadFails;
             message = errorMessage.contentLoadFails;
         }
         if (code === errorCode.contentLoadFails) {
@@ -93,6 +100,8 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
+    this.isInitialized = true;
+    if (this.playerConfig) {
     if (typeof this.playerConfig === 'string') {
       try {
         this.playerConfig = JSON.parse(this.playerConfig);
@@ -100,7 +109,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
         console.error('Invalid playerConfig: ', error);
       }
     }
-
+  }
     setInterval(() => {
       if (!this.isPaused) {
         this.showControls = false;
@@ -111,13 +120,25 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.nextContent = this.playerConfig.config.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
-    this.viewerService.initialize(this.playerConfig);
     this.videoPlayerService.initialize(this.playerConfig);
+    this.viewerService.initialize(this.playerConfig);
     window.addEventListener('offline', this.raiseInternetDisconnectionError , true);
     this.QumlPlayerConfig.config = this.playerConfig.config;
     this.QumlPlayerConfig.config.sideMenu.enable = false;
     this.QumlPlayerConfig.context = this.playerConfig.context;
     this.setTelemetryObjectRollup(this.playerConfig.metadata.identifier);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.action) {
+      if (!this.showQumlPlayer) {
+        this.playerAction = this.action;
+      }
+    }
+    if (changes?.playerConfig?.firstChange && this.isInitialized) {
+      // Calling for web component explicitly and life cycle works in different order
+      this.ngOnInit();
+    }
   }
 
   raiseInternetDisconnectionError = () => {
@@ -183,6 +204,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewState = 'player';
     this.viewerService.isEndEventRaised = false;
     this.viewerService.raiseHeartBeatEvent('REPLAY');
+    this.cdr.detectChanges();
   }
 
   exitContent(event) {
@@ -201,22 +223,30 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.viewerService.raiseHeartBeatEvent('DOWNLOAD');
   }
 
-
-
   qumlPlayerEvents(event) {
     if (event.eid === 'QUML_SUMMARY') {
+      this.showQumlPlayer = false;
       const score = parseInt(event.edata.extra.find(p => p.id === 'score')['value'], 10);
       this.viewerService.interceptionResponses[this.currentInterceptionTime] = {
         score,
         isSkipped: false
       };
-      document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`)['style'].backgroundColor = 'green';
-      this.showQumlPlayer = false;
+      const interceptPointElement = document.querySelector(`[data-marker-time="${this.currentInterceptionTime}"]`);
+      if (interceptPointElement) {
+        interceptPointElement['style'].background = 'green';
+      }
       this.videoInstance.play();
       this.videoInstance.controls(true);
+      this.viewerService.raiseImpressionEvent('video');
+      // if currently video is not in full screen and was previously full screen then set it back to full screen again
+      if (!document.fullscreenElement && this.isFullScreen) {
+        if (document.getElementsByClassName('video-js')[0]) {
+          document.getElementsByClassName('video-js')[0].requestFullscreen()
+          .catch((err) => console.error(err));
+        }
+      }
     }
   }
-
 
   questionSetData({response, time, identifier}) {
     this.QumlPlayerConfig.metadata = response;
@@ -224,7 +254,20 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
     this.QumlPlayerConfig.metadata['showEndPage'] = 'No';
     this.currentInterceptionTime = time;
     this.currentInterceptionUIId = identifier;
+    if (document.fullscreenElement) {
+      this.isFullScreen = true;
+      document.exitFullscreen()
+      .catch((err) => console.error(err));
+    } else {
+      this.isFullScreen = false;
+    }
     this.showQumlPlayer = true;
+    this.viewerService.raiseImpressionEvent('interactive-question-set', { id: identifier, type: 'QuestionSet' });
+    this.viewerService.raiseHeartBeatEvent('VIDEO_MARKER_SELECTED', {
+      identifier, // Question set id,
+      type: 'QuestionSet', // Type of interaction
+      interceptedAt: time // Time when the interception happened
+    });
   }
 
   playerInstance(event) {

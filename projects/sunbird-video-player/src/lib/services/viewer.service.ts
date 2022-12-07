@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
-import { PlayerConfig } from '../playerInterfaces';
+import { EventEmitter, Injectable, Optional } from '@angular/core';
+import { PlayerConfig, Transcripts } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
 import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
 import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as _ from 'lodash-es';
 
 @Injectable({
   providedIn: 'root'
@@ -37,15 +38,15 @@ export class ViewerService {
   public interceptionResponses: any = {};
   public showScore = false;
   public scoreObtained: any = 0;
-  public maxScore: any = 0;
+  public maxScore: number;
   public playerInstance: any;
   public contentMap = {};
   public isEndEventRaised = false;
-
+  public transcripts: Transcripts;
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
               private utilService: UtilService,
               private http: HttpClient,
-              public questionCursor: QuestionCursor) {
+              @Optional() public questionCursor: QuestionCursor) {
     this.PlayerLoadStartedAt = new Date().getTime();
   }
 
@@ -70,8 +71,10 @@ export class ViewerService {
       playBackSpeeds: [],
       totalDuration: 0,
       muted: undefined,
-      currentDuration: undefined
+      currentDuration: undefined,
+      transcripts: []
     };
+    this.transcripts = metadata.transcripts ? metadata.transcripts : [];
     this.showDownloadPopup = false;
     this.endPageSeen = false;
     if (this.isAvailableLocally) {
@@ -80,7 +83,26 @@ export class ViewerService {
       this.mimeType = metadata.mimeType;
     }
   }
-
+  handleTranscriptsData(selectedTranscripts) {
+    this.metaData.transcripts = selectedTranscripts;
+    if (!_.isArray(this.transcripts)) {
+      this.raiseExceptionLog('INVALID_TRANSCRIPT_DATATYPE', 'TRANSCRIPT', new Error('Transcript data should be array'), this.traceId);
+      return [];
+    } else {
+           _.forEach(this.transcripts, (value) => {
+        if (!(_.some(this.transcripts, { language: value.language, artifactUrl: value.artifactUrl ,
+          languageCode: value.languageCode, identifier: value.identifier}))) {
+          this.raiseExceptionLog('TRANSCRIPT_DATA_MISSING', 'TRANSCRIPT',
+           new Error('Transcript object dose not have required fields'), this.traceId);
+          return [];
+        } else if (!_.isEmpty(selectedTranscripts) &&
+          ( _.last(selectedTranscripts) !== 'off' &&  _.last(selectedTranscripts) === value.languageCode)) {
+          value.default = true;
+        }
+      });
+    }
+    return this.transcripts;
+  }
   async getPlayerOptions() {
     if (!this.streamingUrl) {
       return [{ src: this.artifactUrl, type: this.artifactMimeType }];
@@ -98,12 +120,12 @@ export class ViewerService {
   }
 
   getMarkers()  {
-    if (this.interceptionPoints) {
+    if (this?.interceptionPoints?.items) {
       try {
         const interceptionPoints = this.interceptionPoints;
         this.showScore = true;
-        return interceptionPoints.items.map(({interceptionPoint, identifier, duration}) => {
-          return { time: interceptionPoint, text: '', identifier, duration: 3 };
+        return interceptionPoints.items.map(({interceptionPoint, identifier, type}) => {
+        return { time: interceptionPoint, type, identifier, duration: 3 };
         });
       } catch (error) {
         console.log(error);
@@ -118,11 +140,15 @@ export class ViewerService {
   getQuestionSet(identifier) {
     const content = this.contentMap[identifier];
     if (!content) {
+      if (!this.questionCursor) {
+        return null;
+      } else {
      return this.questionCursor.getQuestionSet(identifier)
      .pipe(map((response) => {
         this.contentMap[identifier] = response.questionSet;
         return this.contentMap[identifier];
        }));
+      }
     } else {
       return of(content);
     }
@@ -201,7 +227,7 @@ export class ViewerService {
   }
 
 
-  raiseHeartBeatEvent(type: string) {
+  raiseHeartBeatEvent(type: string, extraValues?) {
     if (type === 'REPLAY') {
       this.interceptionResponses = {};
       this.showScore = false;
@@ -212,7 +238,8 @@ export class ViewerService {
       ver: this.version,
       edata: {
         type,
-        currentPage: 'videostage'
+        currentPage: 'videostage',
+        extra: extraValues
       },
       metaData: this.metaData
     };
@@ -221,12 +248,16 @@ export class ViewerService {
     const interactItems = ['PLAY', 'PAUSE', 'EXIT', 'VOLUME_CHANGE', 'DRAG',
       'RATE_CHANGE', 'CLOSE_DOWNLOAD', 'DOWNLOAD', 'NAVIGATE_TO_PAGE',
       'NEXT', 'OPEN_MENU', 'PREVIOUS', 'CLOSE_MENU', 'DOWNLOAD_MENU', 'DOWNLOAD_POPUP_CLOSE', 'DOWNLOAD_POPUP_CANCEL',
-     'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN' , 'NEXT_CONTENT_PLAY',
+      'SHARE', 'REPLAY', 'FORWARD', 'BACKWARD', 'FULLSCREEN', 'NEXT_CONTENT_PLAY', 'TRANSCRIPT_LANGUAGE_OFF',
+      'TRANSCRIPT_LANGUAGE_SELECTED', 'VIDEO_MARKER_SELECTED'
     ];
     if (interactItems.includes(type)) {
-      this.videoPlayerService.interact(type.toLowerCase(), 'videostage');
+      this.videoPlayerService.interact(type.toLowerCase(), 'videostage', extraValues);
     }
+  }
 
+  raiseImpressionEvent(pageId: string, cdata: any = {}) {
+    this.videoPlayerService.impression(pageId, cdata);
   }
 
   // tslint:disable-next-line:no-shadowed-variable
