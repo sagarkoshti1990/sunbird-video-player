@@ -167,6 +167,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
 
   onLoadMetadata(e) {
     this.totalDuration = this.viewerService.metaData.totalDuration = this.player.duration();
+    this.viewerService.totalLength = this.totalDuration;
     if (this.transcripts && this.transcripts.length && this.player.transcript) {
       this.player.transcript({
         showTitle: true,
@@ -220,8 +221,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
       this.viewerService.metaData.currentDuration = this.player.currentTime();
       this.handleVideoControls(data);
       this.viewerService.playerEvent.emit(data);
-
-      if (this.player.currentTime() >= this.totalDuration) {
+      this.viewerService.currentlength = this.viewerService.metaData.currentDuration;
+      this.viewerService.visitedLength = this.totalSpentTime;
+      if (Math.trunc(this.player.currentTime()) >= Math.trunc(this.totalDuration)) {
         this.viewerService.metaData.currentDuration = 0;
         this.handleVideoControls({ type: 'ended' });
         this.viewerService.playerEvent.emit({ type: 'ended' });
