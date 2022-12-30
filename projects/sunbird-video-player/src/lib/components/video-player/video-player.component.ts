@@ -223,7 +223,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
       this.viewerService.playerEvent.emit(data);
       this.viewerService.currentlength = this.viewerService.metaData.currentDuration;
       this.viewerService.visitedLength = this.totalSpentTime;
-      const remainingTime = Math.floor(this.totalDuration - this.player.currentTime())
+      const remainingTime = Math.floor(this.totalDuration - this.player.currentTime());
       if (remainingTime <= 0) {
             this.viewerService.metaData.currentDuration = 0;
             this.handleVideoControls({ type: 'ended' });
