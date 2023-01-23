@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --project=sunbird-video-player-app",
     "build": "ng build sunbird-video-player --watch=true",
     "test": "ng test sunbird-video-player --code-coverage --watch=false",
     "lint": "ng lint",
