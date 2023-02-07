@@ -373,7 +373,9 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
     }
     if (type === 'play') {
       this.startTime = new Date().getTime();
-      this.viewerService.playBitStartTime  = this.player.currentTime()
+      if(this.player?.currentTime()) {
+        this.viewerService.playBitStartTime  = this.player?.currentTime()
+      }
       this.updatePlayerEventsMetadata({ type });
     }
 

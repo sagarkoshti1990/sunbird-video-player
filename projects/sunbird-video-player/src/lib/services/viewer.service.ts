@@ -30,7 +30,7 @@ export class ViewerService {
   public currentlength;
   public totalSeekedLength;
   public artifactUrl;
-  public visitedLength;
+  public visitedLength = 0;
   public uniqueVisitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
   public traceId: string;
@@ -255,7 +255,6 @@ export class ViewerService {
       if(isOnPlayInterrupt) {
         this.playerTimeSlots.push([this.playBitStartTime, this.currentlength]);
       }
-      console.log(`Time slots:`, JSON.stringify(this.playerTimeSlots))
       this.uniqueVisitedLength = this.getUniqueVisitedLength();
       if(this.uniqueVisitedLength > this.totalLength) {
         this.uniqueVisitedLength = this.totalLength;
