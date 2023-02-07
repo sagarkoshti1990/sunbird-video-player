@@ -42,6 +42,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
   setMetaDataConfig = false;
   totalDuration = 0;
 
+
   constructor(public viewerService: ViewerService, private renderer2: Renderer2,
               @Optional()public questionCursor: QuestionCursor, private http: HttpClient, public cdr: ChangeDetectorRef ) { }
   ngOnInit() {
@@ -363,13 +364,18 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
       }
       this.viewerService.totalLength = this.totalDuration;
       this.updatePlayerEventsMetadata({ type });
+      this.viewerService.playBitEndTime = this.totalDuration;
+      this.viewerService.playerTimeSlots.push([this.viewerService.playBitStartTime, this.viewerService.playBitEndTime])
     }
     if (type === 'pause') {
       this.totalSpentTime += new Date().getTime() - this.startTime;
       this.updatePlayerEventsMetadata({ type });
+      this.viewerService.playBitEndTime = this.previousTime
+      this.viewerService.playerTimeSlots.push([this.viewerService.playBitStartTime, this.viewerService.playBitEndTime])
     }
     if (type === 'play') {
       this.startTime = new Date().getTime();
+      this.viewerService.playBitStartTime  = this.player.currentTime()
       this.updatePlayerEventsMetadata({ type });
     }
 
@@ -420,6 +426,7 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
     }
     if (_.get(this.config, 'currentDuration')) {
       this.player.currentTime(_.get(this.config, 'currentDuration'));
+      this.viewerService.playBitStartTime = _.get(this.config, 'currentDuration')
     }
     if (!_.isEmpty(_.get(this.config, 'playBackSpeeds'))) {
       this.player.playbackRate(_.last(_.get(this.config, 'playBackSpeeds')));

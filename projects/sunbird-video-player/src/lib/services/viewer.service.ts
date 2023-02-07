@@ -31,6 +31,7 @@ export class ViewerService {
   public totalSeekedLength;
   public artifactUrl;
   public visitedLength;
+  public uniqueVisitedLength;
   public sidebarMenuEvent = new EventEmitter<any>();
   public traceId: string;
   public isAvailableLocally = false;
@@ -41,8 +42,11 @@ export class ViewerService {
   public maxScore: number;
   public playerInstance: any;
   public contentMap = {};
+  public playerTimeSlots = [];
   public isEndEventRaised = false;
   public transcripts: Transcripts;
+  public playBitStartTime = 0;
+  public playBitEndTime = 0;
   constructor(private videoPlayerService: SunbirdVideoPlayerService,
               private utilService: UtilService,
               private http: HttpClient,
@@ -162,6 +166,22 @@ export class ViewerService {
     }
   }
 
+  getUniqueVisitedLength() {
+    const uniqSecondsList = [];
+    for (let slot of this.playerTimeSlots) {
+        if(slot[0] < slot[1]) {
+          let sec = slot[0];
+          while ( sec <= slot[1]) {
+            sec = Math.floor(sec)
+            if(uniqSecondsList.indexOf(sec) == -1 && sec != 0) {
+              uniqSecondsList.push(sec)
+            }
+            sec += 1
+          }
+        }
+    }
+      return uniqSecondsList.length;
+  }
   getNextMarker() {
     const currentTime = this.playerInstance.currentTime();
     const markersList = this.getMarkers();
@@ -196,7 +216,8 @@ export class ViewerService {
       (acc, response) => acc + response['score'] , 0);
   }
 
-  raiseEndEvent() {
+  raiseEndEvent(isOnPlayInterrupt = false) {
+
     if (!this.isEndEventRaised) {
       this.calculateScore();
       const duration = new Date().getTime() - this.PlayerLoadStartedAt;
@@ -213,6 +234,15 @@ export class ViewerService {
       };
       this.playerEvent.emit(endEvent);
       this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
+      if(isOnPlayInterrupt) {
+        this.playerTimeSlots.push([this.playBitStartTime, this.currentlength]);
+      }
+      console.log(`Time slots:`, JSON.stringify(this.playerTimeSlots))
+      this.uniqueVisitedLength = this.getUniqueVisitedLength();
+      if(this.uniqueVisitedLength > this.totalLength) {
+        this.uniqueVisitedLength = this.totalLength;
+      }
+
       this.videoPlayerService.end(
         duration,
         this.totalLength,
@@ -220,7 +250,8 @@ export class ViewerService {
         this.endPageSeen,
         this.totalSeekedLength,
         this.visitedLength / 1000,
-        this.scoreObtained
+        this.scoreObtained,
+        this.uniqueVisitedLength
       );
       this.isEndEventRaised = true;
     }
@@ -232,6 +263,9 @@ export class ViewerService {
       this.interceptionResponses = {};
       this.showScore = false;
       this.scoreObtained = 0;
+      this.playerTimeSlots = [];
+      this.playBitEndTime = 0;
+      this.playBitStartTime = 0;
     }
     const hearBeatEvent = {
       eid: 'HEARTBEAT',
