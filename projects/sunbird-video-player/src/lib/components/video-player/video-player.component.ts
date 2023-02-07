@@ -224,7 +224,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
       this.viewerService.playerEvent.emit(data);
       this.viewerService.currentlength = this.viewerService.metaData.currentDuration;
       this.totalSpentTime += new Date().getTime() - this.startTime;
-      this.viewerService.visitedLength = this.totalSpentTime;
       this.startTime = new Date().getTime();
       const remainingTime = Math.floor(this.totalDuration - this.player.currentTime());
       if (remainingTime <= 0) {
@@ -358,7 +357,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
     }
     if (type === 'ended') {
       this.totalSpentTime += new Date().getTime() - this.startTime;
-      this.viewerService.visitedLength = this.totalSpentTime;
       if (this.player) {
         this.viewerService.currentlength = this.player.currentTime();
       }

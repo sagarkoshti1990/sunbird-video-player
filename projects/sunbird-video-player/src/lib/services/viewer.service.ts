@@ -182,6 +182,24 @@ export class ViewerService {
     }
       return uniqSecondsList.length;
   }
+
+  getVisitedLength() {
+    const secondsList = [];
+    for (let slot of this.playerTimeSlots) {
+        if(slot[0] < slot[1]) {
+          let sec = slot[0];
+          while ( sec <= slot[1]) {
+            sec = Math.floor(sec)
+            if(sec != 0) {
+              secondsList.push(sec)
+            }
+            sec += 1
+          }
+        }
+    }
+      return secondsList.length;
+  }
+
   getNextMarker() {
     const currentTime = this.playerInstance.currentTime();
     const markersList = this.getMarkers();
@@ -233,7 +251,7 @@ export class ViewerService {
         metaData: this.metaData
       };
       this.playerEvent.emit(endEvent);
-      this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
+      
       if(isOnPlayInterrupt) {
         this.playerTimeSlots.push([this.playBitStartTime, this.currentlength]);
       }
@@ -242,14 +260,16 @@ export class ViewerService {
       if(this.uniqueVisitedLength > this.totalLength) {
         this.uniqueVisitedLength = this.totalLength;
       }
-
+      this.visitedLength = this.getVisitedLength();
+      this.timeSpent = this.utilService.getTimeSpentText(this.visitedLength);
+      
       this.videoPlayerService.end(
         duration,
         this.totalLength,
         this.currentlength,
         this.endPageSeen,
         this.totalSeekedLength,
-        this.visitedLength / 1000,
+        this.visitedLength,
         this.scoreObtained,
         this.uniqueVisitedLength
       );
