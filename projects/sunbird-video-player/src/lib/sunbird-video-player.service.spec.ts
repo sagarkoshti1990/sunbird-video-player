@@ -38,7 +38,7 @@ describe('SunbirdVideoPlayerService', () => {
     const service = TestBed.inject(SunbirdVideoPlayerService);
     service.initialize(mockData.playerConfig);
     spyOn(CsTelemetryModule.instance.telemetryService, 'raiseEndTelemetry');
-    service.end(10, 5, 10, 5, 3, 4, 5);
+    service.end(10, 5, 10, 5, 3, 4, 5, 10);
     expect(CsTelemetryModule.instance.telemetryService.raiseEndTelemetry).toHaveBeenCalled();
   });
   it('should raise interact telemetry event', () => {

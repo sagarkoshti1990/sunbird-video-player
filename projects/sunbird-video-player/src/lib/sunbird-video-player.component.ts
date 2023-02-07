@@ -275,7 +275,7 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
 
   @HostListener('window:beforeunload')
   ngOnDestroy() {
-    this.viewerService.raiseEndEvent();
+    this.viewerService.raiseEndEvent(true);
     this.unlistenTouchStart();
     this.unlistenMouseMove();
     this.viewerService.isEndEventRaised = false;

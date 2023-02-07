@@ -16,8 +16,8 @@ export class UtilService {
   }
 
   public getTimeSpentText(duration) {
-    const minutes = Math.floor(duration / 60000);
-    const seconds = Number(((duration % 60000) / 1000).toFixed(0));
+    const minutes = Math.floor(duration / 60);
+    const seconds = Number(((duration % 60)).toFixed(0));
     return (minutes + ':' + (seconds < 10 ? '0' : '') + seconds);
   }
 }
