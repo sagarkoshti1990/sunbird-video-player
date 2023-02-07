@@ -103,7 +103,7 @@ export class SunbirdVideoPlayerService {
             score
           },
           {
-            uniqueVisitedLength
+            uniquevisitedlength: uniqueVisitedLength
           }
         ],
         duration: durationSec
