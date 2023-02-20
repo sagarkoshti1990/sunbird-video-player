@@ -28,7 +28,7 @@ export class ViewerService {
   public PlayerLoadStartedAt: number;
   public totalLength;
   public currentlength;
-  public totalSeekedLength;
+  public totalSeekedLength = 0;
   public artifactUrl;
   public visitedLength = 0;
   public uniqueVisitedLength;
