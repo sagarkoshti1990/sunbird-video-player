@@ -91,7 +91,7 @@ export class SunbirdVideoPlayerService {
             visitedlength
           },
           {
-            visitedcontentend: (totallength === currentlength)
+            visitedcontentend: endpageseen
           },
           {
             totalseekedlength
