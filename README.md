@@ -1,25 +1,25 @@
-# Video player library for Sunbird platform!
-Contains Video player library components powered by angular. These components are designed to be used in sunbird consumption platforms *(mobile app, web portal, offline desktop app)* to drive reusability, maintainability hence reducing the redundant development effort significantly.
+# The Video player library for Sunbird platform!
+The Video player library is powered by Angular. This player is primarily designed to be used on Sunbird consumption platforms _(mobile app, web portal, offline desktop app)_ to drive reusability and maintainability, hence reducing the redundant development effort significantly, and it can be integrated with any platform irrespective of the platforms and the frontend frameworks. It is exported not only as an angular library but also as a web component. 
 
 
 # Getting Started with different integrations steps
- The Video player can be integrated as web component in plain javascript projects and as web component in angular apps and also as angular library in angular and mobile applications.
+The video player can be integrated as a web component and also as an angular library in angular application projects and it can also be integrated into any mobile framework as a web component. 
 
 # Use as web components	
-Any web application can use this library as a web component. It accepts couple of inputs and triggers some events back to the application.
+Any web based application can use this library as a web component. It accepts player config as input and triggers player and telemetry events back to the application.
 
 Import this library in any web application and use the custom component.
 
 Follow below-mentioned steps to use it in plain javascript project:
 
-- Insert [library](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/sunbird-video-player.js) as below:
+- Insert [library](https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-5.5.0/web-component/sunbird-video-player.js) as below:
 	```javascript
 	<script type="text/javascript" src="sunbird-video-player.js"></script>
 	```
-- Create a asset folder and copy all the files from [here](https://github.com/project-sunbird/sunbird-video-player/tree/release-4.3.0/web-component/assets), library requires these assets internally to work well.
-- Get sample playerConfig from here: [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/src/app/data.ts)
+- Create a asset folder and copy all the files from [here](https://github.com/Sunbird-Knowlg/sunbird-video-player/tree/release-5.5.0/web-component/assets), library requires these assets internally to work well.
+- Get sample playerConfig from here: [playerConfig](https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-5.5.0/src/app/data.ts)
 
-- Pass the QuestionListAPI baseUrl for eg. 
+- Pass the QuestionListAPI baseUrl if your content is interactive otherwise you can skip this step for eg. 
 	```javascript
     window.questionListUrl = 'https://staging.sunbirded.org/api/question/v1/list';
     window.questionSetBaseUrl = 'https://staging.sunbirded.org/api/questionset';
@@ -53,51 +53,92 @@ Follow below-mentioned steps to use it in plain javascript project:
 	const  myPlayer = document.getElementById("my-player");
 	myPlayer.appendChild(qumlPlayerElement);
 	```
-- Refer demo [example](https://github.com/project-sunbird/sunbird-video-player/blob/release-4.3.0/web-component/index.html)
+- Refer demo [example](https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-5.5.0/web-component-demo/index.html)
 
 # Use as Web component  in the Angular app
 
-- Copy the assets files from web component folder
-  [assets](https://github.com/project-sunbird/sunbird-video-player/tree/release-5.3.0/web-component/assets) to assets folder
+- Run command 
+  ```bash
+    npm i @project-sunbird/sunbird-video-player-web-component
+    npm i reflect-metadata
+  ```
 
-- Create libs/sunbird-video-player folder inside assets folder, and copy [sunbird-video-player.js](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.3.0/web-component/sunbird-video-player.js) and  [styles.css](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.3.0/web-component/styles.css). and Add/import these entries in angular json file inside scripts and styles respectively.
+- Add these entries in angular json file inside assets, scripts and styles like below
 
-- Add the reflect-metadata script to index.html file
+  ```bash
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*.*",
+                "input": "./node_modules/@project-sunbird/sunbird-video-player-web-component/assets",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/@project-sunbird/sunbird-video-player-web-component/styles.css"
+            ],
+            "scripts": [
+              "node_modules/reflect-metadata/Reflect.js",
+              "node_modules/@project-sunbird/sunbird-epub-player-web-component/sunbird-video-player.js"
+            ]
+
+  ```
+
+- Import  CUSTOM_ELEMENTS_SCHEMA in app module and add it to the NgModule as part of schemas like below
+
 	```javascript
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/reflect-metadata/0.1.13/Reflect.min.js"
-      integrity="sha512-jvbPH2TH5BSZumEfOJZn9IV+5bSwwN+qG4dvthYe3KCGC3/9HmxZ4phADbt9Pfcp+XSyyfc2vGZ/RMsSUZ9tbQ=="
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	```
-
-- Import  jquery in package json file(in dependencies) and do npm i
-
-	```javascript
-    "jquery": "^3.6.1",
-	```
-  
-- Import  jquery in angular.json file inside scripts array
-
-	```javascript
-  "node_modules/jquery/dist/jquery.min.js"
-	```
-
-- Import  CUSTOM_ELEMENTS_SCHEMA in app module
-
-	```javascript
+  ...
   import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+  ...
+
+  @NgModule({
+    ...
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    ...
+  })
+
 	```
 
-- Import  sunbird-video-player in component
-    ```bash
-    <sunbird-video-player  [playerConfig]="playerConfig" (playerEvent)="playerEvents($event)"
-    (telemetryEvent)="playerTelemetryEvents($event)"></sunbird-video-player>
-    ```
+- Integrating sunbird-epub-player web component in angular component
+    
+  Create a viewChild in html template of the angular component like
 
-- Provide input to render VIDEO player
+  ```bash
 
-Use the mock config in your component to send input to VIDEO player
-Click to see the mock - [playerConfig](https://github.com/project-sunbird/sunbird-video-player/blob/release-5.3.0/src/app/data.ts)
-**Note:** : Send input config as string 
+      <div #epub></div>
+
+  ```
+
+  Refer the viewChild in ts file of the component and create the epub player using document.createElement, then attach the player config and listen to the player and telemetry events like below and since we are rendering using viewChild these steps should be under ngAfterViewInit hook of the angular component.
+
+```bash
+
+....
+
+@ViewChild('epub') epub: ElementRef;
+
+  ....
+ ngAfterViewInit() {
+    const playerConfig = <Config need be added>;
+      const epubElement = document.createElement('sunbird-epub-player');
+      epubElement.setAttribute('player-config', JSON.stringify(playerConfig));
+
+      epubElement.addEventListener('playerEvent', (event) => {
+        console.log("On playerEvent", event);
+      });
+
+      epubElement.addEventListener('telemetryEvent', (event) => {
+        console.log("On telemetryEvent", event);
+      });
+      this.epub.nativeElement.append(epubElement);
+  }
+  ....
+
+```
+
+**Note:** : Click to see the mock - [playerConfig](https://github.com/Sunbird-Knowlg/sunbird-epub-player/blob/main/src/app/data.ts) and send input config as string 
 
 # Use as Angular library in angular app
 ## Step 1: Installation
