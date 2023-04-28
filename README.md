@@ -101,28 +101,28 @@ Follow below-mentioned steps to use it in plain javascript project:
 
 	```
 
-- Integrating sunbird-epub-player web component in angular component
+- Integrating sunbird-video-player web component in angular component
     
   Create a viewChild in html template of the angular component like
 
   ```bash
 
-      <div #epub></div>
+      <div #video></div>
 
   ```
 
-  Refer the viewChild in ts file of the component and create the epub player using document.createElement, then attach the player config and listen to the player and telemetry events like below and since we are rendering using viewChild these steps should be under ngAfterViewInit hook of the angular component.
+  Refer the viewChild in ts file of the component and create the video player using document.createElement, then attach the player config and listen to the player and telemetry events like below and since we are rendering using viewChild these steps should be under ngAfterViewInit hook of the angular component.
 
 ```bash
 
 ....
 
-@ViewChild('epub') epub: ElementRef;
+@ViewChild('video') video: ElementRef;
 
   ....
  ngAfterViewInit() {
     const playerConfig = <Config need be added>;
-      const epubElement = document.createElement('sunbird-epub-player');
+      const epubElement = document.createElement('sunbird-video-player');
       epubElement.setAttribute('player-config', JSON.stringify(playerConfig));
 
       epubElement.addEventListener('playerEvent', (event) => {
@@ -132,13 +132,13 @@ Follow below-mentioned steps to use it in plain javascript project:
       epubElement.addEventListener('telemetryEvent', (event) => {
         console.log("On telemetryEvent", event);
       });
-      this.epub.nativeElement.append(epubElement);
+      this.video.nativeElement.append(epubElement);
   }
   ....
 
 ```
 
-**Note:** : Click to see the mock - [playerConfig](https://github.com/Sunbird-Knowlg/sunbird-epub-player/blob/main/src/app/data.ts) and send input config as string 
+**Note:** : Click to see the mock - [playerConfig](https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-5.5.0/src/app/data.ts) and send input config as string 
 
 # Use as Angular library in angular app
 ## Step 1: Installation

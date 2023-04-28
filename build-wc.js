@@ -8,17 +8,24 @@ const build = async () => {
     "./dist/video-player-wc/scripts.js",
     "./dist/video-player-wc/vendor.js",
     "./dist/video-player-wc/main.js",
-    "web-component/assets/videojs-markers.js",
-    "web-component/assets/videojs-transcript-click.min.js",
+    "projects/sunbird-video-player/src/lib/assets/videojs-markers.js",
+    "projects/sunbird-video-player/src/lib/assets/videojs-transcript-click.min.js"
   ];
   const cssFiles = [
     "./dist/video-player-wc/styles.css",
-    "web-component/assets/videojs.markers.min.css",
+    "projects/sunbird-video-player/src/lib/assets/videojs.markers.min.css",
   ];
   await fs.ensureDir("dist/video-player-wc");
   // make signle js file for web component
   await concat(files, "web-component/sunbird-video-player.js");
   await fs.copy("./dist/video-player-wc/assets", "web-component/assets");
+  const assetFilesToBeDeleted = ["videojs-markers.js", "videojs-transcript-click.min.js", "videojs.markers.min.css"]
+
+  assetFilesToBeDeleted.forEach(async (file) => {
+    await fs.remove(`web-component/assets/${file}`)
+    await fs.remove(`web-component-demo/assets/${file}`)
+  })
+
   // make signle css file for web component
   await concat(cssFiles, "web-component/styles.css");
   console.log("Files concatenated successfully!!!");
