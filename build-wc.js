@@ -25,6 +25,7 @@ const build = async () => {
     await fs.remove(`web-component/assets/${file}`)
     await fs.remove(`web-component-demo/assets/${file}`)
   })
+  await fs.copy("README.md", "web-component/README.md")
 
   // make signle css file for web component
   await concat(cssFiles, "web-component/styles.css");
