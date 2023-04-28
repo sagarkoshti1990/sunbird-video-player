@@ -15,7 +15,7 @@
     "postbuild-lib": "node assets-copy.js",
     "mybuild": "npm run build",
     "serve": "node assets-copy.js && npm link ./dist/sunbird-video-player && ng serve",
-    "build-web-component": "npm run build-lib-link && ng build video-player-wc --output-hashing none && node ./build-wc.js",
+    "build-web-component": "npm run build-lib && ng build video-player-wc --output-hashing none && node ./build-wc.js",
     "schematics:build": "tsc -p tsconfig.schematics.json",
     "postschematics:build": "./node_modules/.bin/copyfiles schematics/*/schema.json schematics/*/files/** schematics/collection.json ./dist/sunbird-video-player/"
   },

@@ -20,7 +20,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.apiService.getContent(this.contentId).subscribe(res => {
-      this.initializePlayer(res);
+      this.initializePlayer(samplePlayerConfig.metadata);
     });
   }
 
@@ -40,6 +40,7 @@ export class AppComponent {
   }
 
   playerEvent(event) {
+    // console.log(event)
     if (event.eid === 'END') {
       const videoMetaDataConfig = event.metaData;
       if (videoMetaDataConfig) {
