@@ -79,7 +79,7 @@ describe('VideoPlayerComponent', () => {
     component.startTime = 0;
     component.handleVideoControls({ type: 'ended' });
     expect(component.totalSpentTime).toString();
-    expect(component.viewerService.visitedLength).toEqual(component.totalSpentTime);
+    expect(component.viewerService.visitedLength).toEqual(component.viewerService.getVisitedLength());
   });
   it('should call handleVideoControls for playing and setPreMetaDataConfig', () => {
     component.setMetaDataConfig = true;

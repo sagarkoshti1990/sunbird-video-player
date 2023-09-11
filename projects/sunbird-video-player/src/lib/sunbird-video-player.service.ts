@@ -69,8 +69,12 @@ export class SunbirdVideoPlayerService {
 
   }
 
-  public end(duration, totallength, currentlength, endpageseen, totalseekedlength, visitedlength, score) {
+  public end(duration, totallength, currentlength, endpageseen, totalseekedlength, visitedlength, score, uniqueVisitedLength) {
     const durationSec = Number((duration / 1e3).toFixed(2));
+    let progress = Number(((uniqueVisitedLength / totallength) * 100).toFixed(0));
+    if(totallength - uniqueVisitedLength < 5) {
+      progress = 100;
+    }
     CsTelemetryModule.instance.telemetryService.raiseEndTelemetry({
       edata: {
         type: 'content',
@@ -78,7 +82,7 @@ export class SunbirdVideoPlayerService {
         pageid: 'sunbird-player-Endpage',
         summary: [
           {
-            progress: Number(((currentlength / totallength) * 100).toFixed(0))
+            progress
           },
           {
             totallength
@@ -87,7 +91,7 @@ export class SunbirdVideoPlayerService {
             visitedlength
           },
           {
-            visitedcontentend: (totallength === currentlength)
+            visitedcontentend: endpageseen
           },
           {
             totalseekedlength
@@ -97,6 +101,9 @@ export class SunbirdVideoPlayerService {
           },
           {
             score
+          },
+          {
+            uniquevisitedlength: uniqueVisitedLength
           }
         ],
         duration: durationSec
