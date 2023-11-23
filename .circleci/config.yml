@@ -3,18 +3,19 @@ jobs:
   build:
     working_directory: ~/sunbird-video-player
     docker:
-     - image: circleci/node:14.18.2-browsers
+     - image: circleci/node:16.13.1-browsers
     steps:
       - checkout:
           path: ~/sunbird-video-player
       - run:
           name: Show current branch
           command: echo ${CIRCLE_BRANCH}
-      - run: cd projects/sunbird-video-player &&  npm install --no-progress
-      - run: npm install --no-progress
+      - run:
+          name: Install dependecies and audit for critical 
+          command: cd projects/sunbird-video-player &&  npm install --no-progress --legacy-peer-deps && npx audit-ci@^6 --config ./audit-ci.jsonc
       - run:
           name: ng lint
-          command: npm run lint
+          command: cd ~/sunbird-video-player && npm install --no-progress --legacy-peer-deps  && npm run lint
       - run:
           name: Executing test cases
           command: npm run test -- --no-watch

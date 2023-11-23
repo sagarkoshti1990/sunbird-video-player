@@ -18,7 +18,7 @@ const SB_SCRIPT_FILEPATH = [
   'node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js',
   'node_modules/video.js/dist/video.js',
   'node_modules/jquery/dist/jquery.min.js',
-
+  "node_modules/reflect-metadata/Reflect.js",
 ];
 const SB_STYLE_ASSETS = {
   glob: '**/*.*',

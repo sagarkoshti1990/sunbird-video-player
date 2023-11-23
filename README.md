@@ -1,3 +1,7 @@
+
+### Note: 
+This version of the angular library is compatilbe with angular version 15 and may not work with older versions of the angular 15.
+
 # The Video player library for Sunbird platform!
 
 The Video player library is powered by Angular. This player is primarily designed to be used on Sunbird consumption platforms _(mobile app, web portal, offline desktop app)_ to drive reusability and maintainability, hence reducing the redundant development effort significantly, and it can be integrated with any platform irrespective of the platforms and the frontend frameworks. It is exported not only as an angular library but also as a web component.
@@ -121,8 +125,6 @@ myPlayer.appendChild(qumlPlayerElement);
 
 npm i @project-sunbird/sunbird-video-player-web-component
 
-npm i reflect-metadata
-
 npm i jquery
 ```
 
@@ -244,13 +246,13 @@ ngAfterViewInit() {
 
 const playerConfig  = <Config  need  be  added>;
 
-const epubElement  =  document.createElement('sunbird-video-player');
+const videoPlayerElement  =  document.createElement('sunbird-video-player');
 
-epubElement.setAttribute('player-config', JSON.stringify(playerConfig));
+videoPlayerElement.setAttribute('player-config', JSON.stringify(playerConfig));
 
   
 
-epubElement.addEventListener('playerEvent', (event) => {
+videoPlayerElement.addEventListener('playerEvent', (event) => {
 
 console.log("On playerEvent", event);
 
@@ -258,7 +260,7 @@ console.log("On playerEvent", event);
 
   
 
-epubElement.addEventListener('telemetryEvent', (event) => {
+videoPlayerElement.addEventListener('telemetryEvent', (event) => {
 
 console.log("On telemetryEvent", event);
 
@@ -276,7 +278,7 @@ this.video.nativeElement.append(epubElement);
 
   
 
-**Note:** : Click to see the mock - [playerConfig](https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-5.5.0/src/app/data.ts) and send input config as string
+**Note:** : Click to see the mock - [playerConfig](https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-5.9.0/src/app/data.ts) and send input config as string
 
   
 
@@ -336,54 +338,19 @@ npm install  ngx-bootstrap  --save
 
 npm install  jquery  --save
 
-npm install  video.js  --save
+npm install  video.js@7.18.1  --save
 
-npm install  videojs-contrib-quality-levels  --save
+npm install  videojs-contrib-quality-levels@2.1.0  --save
 
-npm install  videojs-http-source-selector  --save
+npm install  videojs-http-source-selector@1.1.6  --save
+
+npm install reflect-metadata
 
 ```
 
   
 
 ### 2: Include the styles, scripts and assets in angular.json
-
-"styles": [
-
-...
-
-...
-
-"src/styles.css",
-
-"./node_modules/@project-sunbird/sb-styles/assets/_styles.scss",
-
-"./node_modules/video.js/dist/video-js.min.css",
-
-"./node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs.markers.min.css",
-
-"./node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.css"
-
-],
-
-"scripts": [
-
-...
-
-...
-
-"node_modules/jquery/dist/jquery.min.js",
-
-"node_modules/video.js/dist/video.js",
-
-"node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",
-
-"node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js",
-
-"node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js"
-
-]
-
   
 
 Add following under architect.build.assets
@@ -451,7 +418,7 @@ Add following under architect.build.assets
 ...
 
 "node_modules/jquery/dist/jquery.min.js",
-
+"node_modules/reflect-metadata/Reflect.js",
 "node_modules/video.js/dist/video.js",
 
 "node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-markers.js",

@@ -18,7 +18,6 @@ const build = async () => {
   await fs.ensureDir("dist/video-player-wc");
   // make signle js file for web component
   await concat(files, "web-component/sunbird-video-player.js");
-  await fs.copy("./dist/video-player-wc/assets", "web-component/assets");
   const assetFilesToBeDeleted = ["videojs-markers.js", "videojs-transcript-click.min.js", "videojs.markers.min.css"]
 
   assetFilesToBeDeleted.forEach(async (file) => {

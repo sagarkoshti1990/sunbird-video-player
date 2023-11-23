@@ -21,8 +21,8 @@ const VERSIONS = {
   'video.js': '^7.18.1',
   'sunbird-quml-player-v9': '^4.9.7',
   'videojs-http-source-selector': '>= 1.1.6',
-  'videojs-contrib-quality-levels': '>= 2.1.0'
-
+  'videojs-contrib-quality-levels': '>= 2.1.0',
+  "reflect-metadata": "^0.1.13"
 };
 
 /**
