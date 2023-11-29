@@ -166,7 +166,7 @@ npm i jquery
 
 "node_modules/reflect-metadata/Reflect.js",
 "node_modules/jquery/dist/jquery.min.js",
-"node_modules/@project-sunbird/sunbird-epub-player-web-component/sunbird-video-player.js"
+"node_modules/@project-sunbird/sunbird-video-player-web-component/sunbird-video-player.js"
 
 ]
 
@@ -266,7 +266,7 @@ console.log("On telemetryEvent", event);
 
 });
 
-this.video.nativeElement.append(epubElement);
+this.video.nativeElement.append(videoPlayerElement);
 
 }
 
@@ -427,7 +427,7 @@ Add following under architect.build.assets
 
 "node_modules/videojs-http-source-selector/dist/videojs-http-source-selector.min.js",
 
-"dist/sunbird-video-player/lib/assets/videojs-transcript-click.min.js"
+"node_modules/@project-sunbird/sunbird-video-player-v9/lib/assets/videojs-transcript-click.min.js"
 
 ]
 
