@@ -1,6 +1,6 @@
 {
   "name": "@project-sunbird/sunbird-video-player-v9",
-  "version": "6.1.0-alpha.0",
+  "version": "6.1.0-alpha.1",
   "peerDependencies": {
     "@angular/common": "16.2.12",
     "@angular/core": "16.2.12",
@@ -12,7 +12,7 @@
     "videojs-http-source-selector": ">= 1.1.6"
   },
   "dependencies": {
-    "@project-sunbird/sunbird-player-sdk-v9": "6.0.7",
+    "@project-sunbird/sunbird-player-sdk-v9": "6.0.5",
     "tslib": "^2.0.0"
   },
   "homepage": "https://github.com/Sunbird-Knowlg/sunbird-video-player/blob/release-6.0.0/README.md",
