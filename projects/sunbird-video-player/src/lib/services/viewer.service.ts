@@ -4,7 +4,7 @@ import { PlayerConfig, Transcripts } from '../playerInterfaces';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
 import { UtilService } from './util.service';
 import { errorCode , errorMessage } from '@project-sunbird/sunbird-player-sdk-v9';
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash-es';
@@ -230,7 +230,6 @@ export class ViewerService {
 
   calculateScore() {
     this.scoreObtained =  Object.values(this.interceptionResponses).reduce(
-      // eslint-disable-next-line @typescript-eslint/dot-notation
       (acc, response) => acc + response['score'] , 0);
   }
 
@@ -313,7 +312,6 @@ export class ViewerService {
     this.videoPlayerService.impression(pageId, cdata);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   raiseExceptionLog(errorCode: string, errorType: string, stacktrace, traceId) {
     const exceptionLogEvent = {
       eid: 'ERROR',

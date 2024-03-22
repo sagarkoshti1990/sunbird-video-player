@@ -1,4 +1,4 @@
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player';
 import { HttpClient } from '@angular/common/http';
 import { mergeMap, map } from 'rxjs/operators';
 import { of, throwError as observableThrowError, Observable, forkJoin } from 'rxjs';

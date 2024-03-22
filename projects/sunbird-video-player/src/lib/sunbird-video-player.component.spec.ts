@@ -5,8 +5,8 @@ import { NO_ERRORS_SCHEMA, SimpleChange, SimpleChanges } from '@angular/core';
 import { ViewerService } from './services/viewer.service';
 import { HttpClientModule } from '@angular/common/http';
 import { mockData } from './sunbird-video-player.component.spec.data';
-import { ErrorService } from '@project-sunbird/sunbird-player-sdk-v9';
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { ErrorService, PLAYER_CONFIG } from '@project-sunbird/sunbird-player-sdk-v9';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player';
 import { QuestionCursorImplementationService } from 'src/app/question-cursor-implementation.service';
 
 describe('SunbirdVideoPlayerComponent', () => {
@@ -19,7 +19,9 @@ describe('SunbirdVideoPlayerComponent', () => {
       declarations: [SunbirdVideoPlayerComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [ViewerService, SunbirdVideoPlayerService, ErrorService,
-        { provide: QuestionCursor, useClass: QuestionCursorImplementationService }]
+        { provide: QuestionCursor, useClass: QuestionCursorImplementationService },
+        {provide: PLAYER_CONFIG, useValue: {contentCompatibilityLevel: 5}}
+      ]
     })
       .compileComponents();
   }));
@@ -140,7 +142,6 @@ describe('SunbirdVideoPlayerComponent', () => {
     expect(component.traceId).toEqual(component.playerConfig.config.traceId);
   });
   it('should call raiseInternetDisconnectionError', () => {
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     component.videoPlayerService['context'] = {
       channel: '12345'
     };

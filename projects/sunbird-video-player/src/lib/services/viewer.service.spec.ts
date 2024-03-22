@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { ViewerService } from './viewer.service';
 import { SunbirdVideoPlayerService } from '../sunbird-video-player.service';
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player';
 import { QuestionCursorImplementationService } from 'src/app/question-cursor-implementation.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { mockData } from './viewer.service.spec.data';
@@ -22,7 +22,6 @@ describe('ViewerService', () => {
   it('should call raiseExceptionLog', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     spyOn(service['videoPlayerService'], 'error').and.callFake(() => 'true');
     const exceptionLogEvent = {
       eid: 'ERROR',
@@ -36,15 +35,12 @@ describe('ViewerService', () => {
     service.raiseExceptionLog(exceptionLogEvent.edata.err,
       exceptionLogEvent.edata.errtype, exceptionLogEvent.edata.stacktrace, exceptionLogEvent.edata.requestid);
     expect(service.playerEvent.emit).toHaveBeenCalledWith(exceptionLogEvent);
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(service['videoPlayerService']['error']).toHaveBeenCalled();
   });
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     spyOn(service['videoPlayerService'], 'heartBeat').and.callFake(() => 'true');
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     spyOn(service['videoPlayerService'], 'interact').and.callFake(() => 'true');
     service.raiseHeartBeatEvent('REPLAY');
     expect(service.showScore).toBeFalsy();
@@ -60,7 +56,6 @@ describe('ViewerService', () => {
   it('should call raiseHeartBeatEvent for REPLAY', () => {
     const service = TestBed.inject(ViewerService);
     spyOn(service.playerEvent, 'emit').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     spyOn(service['videoPlayerService'], 'start').and.callFake(() => 'true');
     service.raiseStartEvent('');
     expect(service.PlayerLoadStartedAt).toBeDefined();
@@ -77,10 +72,8 @@ describe('ViewerService', () => {
     service.isEndEventRaised = true;
     service.visitedLength = 60000;
     spyOn(service, 'calculateScore').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     spyOn(service['utilService'], 'getTimeSpentText').and.callFake(() => 'true');
     service.raiseEndEvent();
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     expect(service['utilService'].getTimeSpentText).not.toHaveBeenCalledWith(service.visitedLength);
     expect(service.calculateScore).not.toHaveBeenCalled();
   });
@@ -115,7 +108,6 @@ describe('ViewerService', () => {
   it('should call getPlayerOptions for streamingUrl ', () => {
     const service = TestBed.inject(ViewerService);
     service.streamingUrl = 'abc.com';
-    // eslint-disable-next-line max-len
     service.artifactUrl = 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/assets/do_3123348586389995521449/upload_a_video_file.mp4';
     service.artifactMimeType = 'video/mp4';
     const returnValue = service.getPlayerOptions();
@@ -124,10 +116,8 @@ describe('ViewerService', () => {
   it('should call getPlayerOptions for null streamingUrl', () => {
     const service = TestBed.inject(ViewerService);
     service.streamingUrl = null;
-    // eslint-disable-next-line @typescript-eslint/dot-notation
     spyOn(service['http'], 'head').and.returnValue(of(false));
     spyOn(service, 'raiseExceptionLog').and.callThrough();
-    // eslint-disable-next-line max-len
     service.artifactUrl = 'https://ntpproductionall.blob.core.windows.net/ntp-content-production/assets/do_3123348586389995521449/upload_a_video_file.mp4';
     service.artifactMimeType = 'video/mp4';
     const returnValue = service.getPlayerOptions();

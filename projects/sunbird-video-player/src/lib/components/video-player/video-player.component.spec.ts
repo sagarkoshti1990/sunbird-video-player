@@ -4,7 +4,7 @@ import { VideoPlayerComponent } from './video-player.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ViewerService } from '../../services/viewer.service';
 import { SunbirdVideoPlayerService } from '../../sunbird-video-player.service';
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player';
 import { QuestionCursorImplementationService } from 'src/app/question-cursor-implementation.service';
 import {mockData} from './video-player.component.data';
 describe('VideoPlayerComponent', () => {

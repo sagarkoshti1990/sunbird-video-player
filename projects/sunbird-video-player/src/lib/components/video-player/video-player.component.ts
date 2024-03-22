@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, OnChanges, SimpleChanges,
    Renderer2, ViewChild, ViewEncapsulation, OnInit, Optional, ChangeDetectorRef } from '@angular/core';
-import { QuestionCursor } from '@project-sunbird/sunbird-quml-player-v9';
+import { QuestionCursor } from '@project-sunbird/sunbird-quml-player';
 import * as _ from 'lodash-es';
 import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
@@ -412,7 +412,6 @@ export class VideoPlayerComponent implements AfterViewInit, OnInit, OnDestroy, O
               score: 0,
               isSkipped: false
             };
-            // eslint-disable-next-line @typescript-eslint/dot-notation
             document.querySelector(`[data-marker-time="${marker.time}"]`)['style'].backgroundColor = 'red';
           }
         });

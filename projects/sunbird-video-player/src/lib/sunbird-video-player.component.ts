@@ -115,7 +115,6 @@ export class SunbirdVideoPlayerComponent implements OnInit, AfterViewInit, OnDes
       }
     }, 5000);
 
-    /* eslint-disable @typescript-eslint/dot-notation */
     this.nextContent = this.playerConfig?.config?.nextContent;
     this.traceId = this.playerConfig.config['traceId'];
     this.sideMenuConfig = { ...this.sideMenuConfig, ...this.playerConfig.config.sideMenu };
