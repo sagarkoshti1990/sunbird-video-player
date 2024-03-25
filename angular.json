@@ -94,19 +94,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "sunbird-video-player-app:build",
-            "proxyConfig": "proxy.conf.json"
+            "proxyConfig": "proxy.conf.json",
+            "buildTarget": "sunbird-video-player-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "sunbird-video-player-app:build:production"
+              "buildTarget": "sunbird-video-player-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sunbird-video-player-app:build"
+            "buildTarget": "sunbird-video-player-app:build"
           }
         },
         "test": {
@@ -265,18 +265,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "video-player-wc:build"
+            "buildTarget": "video-player-wc:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "video-player-wc:build:production"
+              "buildTarget": "video-player-wc:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "video-player-wc:build"
+            "buildTarget": "video-player-wc:build"
           }
         },
         "test": {

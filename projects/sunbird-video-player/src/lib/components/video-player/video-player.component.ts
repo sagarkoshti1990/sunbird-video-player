@@ -7,7 +7,7 @@ import 'videojs-contrib-quality-levels';
 import videojshttpsourceselector from 'videojs-http-source-selector';
 import { ViewerService } from '../../services/viewer.service';
 import { IAction } from '../../playerInterfaces';
-
+declare const videojs: any;
 @Component({
   selector: 'video-player',
   templateUrl: './video-player.component.html',
