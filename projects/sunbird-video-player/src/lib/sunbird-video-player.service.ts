@@ -40,6 +40,7 @@ export class SunbirdVideoPlayerService {
             mode: context.mode,
             host: context.host || '',
             endpoint: context.endpoint || '/data/v3/telemetry',
+            apislug: context.apislug || '',
             tags: context.tags,
             cdata: [{ id: this.contentSessionId, type: 'ContentSession' },
             { id: this.playSessionId, type: 'PlaySession' },

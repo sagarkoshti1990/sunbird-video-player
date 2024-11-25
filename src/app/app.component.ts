@@ -25,7 +25,7 @@ export class AppComponent {
   }
 
   initializePlayer(metaData) {
-    let videoConfigMetadata: any = localStorage.getItem('config');
+    let videoConfigMetadata: any = localStorage.getItem(`config_${this.contentId}`) || '{}';
     let config;
     if (videoConfigMetadata) {
       videoConfigMetadata = JSON.parse(videoConfigMetadata);

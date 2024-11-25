@@ -16,6 +16,7 @@ export const samplePlayerConfig = {
     objectRollup: {},
     host: '',
     endpoint: '',
+    apislug: '',
     userData: {
       firstName: 'Harish Kumar',
       lastName: 'Gangula'

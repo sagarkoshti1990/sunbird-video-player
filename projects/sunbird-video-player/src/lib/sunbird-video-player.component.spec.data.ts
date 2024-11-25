@@ -17,6 +17,7 @@ export const mockData = {
             objectRollup: {},
             host: '',
             endpoint: '',
+            apislug: '',
             userData: {
                 firstName: 'Harish Kumar',
                 lastName: 'Gangula'
