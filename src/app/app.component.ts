@@ -44,7 +44,7 @@ export class AppComponent {
     if (event.eid === 'END') {
       const videoMetaDataConfig = event.metaData;
       if (videoMetaDataConfig) {
-        localStorage.setItem('config', JSON.stringify(videoMetaDataConfig));
+        localStorage.setItem(`config_${this.contentId}`, JSON.stringify(videoMetaDataConfig));
       }
       const config = videoMetaDataConfig ? { ...samplePlayerConfig.config, ...videoMetaDataConfig } : samplePlayerConfig.config;
       this.playerConfig.config = config;
